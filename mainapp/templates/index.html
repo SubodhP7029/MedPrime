@@ -1,0 +1,472 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Medprime</title>
+
+    <link href="{% static 'assets/css/lib/calendar2/semantic.ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/calendar2/pignose.calendar.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/chartist/chartist.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/themify-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/owl.carousel.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/css/lib/owl.theme.default.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/css/lib/weather-icons.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/css/lib/menubar/sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/unix.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/lib/sweetalert/sweetalert.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'custom/css/app.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <!-- jquery vendor -->
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{% static 'assets/js/lib/jquery.nanoscroller.min.js' %}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{% static 'custom/js/main.js' %}" crossorigin="anonymous"></script>
+
+    <script>
+        //  animation for datepicker
+        $(document).ready(function () {
+
+            $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
+            $("#datepicker_invoice").datepicker({ dateFormat: "yy-mm-dd" }).datepicker("setDate", new Date());
+        })
+    </script>
+    <style>
+        tr:hover {
+            color: #fff;
+            background-color: #d3d3d3;
+        }
+
+        tr:hover td {
+            background-color: transparent;
+        }
+    </style>
+    {% block header %}
+
+
+    {% endblock %}
+</head>
+
+<body class="sidebar-hide">
+
+    <img style='display:none' id='signatureOfAdmin' src="{{user.profile.image.url }}">
+    <div class="sidebar sidebar-hide-to-small sidebar-shrink sidebar-gestures">
+        <div class="nano">
+            <div class="nano-content">
+                <ul style="font-size: smaller;">
+                    <li><a class="sidebar-sub-toggle"><i class="ti-home"></i>Dashboard </a></li>
+                    <li><a class="sidebar-sub-toggle"><i class="ti-pencil-alt"></i>Invoice
+                            <!-- <span
+                                class="badge badge-primary">28
+                                </span> -->
+                            <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                        <ul>
+                            <li><a href="{% url 'vieweinvoices' %}">Billing</a></li>
+                            <li><a href="school-student-profile.html">Proforma Invoice</a></li>
+
+                            <li><a href="{% url 'viewequotations' %}">Quotation</a></li>
+                            <li><a href="school-hostel-room.html"> Delivery Challan</a></li>
+                            <li><a href="school-all-student-table.html">Contractor Bill</a></li>
+                            <li><a href="school-student-search.html">Installation Report</a></li>
+
+                        </ul>
+                    </li>
+                    {% if user.is_superuser %}
+                    {% comment %} <li class="label">Dealer Management</li> {% endcomment %}
+                    <li><a class="sidebar-sub-toggle"><i class="ti-cup"></i> Distributer Management
+                            <!-- <span
+                                class="badge badge-primary">7</span>  -->
+                            <span class="sidebar-collapse-icon ti-angle-down"></span></a>
+                        <ul>
+                            <li>
+                                <a href="{% url 'Registeruser' %}"><i class="fas fa-user"></i> Add Distributer</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'vieweditdealer' %}"><i class="fas fa-table"></i> Edit Distributer</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'deletedealer' %}"><i class="fas fa-user-minus"></i> Delete
+                                    Distributer</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {% comment %} <li class="label">Apps</li> {% endcomment %}
+                    <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> Product Management <span
+                                class="sidebar-collapse-icon ti-angle-down"></span></a>
+                        <ul>
+                            <li>
+                                <a href="{% url 'addproduct' %}"><i class="fas fa-cart-plus"></i> Add Product</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'vieweditproducts' %}"><i class="fas fa-shopping-basket"></i> Edit
+                                    Product</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fas fa-cart-arrow-down"></i> Delete Product</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> Customer Management <span
+                                class="sidebar-collapse-icon ti-angle-down"></span></a>
+                        <ul>
+                            <li>
+                                <a href="{% url 'Registercustomer' %}"><i class="fas fa-cube"></i> Add Customer</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'vieweditcustomer' %}"><i class="fas fa-border-all"></i> Edit
+                                    Customer</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'deletedealer' %}"><i class="fas fa-book-dead"></i> Delete Customer</a>
+                            </li>
+                        </ul>
+                    </li>
+            </div>
+        </div>
+    </div>
+    <!-- /# sidebar -->
+
+    <div class="header">
+        <div class="pull-left">
+            <div class="logo"><a href="index.html">
+                    <!-- <img src="assets/images/logo.png" alt="" /> --><span>Medprime Technologies</span></a></div>
+            <div class="hamburger sidebar-toggle">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </div>
+        </div>
+        <div class="pull-right p-r-15">
+            <ul>
+                <li class="header-icon dib"><a href="#search"><i class="ti-search"></i></a></li>
+                <li class="header-icon dib"><i class="ti-bell"></i>
+                    <div class="drop-down">
+                        <div class="dropdown-content-heading">
+                            <span class="text-left">Recent Notifications</span>
+                        </div>
+                        <div class="dropdown-content-body">
+                            <ul>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/3.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">5 members joined today </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/3.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">likes a photo of you</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/3.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/3.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="text-center">
+                                    <a href="#" class="more-link">See All</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="header-icon dib"><i class="ti-email"></i>
+                    <div class="drop-down">
+                        <div class="dropdown-content-heading">
+                            <span class="text-left">2 New Messages</span>
+                            <a href="email.html"><i class="ti-pencil-alt pull-right"></i></a>
+                        </div>
+                        <div class="dropdown-content-body">
+                            <ul>
+                                <li class="notification-unread">
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/1.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="notification-unread">
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/2.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/3.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="pull-left m-r-10 avatar-img" src="assets/images/avatar/2.jpg"
+                                            alt="" />
+                                        <div class="notification-content">
+                                            <small class="notification-timestamp pull-right">02:34 PM</small>
+                                            <div class="notification-heading">Mr. Ajay</div>
+                                            <div class="notification-text">Hi Teddy, Just wanted to let you ...</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="text-center">
+                                    <a href="#" class="more-link">See All</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="header-icon dib"><img class="avatar-img" src="assets/images/avatar/1.jpg" alt="" /> <span
+                        class="user-avatar">{{ user.username }}<i class="ti-angle-down f-s-10"></i></span>
+                    <div class="drop-down dropdown-profile">
+                        <div class="dropdown-content-heading">
+                            {% if user.is_superuser %}
+                            <span class="text-left">You are logged in as admin</span>
+                            {% else %}
+                            <span class="text-left">You are logged in as Dealer</span>
+                            {% endif %}
+
+                        </div>
+                        <div class="dropdown-content-body">
+                            <ul>
+                                <li><a href="{% url 'UserProfile' %}"><i class="ti-user"></i> <span>Profile</span></a>
+                                </li>
+
+                                <li><a href="{% url 'logout' %}"><i class="ti-power-off"></i> <span>Logout</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid" style="overflow-y: scroll;height: 90vh;">
+                <div class="row">
+                    <div class="col-12 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title headers" style=' padding: 10px;'>
+                                {% block head %}
+                                <h1>Hello, <span>Welcome To Medprime</span></h1>
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-content">
+                    {% block content %}
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <!-- <div class="col-lg-6">
+                                    <div class="card p-0">
+                                        <div class="stat-widget-three">
+                                            <div class="stat-icon bg-primary">
+                                                <i class="ti-eye"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <div class="stat-text">Invoices Generated</div>
+                                                <div class="stat-digit">6,250</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div> -->
+
+
+                                <div class="col-lg-6">
+                                    <div class="card p-0">
+                                        <div class="stat-widget-three">
+                                            <div class="stat-icon bg-success">
+                                                <i class="ti-bag"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <div class="stat-text">Today Delevered</div>
+                                                <div class="stat-digit">2,584</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card p-0">
+                                        <div class="stat-widget-three">
+                                            <div class="stat-icon bg-warning">
+                                                <i class="ti-user"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <div class="stat-text">New Dealers</div>
+                                                <div class="stat-digit">98</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card p-0">
+                                        <div class="stat-widget-three">
+                                            <div class="stat-icon bg-danger">
+                                                <i class="ti-money"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <div class="stat-text">Net Earning</div>
+                                                <div class="stat-digit">3,5621</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card bg-success">
+                                        <div class="stat-widget-six">
+                                            <div class="stat-icon p-15">
+                                                <i class="ti-stats-up"></i>
+                                            </div>
+                                            <div class="stat-content p-t-12 p-b-12">
+                                                <div class="text-left dib">
+                                                    <div class="stat-heading">Daily sales</div>
+                                                    <div class="stat-text">Total: 9765</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="card bg-primary">
+                                        <div class="stat-widget-six">
+                                            <div class="stat-icon p-15">
+                                                <i class="ti-stats-down"></i>
+                                            </div>
+                                            <div class="stat-content p-t-12 p-b-12">
+                                                <div class="text-left dib">
+                                                    <div class="stat-heading">Daily Expense</div>
+                                                    <div class="stat-text">Total: 6765</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card alert">
+                                <div class="card-header">
+                                    <h4>Earning Graph</h4>
+                                    <div class="card-header-right-icon">
+                                        <ul>
+                                            <li class="card-close" data-dismiss="alert"><i class="ti-close"></i>
+                                            </li>
+                                            <li class="doc-link"><a href="#"><i class="ti-link"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="sales-chart">
+                                    <canvas id="team-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                    </div>
+
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% block scripts %}
+
+
+    {% endblock %}
+
+    <!-- nano scroller -->
+    <script src="{% static 'assets/js/lib/menubar/sidebar.js' %}"></script>
+    <script src="{% static 'assets/js/lib/preloader/pace.min.js' %}"></script>
+    <!-- sidebar -->
+    <script src="{% static 'assets/js/lib/bootstrap.min.js' %}"></script>
+    <!-- bootstrap -->
+    <script src="{% static 'assets/js/lib/mmc-common.js' %}"></script>
+    <script src="{% static 'assets/js/lib/mmc-chat.js' %}"></script>
+    <!--  Chart js -->
+    <script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/lib/chart-js/chartjs-init.js' %}"></script>
+    <!-- // Chart js -->
+
+    <!--  Datamap -->
+    <script src="{% static 'assets/js/lib/datamap/d3.min.js' %}"></script>
+    <script src="{% static 'assets/js/lib/datamap/topojson.js' %}"></script>
+    <script src="{% static 'assets/js/lib/datamap/datamaps.world.min.js' %}"></script>
+    <script src="{% static 'assets/js/lib/datamap/datamap-init.js' %}"></script>
+    <!-- // Datamap -->
+    <script src="{% static 'assets/js/lib/weather/jquery.simpleWeather.min.js' %}"></script>
+    <script src="{% static 'assets/js/lib/weather/weather-init.js' %}"></script>
+    <script src="{% static 'assets/js/lib/owl-carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/lib/owl-carousel/owl.carousel.min.js' %}"></script>
+
+    {% comment %}
+    <script src="{% static 'assets/js/scripts.js' %}"></script> {% endcomment %}
+</body>
+
+</html>

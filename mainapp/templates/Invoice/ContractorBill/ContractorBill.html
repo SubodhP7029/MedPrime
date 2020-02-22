@@ -1,0 +1,155 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block header %}
+
+<script src="{% static 'custom/js/Invoice/ContractorBill/ContractorBill.js' %}" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+    integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
+    integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.2.10/dist/jspdf.plugin.autotable.js"></script>
+
+{% endblock %}
+{% block content %}
+<h1>Create Contractor Bill</h1>
+<input type='hidden' id='idofuser' value="{{ user.id }}" />
+<input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
+<div class='row'>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class='form-group'>
+            Select Distributer
+            <select onchange='getAllCustomerInfo()' id='selectedcustomer'>
+                <option value=''>Select Distributer</option>
+                {% for eachcustomer in allcustomers.all %}
+                <option value="{{ eachcustomer.id }}" id='thisCust-{{ eachcustomer.id }}'>{{ eachcustomer }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class='form-group'>
+            Select Product
+            <select onchange='priceOfProduct()' id='selectedProduct'>
+                <option value=''>Select Product</option>
+                {% for eachproduct in allproducts.all %}
+                <option value="{{ eachproduct }}">{{ eachproduct }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class='form-group'>
+            <span>Invoice date : </span> <input type="date" id='datepicker_invoice' name="invoice date">
+        </div>
+    </div>
+</div>
+<div class='row'>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+        <div class='form-group'>
+            Price of Product
+            <input id='selectedProductPrice' type='number' />
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+        <div class='form-group'>
+            Select Quantity
+            <input id='selectedProductQuanity' type='number' value='1' />
+        </div>
+    </div>
+   
+
+</div>
+<div class='row'>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
+        <div class='form-group'>
+            Invoice Number
+            <input id='PONo' type='text' />
+        </div>
+    </div>
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
+        <div class='form-group'>
+            Contractor Agreement Number
+            <input id='CANo' type='text' />
+        </div>
+    </div>
+</div>
+<br>
+<img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
+<div class='row' style='text-align: center;'>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
+        <div class='form-group'>
+            <button type="button" class="btn btn-success" onclick='addProduct()'>Add Product</button>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
+        <div class='form-group'>
+            <button type="button" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
+        </div>
+    </div>
+</div>
+
+<div class='form-group'>
+    Preview
+    <table id='Previewtable' class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quanity</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody id='bodyOfProductPreview'>
+        </tbody>
+    </table>
+
+    <div class='row'>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <div class='form-group'>
+                Terms
+                <textarea rows="4" cols="70" id='termsNcondition'>
+Certified that (a) The item has been fully delivered inspection and found conform 
+to the pattern and specification and fit Govt. use.
+(b) The rates passed in the bill and in the comparative statement have been compared 
+with original documents in the office and are reasonable.
+                    </textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <div class='row'>
+
+        <div class='form-group'>
+
+            <button class='btn btn-outline-success' onclick='createPDF()'>Create Invoice</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal of Preview -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document" style='height: 80%;'>
+        <div class="modal-content" style='height: 100%;'>
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">PDF Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <embed id='previewOfPdf' width='100%' height='100%' />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
+                <button type="button" class="btn btn-primary" onclick='downloadPdf()'>Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
