@@ -1,9 +1,0 @@
-Dependencies - 
-
-python 3.6
-django 2.2
-psycopg2-binary
-django-crispy-forms
-pillow
-django-phone-field
-jspdf 1.5.3
