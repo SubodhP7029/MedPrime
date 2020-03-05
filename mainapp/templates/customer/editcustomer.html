@@ -1,0 +1,402 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<h3> Edit Customer </h3>
+{% for message in messages %}
+<div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {{ message }}
+</div>
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+
+    <div class='row'>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
+            {% comment %} <div id='for_username' class="form-group has-warning has-feedback">
+                {{ form.username|as_crispy_field }}
+                {% if form.username.errors %}
+                <div class="alert alert-danger">
+                    <strong> {{ form.username.errors }}</strong>
+                </div>
+                {% endif %}
+                <span id='for_username_symbol' class="ti-reload form-control-feedback"></span>
+            </div> {% endcomment %}
+            {% comment %} username input start {% endcomment %}
+            <div id="for_username" class="form-group has-warning has-feedback">
+                <div id="div_id_username" class="form-group">
+                    <label for="id_username" class=" requiredField">
+                        Username<span class="asteriskField">*</span>
+                    </label>
+                    <div class="">
+                        <input type="text" name="username" placeholder="8 or more characters"
+                            class="textinput textInput form-control" required="" id="id_username"
+                            value='{{ form.username }}'>
+                    </div>
+                </div>
+                {% if form.username.errors %}
+                <div class="alert alert-danger">
+                    <strong> {{ form.username.errors }}</strong>
+                </div>
+                {% endif %}
+                <span id="for_username_symbol" class="ti-reload form-control-feedback"></span>
+            </div>
+        </div>
+        {% comment %} username input end {% endcomment %}
+        {% comment %} email input start {% endcomment %}
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
+            <div id="for_email" class="form-group has-warning has-feedback">
+                <div id="div_id_email" class="form-group">
+                    <label for="id_email" class="">
+                        Email
+                    </label>
+                    <div class="">
+                        <input type="text" name="email" placeholder="Email must be unique"
+                            class="textinput textInput form-control" id="id_email" value='{{ form.email }}'>
+                    </div>
+                </div>
+                {% if form.email.errors %}
+                <div class="alert alert-danger">
+                    <strong> {{ form.email.errors }}</strong>
+                </div>
+                {% endif %}
+                <span id="for_email_symbol" class="ti-reload form-control-feedback"></span>
+            </div>
+        </div>
+        {% comment %} email input end {% endcomment %}
+        {% comment %} customer name input start {% endcomment %}
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
+            <div class="form-group">
+                <div id="div_id_customername" class="form-group">
+                    <label for="id_customername" class=" requiredField">
+                        Customer Name<span class="asteriskField">*</span>
+                    </label>
+                    <div class="">
+                        <input type="text" name="customername" placeholder="Company or Customer Name"
+                            class="textinput textInput form-control" required="" id="id_customername"
+                            value='{{ profileform.customername }}'>
+                    </div>
+                </div>
+                {% if profileform.customername.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ profileform.customername.errors }}</strong>
+                </div> {% endif %}
+            </div>
+        </div>
+        {% comment %} customer name input end {% endcomment %}
+        {% comment %} Distributer input start {% endcomment %}
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
+            <div class="form-group">
+                {% if user.is_superuser %}
+                <div class="form-group">
+                    <div id="div_id_distributer" class="form-group">
+                        <label for="id_distributer" class="">
+                            Distributer
+                        </label>
+                        <div class="">
+                            <select name="distributer" class="select form-control" id="id_distributer"
+                                value='{{ profileform.distributer }}'>
+                                {% for eachdistri in alldistributers.all %}
+                                <option value="{{ eachdistri.user.username }}">{{ eachdistri.user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="form-group">
+                    {{ profileform.distributer|as_crispy_field }}
+                    {% if profileform.distributer.errors  %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.distributer.errors }}</strong>
+                    </div> {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% comment %} Distributer input end {% endcomment %}
+        {% comment %} Phone input start {% endcomment %}
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
+            <div class="form-group">
+                <div id="div_id_phone" class="form-group">
+                    <label for="id_phone" class="">
+                        Phone No.
+                    </label>
+                    <div class="">
+                        <input type="text" name="phone" placeholder="+91XXXXXXXXX"
+                            class="textinput textInput form-control" id="id_phone" value='{{ profileform.phone }}'>
+                    </div>
+                </div>
+                {% if profileform.phone.errors  %}
+                <div class="alert alert-danger">
+                    <strong> {{ profileform.phone.errors }}</strong>
+                </div> {% endif %}
+            </div>
+        </div>
+        {% comment %} Phone input end {% endcomment %}
+    </div>
+    {% comment %} Billing Details input start {% endcomment %}
+    <div class='row'>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <div class='row' style="text-align: center;font-size: 20px;">
+                Billing Address
+                <hr style='border: 1px solid;width: 80%;'>
+            </div>
+            <div class='row'>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div id="div_id_billincountry" class="form-group">
+                        <label for="id_billingcountry" class="">Country</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_billingcountry">
+
+                            <select required id="id_billingcountry" onchange="stateandcitydropinbilling()"
+                                name="billingcountry" class="select form-control form-control">
+                            </select>
+                        </div>
+                        {% if profileform.billingcountry.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingcountry.errors }}</strong>
+                        </div> {% endif %}
+                    </div>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div id="div_id_billingcity" class="form-group">
+                        <label for="id_billingstate" class="">State</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_billingstate">
+                            <select onchange="print_city('id_billingcity', this.selectedIndex,'id_billingstate');"
+                                name="billingstate" class="select form-control form-control"
+                                id="id_billingstate"></select>
+                        </div>
+                        {% if profileform.billingstate.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingstate.errors }}</strong>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div id="div_id_billingstate" class="form-group">
+                        <label for="id_billingcity" class="">City</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_billingcity">
+                            <select name="billingcity" class="select form-control" id="id_billingcity"
+                                value='{{ profileform.billingcity }}'>
+                            </select>
+                        </div>
+                        {% if profileform.billingcity.errors  %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingcity.errors }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="form-group">
+                        <div id="div_id_billingaddress" class="form-group">
+                            <label for="id_billingaddress" class=" requiredField">
+                                Billing Address<span class="asteriskField">*</span>
+                            </label>
+                            <div class="">
+                                <textarea name="billingaddress" cols="20" rows="5" placeholder="Billing Address Here"
+                                    class="textarea form-control" required=""
+                                    id="id_billingaddress">{{ profileform.billingaddress }}</textarea>
+                            </div>
+                        </div>
+                        {% if profileform.billingaddress.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingaddress.errors }}</strong>
+                        </div> {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <div class="form-group">
+                        <div id="div_id_billingpincode" class="form-group">
+                            <label for="id_billingpincode" class=" requiredField">
+                                Billing Pincode<span class="asteriskField">*</span>
+                            </label>
+                            <div class="">
+                                <input type="text" name="billingpincode" placeholder="Billing Address Pincode Here"
+                                    class="textinput textInput form-control" required="" id="id_billingpincode"
+                                    value='{{ profileform.billingpincode }}'>
+                            </div>
+                        </div>
+                        {% if profileform.billingpincode.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingpincode.errors }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <div id='typeofInput_gst' class="form-group">
+                        <label for="id_gst" class="">GST No.</label><input type="text" name="gst" maxlength="500"
+                            placeholder="GST No. Here" class="textinput textInput form-control" id="id_gst"
+                            value='{{ profileform.gst }}'>
+                        {% if profileform.gst.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.gst.errors }}</strong>
+                        </div> {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <div id='ShippingInfo' style="display: block;">
+                <div class='row' style="text-align: center;font-size: 20px;">
+                    Shipping Address
+                    <hr style='border: 1px solid;width: 80%;'>
+                </div>
+                <div class='row'>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                        <div id="div_id_country" class="form-group">
+                            <label for="id_country" class="">Country</label><span class="asteriskField">*</span>
+                            <div id="typeofInput_country">
+                                <select id="id_country" onchange="stateandcitydropinshipping()" name="country"
+                                    class="select form-control form-control" value='{{ profileform.country }}'>
+
+                                </select>
+                            </div>
+                            {% if profileform.country.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ profileform.country.errors }}</strong>
+                            </div> {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                        <div id="div_id_city" class="form-group">
+                            <label for="id_state" class="">State</label><span class="asteriskField">*</span>
+                            <div id="typeofInput_state">
+                                <input type="text" placeholder="Shipping State" name="state"
+                                    class="textinput form-control" id="id_state" onkeyup="getStateid()"
+                                    value='{{ profileform.state }}'>
+                            </div>
+                            {% if profileform.state.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ profileform.state.errors }}</strong>
+                            </div> {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                        <div id="div_id_state" class="form-group">
+                            <label for="id_city" class="">City</label><span class="asteriskField">*</span>
+                            <div id="typeofInput_city">
+                                <input type="text" placeholder="Shipping City" name="city"
+                                    class="textinput form-control" id="id_city">
+                            </div>
+                            {% if profileform.city.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ profileform.city.errors }}</strong>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <div class="form-group">
+                            <div id="div_id_address" class="form-group">
+                                <label for="id_address" class=" requiredField">
+                                    Shipping Address<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <textarea name="address" cols="20" rows="5" placeholder="Shipping Address Here"
+                                        class="textarea form-control" required=""
+                                        id="id_address">{{  profileform.address }}</textarea>
+                                </div>
+                            </div>
+                            {% if profileform.address.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ profileform.address.errors }}</strong>
+                            </div> {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div class="form-group">
+                            <div id="div_id_pincode" class="form-group">
+                                <label for="id_pincode" class=" requiredField">
+                                    Shipping Pincode<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="text" name="pincode" placeholder="Shipping Address Pincode Here"
+                                        class="textinput textInput form-control" required="" id="id_pincode"
+                                        value='{{ profileform.pincode }}'>
+                                </div>
+                            </div>
+                            {% if profileform.pincode.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ profileform.pincode.errors }}</strong>
+                            </div> {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <input style='display:none' type="number" name="stateid" class="numberinput form-control"
+                    id="id_stateid" value='{{ profileform.stateid }}'></input>
+                {% if profileform.stateid.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ profileform.stateid.errors }}</strong>
+                </div> {% endif %}
+            </div>
+        </div>
+    </div>
+    {% comment %} Billing Details input end {% endcomment %}
+    <div class='row' style="text-align: center;">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id='flagForNeedOfShippingInfo' onclick="addshippingdetails()">
+                Use same for Shipping
+            </label>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='form-group'>
+            <button type='submit' class="btn btn-warning m-b-10 m-l-5">Save Edit</button>
+            <!-- <button id='submitForm' class='btn btn-outline-info' type='submit'> Save Edit </button> -->
+        </div>
+    </div>
+</form>
+
+{% comment %} <div class='row'>
+    <div class='form-group'>
+        <button id='checkforshipping' class='btn btn-outline-info' onclick="checkforshipping()"> Add Customer
+        </button>
+    </div>
+</div> {% endcomment %}
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="{% static 'custom/js/customer/addcustomer.js' %}"> </script>
+<script language="javascript">print_state("id_billingstate");
+</script>
+<script>
+    $(document).ready(function () {
+        $('#id_billingcountry').val('{{ profileform.billingcountry }}').trigger('change')
+        $('#id_billingstate').val('{{ profileform.billingstate }}').trigger('change')
+        print_city('id_billingcity', $("#id_billingstate").prop('selectedIndex'), 'id_billingstate')
+        $('#id_billingcity').val(' {{ profileform.billingcity }} ').trigger('change')
+        $('#id_country').val('{{ profileform.country }}').trigger('change')
+        stateandcitydropinshipping()
+        $('#id_state').val('{{ profileform.state }}').trigger('change')
+        print_city('id_city', $("#id_state").prop('selectedIndex'), 'id_state')
+        $('#id_city').val(' {{ profileform.city }} ').trigger('change')
+
+        $('select').select2()
+    })
+</script>
+
+
+{% endblock %}

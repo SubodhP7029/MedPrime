@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Font Awesome JS -->
+    <script defer src="{% static 'assets/js/fontawesomesolid.js' %}"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- select 2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <!-- custom css -->
+    <!-- <link rel="stylesheet" href="{% static 'custom/css/main.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'custom/css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/icofont.min.css' %}">
+    <script src="https://kit.fontawesome.com/aa5301ca6b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    {% block header %}
+
+
+    {% endblock %}
+    <title>Medprime</title>
+</head>
+
+<body>
+<img style='display:none' id='signatureOfAdmin' src="{{user.profile.image.url }}" >
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar" class='active'>
+            <div class="sidebar-header">
+                <h3>Medprime</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                {% if user.is_superuser %}
+                     <li class="active">
+                    <a href="#billingSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="fas fa-file-invoice-dollar"></i>  Generate Invoice</a>
+                    <ul class="collapse list-unstyled" id="billingSubmenu">
+                        <li>
+                                <a href="{% url 'invoice' %}"><i class="fas fa-money-bill-alt"></i>  Billing</a>
+                        </li>
+                         <li>
+                                <a href="{% url 'proformainvoice' %}"><i class="fas fa-file-alt"></i>  Proforma Invoice</a>
+                        </li>
+                        <li>
+                                <a href="{% url 'quotation' %}"><i class="fas fa-dollar-sign"></i>  Quotation</a>
+                        </li>
+                         <li>
+                                <a href="{% url 'deliverychallan' %}"><i class="fas fa-truck-moving"></i>  Delivery Challan</a>
+                        </li>               
+                         <li>
+                                <a href="{% url 'contractorbill' %}"><i class="fas fa-store"></i>  Contractor Bill</a>
+                        </li>
+                        <li>
+                                <a href="{% url 'InstallationReport' %}"><i class="fas fa-folder-plus"></i>  Installation Report</a>
+                        </li> 
+                    </ul>
+                </li>
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="fas fa-user-tie"></i>  Distributer
+                        Management</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="{% url 'Registeruser' %}"><i class="fas fa-user"></i>  Add Distributer</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'vieweditdealer' %}"><i class="fas fa-table"></i>  Edit Distributer</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'deletedealer' %}"><i class="fas fa-user-minus"></i>  Delete Distributer</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="active">
+                    <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="fas fa-store"></i>  Product
+                        Management</a>
+                    <ul class="collapse list-unstyled" id="productSubmenu">
+                        <li>
+                            <a href="{% url 'addproduct' %}"><i class="fas fa-cart-plus"></i>  Add Product</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'vieweditproducts' %}"><i class="fas fa-shopping-basket"></i>  Edit Product</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fas fa-cart-arrow-down"></i>  Delete Product</a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+                <li class="active">
+                    <a href="#customerSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle"><i class="fas fa-cubes"></i>  Customer
+                        Management</a>
+                    <ul class="collapse list-unstyled" id="customerSubmenu">
+                        <li>
+                            <a href="{% url 'Registercustomer' %}"><i class="fas fa-cube"></i>  Add Customer</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'vieweditcustomer' %}"><i class="fas fa-border-all"></i>  Edit Customer</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'deletedealer' %}"><i class="fas fa-book-dead"></i>  Delete Customer</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" style='background-color:#7386D5 !important'>
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        {% if user.is_superuser %}
+                        <span>Medprime</span>
+                        {% else %}
+                        <span>Dealer</span>
+                        {% endif %}
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'homepage' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'UserProfile' %}">{{ user.username }}</a>
+                            </li>
+
+                           
+
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class='container'>
+                {% block content %}
+
+                <h1>Dashboard area </h1>
+                <h2> Add charts and graphs here </h2>
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    {% block scripts %}
+
+
+    {% endblock %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

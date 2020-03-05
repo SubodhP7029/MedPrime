@@ -1,0 +1,225 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block header %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+    integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
+    integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
+<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+
+<!--<script src="https://cdn.datatables.net/plug-ins/1.10.20/filtering/row-based/range_dates.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script> -->
+
+{% endblock %}
+{% block head %}
+<h1>View Quotations </h1>
+{% endblock %}
+{% block content %}
+<a id='redirectToHere' style='display: none;' href="{% url 'vieweinvoices' %}">Billing</a>
+<img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
+<input type="hidden" id='currentloggedinuser' value={{ user.id }} />
+<div class="card alert">
+    <div class='row'>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card bg-info">
+                <div class="media">
+                    <div class="media-left meida media-middle">
+                        <span><i class="ti-layers f-s-48 color-white"></i></span>
+                    </div>
+                    <div class="media-body media-text-right">
+                        <h4>{{ totalInvoices }}</h4>
+                        <h6>Total Quotations</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card bg-info">
+                <div class="media">
+                    <div class="media-left meida media-middle">
+                        <span><i class="ti-layers f-s-48 color-white"></i></span>
+                    </div>
+                    <div class="media-body media-text-right">
+                        <h4>{{ totalthismonthsInvoices }}</h4>
+                        {{ enddate }}
+                        <br>
+                        {{ startdate }}
+                        <h6>Last Fortnight Invoices</h6>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+
+        <button type="button" style="margin-top: 7.5px;"
+            class="btn btn-primary btn-flat btn-addon btn-lg m-b-10 m-l-5"><a href="{% url 'invoice' %}"><i
+                    class="ti-plus"></i>Add
+                New Quotation</a></button>
+    </div>
+
+
+
+</div>
+<div class="card alert">
+    <div class='row'>
+        {% comment %} table table-striped {% endcomment %}
+
+        <table id="invoiceTables" class="hover" style="width:100%;font-size: 12px;">
+            <thead style="background-color: #03a9f4;">
+                <font color="white">
+                    <tr>
+                        {% comment %} <th>Actions </th> {% endcomment %}
+                          <th style='color:aliceblue !important'>Quotation ID</th>
+                        <th style='color:aliceblue !important'>Customer ID</th>
+                        <th style='display: none;'>Customer Name</th>
+                        <th style='color:aliceblue !important;display: none;'>Customer Address</th>
+                        <th style='color:aliceblue !important;display: none;'>Customer Pincode</th>
+                        <th style='color:aliceblue !important;display: none;'>Customer State</th>
+                        <th style='color:aliceblue !important;display: none;'>Customer GST No.</th>
+                        <th style='color:aliceblue !important;display: none;'>Customer Place Of Supply</th>
+                        <th style='color:aliceblue !important'>Quotation Date</th>
+                        <th style='color:aliceblue !important;display: none;'>Terms of payment</th>
+                        <th style='color:aliceblue !important'>Expiry Date</th>
+                        <th style='color:aliceblue !important'>Quotation No.</th>
+                        <th style='color:aliceblue !important'>items</th>
+                        <th style='color:aliceblue !important'>Total Rate</th>
+                        <th style='color:aliceblue !important'>Total Tax</th>
+                        <th style='color:aliceblue !important'>Adjustment Amt.</th>
+                        <th style='color:aliceblue !important'>Total Cost</th>
+                        <th style='color:aliceblue !important;display: none;'>Signature </th>
+                        <th style='display: none;'>Creator id</th>
+
+                    </tr>
+                </font>
+            </thead>
+            <tbody>
+                {% for eachInvoice in allquotationInvoice.all %}
+                <tr>
+                    <td>{{ eachInvoice.quotationid}}</td>
+                    <td>{{ eachInvoice.customerid}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customername}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customeraddress}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customerpincode}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customerstate}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customergst}}</td>
+                    <td style='display: none;'>{{ eachInvoice.customerplaceofsupply}}</td>
+                    <td>{{ eachInvoice.quotationdate|date:"d-m-yy"}}</td>
+                    <td style='display: none;'>{{ eachInvoice.terms}}</td>
+                    <td>{{ eachInvoice.expirydate|date:"d-m-yy"}}</td>
+                    <td>{{ eachInvoice.quotationnumber}}</td>
+                    <td class='items'>{{ eachInvoice.items}}</td>
+                    <td>{{ eachInvoice.subtotalamount}}</td>
+                    <td>{{ eachInvoice.taxamount}}</td>
+                    <td>{{ eachInvoice.adjustmentamount}}</td>
+                    <td>{{ eachInvoice.finalamount}}</td>
+                    <td style='display: none;'>{{ eachInvoice.signature}}</td>
+                    <td style='display: none;'>{{ eachInvoice.creatorid}}</td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- product table  -->
+<table id='Previewtable' style='display: none'>
+    <thead>
+        <tr style="background-color: aliceblue;" id='headOfProductPreview'>
+
+        </tr>
+    </thead>
+    <tbody id='bodyOfProductPreview'>
+    </tbody>
+</table>
+<!-- option modal -->
+<div id="optionsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Options</h4>
+            </div>
+            <div class="modal-body" style='text-align: center;'>
+                <button type="button" class="btn btn-success btn-lg btn-rounded m-b-10 m-l-5"
+                    onclick='ViewPDF(selectedRowData)'>View</button>
+                <!-- <button type="button" class="btn btn-primary btn-lg btn-rounded m-b-10 m-l-5">Edit</button> -->
+                <button type="button" class="btn btn-pink btn-lg btn-rounded m-b-10 m-l-5" id='cloningid'>
+                </button>
+                <button type="button" class="btn btn-danger btn-lg btn-rounded m-b-10 m-l-5"
+                    onclick='opencoinfirmationModal()'>Delete</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal of Preview -->
+<div class="modal fade" id="exampleModalLong" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">PDF Preview</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style='text-align: center;height: 60vh;' id='previewModalBody'>
+                <!-- <embed id='previewOfPdf' width='100%' height='100%' /> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick='downloadPdf()'>Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal of Confirmation of delete -->
+<div class="modal fade" id="confirmdeletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style='height: 40%;'>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Delete Invoice </h4>
+            </div>
+            <div class="modal-body" style='text-align: center;'>
+                <!-- <embed id='previewOfPdf' width='100%' height='100%' /> -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick='removeinvoice(selectedRowData)'>Yes</button><br>
+                <small>Please note that entry regarding this delete will be store in servers</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<textarea rows="4" cols="70" style='display:none' id='termsNcondition'>
+    Medprime is giving this invoice today
+    Payment : 25% pAyment should be given in advance
+    Remaining Payment should be given in the agreed date
+    All parts have 6 months warreny
+    </textarea>
+<script defer src="{% static 'custom/js/Invoice/TaxInvoice/viewinvoice.js' %}"></script>
+
+
+
+
+
+{% endblock %}

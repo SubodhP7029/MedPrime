@@ -1,0 +1,81 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+   {% block header %}
+
+     <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+   
+   {% endblock %}
+   {% block head %}
+<h1>View Dealers </h1>
+{% endblock %}
+{% block content %}
+    <div class="card alert">
+  
+   <table id="example" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Agency Name</th>
+                <th>Email</th>
+                <th>Phone No.</th>
+                <th>Mobile No.</th>
+                <th>Address</th>
+                 <th>Contact Person</th>
+                <th>Contact Particulars</th>
+                <th>Legal Status</th>
+                <th>GST No</th>
+                <th>CIN No</th>
+                 <th>PAN No</th>
+                <th>Shop Act</th>
+                <th>Geography</th>
+                <th>Segment</th>
+                <th>Current Product</th>
+                <th>Current Staff</th>
+                <th>Customer Handled</th>
+                <th>Channel</th>
+                <th>Category</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for eachdealer in alldealer.all %}
+            <tr>
+                <td>{{ eachdealer.user.username }}</td>
+                <td>{{ eachdealer.user.email }}</td>
+                <td>{{ eachdealer.telephone }}</td>
+                <td>{{ eachdealer.mobile }}</td>
+                   <td>{{ eachdealer.address }}</td>
+                <td>{{ eachdealer.nameofcontact }}</td>
+                   <td>{{ eachdealer.contactparticulars }}</td>
+                <td>{{ eachdealer.legalstatus }}</td>
+                   <td>{{ eachdealer.gstno }}</td>
+                <td>{{ eachdealer.conno }}</td>
+                   <td>{{ eachdealer.panno }}</td>
+                <td>{{ eachdealer.shopactno }}</td>
+                   <td>{{ eachdealer.businessgeography }}</td>
+                <td>{{ eachdealer.marketsegment }}</td>
+                   <td>{{ eachdealer.currentproducts }}</td>
+                <td>{{ eachdealer.currentstaffstrength }}</td>
+                   <td>{{ eachdealer.customershandledsofar }}</td>
+                <td>{{ eachdealer.salersturnover }}</td>
+                <td>{{ eachdealer.parternshipcat }}</td>
+                <td><a href="{% url 'updatingdealer' id=eachdealer.user.id %}"><i class="ti-pencil"></i></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+  </div>
+        <script>
+        $(document).ready(function() {
+    $('#example').DataTable({
+           "scrollY": 290,
+           "scrollX": true
+    });
+} );
+</script>
+
+
+
+    
+
+{% endblock %}

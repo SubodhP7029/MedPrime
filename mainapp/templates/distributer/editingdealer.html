@@ -1,0 +1,137 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block header %}
+
+<script src="{% static 'custom/js/dealer/updatedealer.js' %}" crossorigin="anonymous"></script>
+
+{% endblock %}
+{% block head %}
+
+ <button type="button" id="sidebarCollapse" class="btn btn-info" onclick="location.href='{% url 'vieweditdealer' %}'" style='float:left;  margin-top: 8px;'><i class="ti-control-backward"></i><span>back</span></button><span > <h1 style='float:left'>Update Dealer {{ username }}</h1></span>
+
+
+{% endblock %}
+{% block content %}
+<div class='card alert' style="height: 79vh;overflow-y: scroll;">
+<div class='row'>
+
+   
+</div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class='row'>
+            <input type='hidden' id='usersid' value={{ userid }}>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.nameofcontact|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.telephone|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.mobile|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.contactparticulars|as_crispy_field }}
+                    <small id="hint_id_contactparticulars" class="form-text text-muted">If different from above</small>
+                </div>
+            </div>
+        </div>
+        <div class='form-group'>
+            {{ profileform.address|as_crispy_field }}
+        </div>
+        <div class='row'>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.pincode|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.legalstatus|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.gstno|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.cinno|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.panno|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    {{ profileform.shopactno|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.businessgeography|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.marketsegment|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.currentproducts|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.currentstaffstrength|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <div class='form-group'>
+            {{ profileform.customershandledsofar|as_crispy_field }}
+        </div>
+        <div class='row'>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.salersturnover|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    {{ profileform.parternshipcat|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <!-- {{ form|crispy }}
+    {{ profileform|crispy }} -->
+        <div class='form-group'>
+        <button type="button" class="btn btn-warning btn-flat btn-addon m-b-10 m-l-5" onclick='updateSelectedDealer()'><i class="ti-write"></i>Update Dealer</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
