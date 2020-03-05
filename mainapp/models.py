@@ -142,7 +142,7 @@ class taxInvoice(models.Model):
     invoicedate = models.DateField(null=True, blank=True)
     terms = models.CharField(max_length=500, blank=True)
     duedate = models.DateField(null=True, blank=True)
-    po = models.CharField(max_length=500, blank=True)
+    po = models.CharField(max_length=500, blank=True,null=True)
     items = JSONField()
     shippingState = models.CharField(max_length=500, blank=True)
     subtotalamount = models.FloatField(null=True, blank=True)

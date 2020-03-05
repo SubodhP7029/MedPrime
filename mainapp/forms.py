@@ -144,6 +144,14 @@ class TaxInvoiceForm(forms.ModelForm):
     class Meta:
         model = taxInvoice
         fields = "__all__"
+    invoicedate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
+    duedate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
 
 
 # Quotation Invoice Form

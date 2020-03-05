@@ -287,6 +287,9 @@ function getDataUri(url, cb) {
 function downloadPdf() {
     // $.get("increaseinvoicecounter/")
     saveDatatodb()
+    if (!PONo){
+        PONo = 'TaxInvoice'
+    }
     doc.save(PONo + '.pdf')
     // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter = " + Nextcounter + " where id = 1"
 
