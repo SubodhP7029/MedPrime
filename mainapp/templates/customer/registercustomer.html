@@ -121,53 +121,147 @@
         </div>
     </div>
     <div class='row'>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+        <!-- <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6"> -->
+        <div class='row' style="text-align: center;font-size: 20px;">
+            Billing Address
+            <hr style='border: 1px solid;width: 80%;'>
+        </div>
+        <div class='row'>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <div id="div_id_billincountry" class="form-group">
+                    <label for="id_billingcountry" class="">Country</label><span class="asteriskField">*</span>
+                    <div id="typeofInput_billingcountry">
+
+                        <select required id="id_billingcountry" onchange="stateandcitydropinbilling()"
+                            name="billingcountry" class="select form-control form-control">
+                        </select>
+                    </div>
+                    {% if profileform.billingcountry.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.billingcountry.errors }}</strong>
+                    </div> {% endif %}
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <div id="div_id_billingcity" class="form-group">
+                    <label for="id_billingstate" class="">State</label><span class="asteriskField">*</span>
+                    <div id="typeofInput_billingstate">
+                        <select onchange="print_city('id_billingcity', this.selectedIndex,'id_billingstate');"
+                            name="billingstate" class="select form-control form-control" id="id_billingstate"></select>
+                    </div>
+                    {% if profileform.billingstate.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.billingstate.errors }}</strong>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <div id="div_id_billingstate" class="form-group">
+                    <label for="id_billingcity" class="">City</label><span class="asteriskField">*</span>
+                    <div id="typeofInput_billingcity">
+                        <select name="billingcity" class="select form-control" id="id_billingcity">
+                        </select>
+                    </div>
+                    {% if profileform.billingcity.errors  %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.billingcity.errors }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="form-group">
+                    {{ profileform.billingaddress|as_crispy_field }}
+                    {% if profileform.billingaddress.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.billingaddress.errors }}</strong>
+                    </div> {% endif %}
+
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                <div class="form-group">
+                    {{ profileform.billingpincode|as_crispy_field }}
+                    {% if profileform.billingpincode.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.billingpincode.errors }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                <div id='typeofInput_gst' class="form-group">
+                    <label for="id_gst" class="">GST No.</label><input type="text" name="gst" maxlength="500"
+                        placeholder="GST No. Here" class="textinput textInput form-control" id="id_gst">
+                    {% if profileform.gst.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ profileform.gst.errors }}</strong>
+                    </div> {% endif %}
+
+                </div>
+            </div>
+        </div>
+        <div class='row' style="text-align: center;">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id='flagForNeedOfShippingInfo' onclick="addshippingdetails()">
+                    Use same for Shipping
+                </label>
+            </div>
+        </div>
+        <!-- </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6"> -->
+        <div id='ShippingInfo' style="display: block;">
             <div class='row' style="text-align: center;font-size: 20px;">
-                Billing Address
+                Shipping Address
                 <hr style='border: 1px solid;width: 80%;'>
             </div>
             <div class='row'>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                    <div id="div_id_billincountry" class="form-group">
-                        <label for="id_billingcountry" class="">Country</label><span class="asteriskField">*</span>
-                        <div id="typeofInput_billingcountry">
+                    <div id="div_id_country" class="form-group">
+                        <label for="id_country" class="">Country</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_country">
+                            <select id="id_country" onchange="stateandcitydropinshipping()" name="country"
+                                class="select form-control form-control">
 
-                            <select required id="id_billingcountry" onchange="stateandcitydropinbilling()"
-                                name="billingcountry" class="select form-control form-control">
                             </select>
                         </div>
-                        {% if profileform.billingcountry.errors %}
+                        {% if profileform.country.errors %}
                         <div class="alert alert-danger">
-                            <strong>{{ profileform.billingcountry.errors }}</strong>
+                            <strong>{{ profileform.country.errors }}</strong>
                         </div> {% endif %}
                     </div>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                    <div id="div_id_billingcity" class="form-group">
-                        <label for="id_billingstate" class="">State</label><span class="asteriskField">*</span>
-                        <div id="typeofInput_billingstate">
-                            <select onchange="print_city('id_billingcity', this.selectedIndex,'id_billingstate');"
-                                name="billingstate" class="select form-control form-control"
-                                id="id_billingstate"></select>
+                    <div id="div_id_city" class="form-group">
+                        <label for="id_state" class="">State</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_state">
+                            <input type="text" placeholder="Shipping State" name="state" class="textinput form-control"
+                                id="id_state" onkeyup="getStateid()">
                         </div>
-                        {% if profileform.billingstate.errors %}
+                        {% if profileform.state.errors %}
                         <div class="alert alert-danger">
-                            <strong>{{ profileform.billingstate.errors }}</strong>
-                        </div>
-                        {% endif %}
+                            <strong>{{ profileform.state.errors }}</strong>
+                        </div> {% endif %}
 
                     </div>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                    <div id="div_id_billingstate" class="form-group">
-                        <label for="id_billingcity" class="">City</label><span class="asteriskField">*</span>
-                        <div id="typeofInput_billingcity">
-                            <select name="billingcity" class="select form-control" id="id_billingcity">
-                            </select>
+                    <div id="div_id_state" class="form-group">
+                        <label for="id_city" class="">City</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_city">
+                            <input type="text" placeholder="Shipping City" name="city" class="textinput form-control"
+                                id="id_city">
                         </div>
-                        {% if profileform.billingcity.errors  %}
+                        {% if profileform.city.errors %}
                         <div class="alert alert-danger">
-                            <strong>{{ profileform.billingcity.errors }}</strong>
+                            <strong>{{ profileform.city.errors }}</strong>
                         </div>
                         {% endif %}
                     </div>
@@ -176,11 +270,12 @@
             <div class='row'>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="form-group">
-                        {{ profileform.billingaddress|as_crispy_field }}
-                        {% if profileform.billingaddress.errors %}
+                        {{ profileform.address|as_crispy_field }}
+                        {% if profileform.address.errors %}
                         <div class="alert alert-danger">
-                            <strong>{{ profileform.billingaddress.errors }}</strong>
+                            <strong>{{ profileform.address.errors }}</strong>
                         </div> {% endif %}
+
 
                     </div>
                 </div>
@@ -188,119 +283,23 @@
             <div class='row'>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                     <div class="form-group">
-                        {{ profileform.billingpincode|as_crispy_field }}
-                        {% if profileform.billingpincode.errors %}
+                        {{ profileform.pincode|as_crispy_field }}
+                        {% if profileform.pincode.errors %}
                         <div class="alert alert-danger">
-                            <strong>{{ profileform.billingpincode.errors }}</strong>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                    <div id='typeofInput_gst' class="form-group">
-                        <label for="id_gst" class="">GST No.</label><input type="text" name="gst" maxlength="500"
-                            placeholder="GST No. Here" class="textinput textInput form-control" id="id_gst">
-                        {% if profileform.gst.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ profileform.gst.errors }}</strong>
+                            <strong>{{ profileform.pincode.errors }}</strong>
                         </div> {% endif %}
 
+
                     </div>
                 </div>
+
             </div>
-
+            <input style='display:none' type="number" name="stateid" class="numberinput form-control"
+                id="id_stateid"></input>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <div id='ShippingInfo' style="display: block;">
-                <div class='row' style="text-align: center;font-size: 20px;">
-                    Shipping Address
-                    <hr style='border: 1px solid;width: 80%;'>
-                </div>
-                <div class='row'>
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div id="div_id_country" class="form-group">
-                            <label for="id_country" class="">Country</label><span class="asteriskField">*</span>
-                            <div id="typeofInput_country">
-                                <select id="id_country" onchange="stateandcitydropinshipping()" name="country"
-                                    class="select form-control form-control">
-
-                                </select>
-                            </div>
-                            {% if profileform.country.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.country.errors }}</strong>
-                            </div> {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div id="div_id_city" class="form-group">
-                            <label for="id_state" class="">State</label><span class="asteriskField">*</span>
-                            <div id="typeofInput_state">
-                                <input type="text" placeholder="Shipping State" name="state"
-                                    class="textinput form-control" id="id_state" onkeyup="getStateid()">
-                            </div>
-                            {% if profileform.state.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.state.errors }}</strong>
-                            </div> {% endif %}
-
-                        </div>
-                    </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div id="div_id_state" class="form-group">
-                            <label for="id_city" class="">City</label><span class="asteriskField">*</span>
-                            <div id="typeofInput_city">
-                                <input type="text" placeholder="Shipping City" name="city"
-                                    class="textinput form-control" id="id_city">
-                            </div>
-                            {% if profileform.city.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.city.errors }}</strong>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <div class="form-group">
-                            {{ profileform.address|as_crispy_field }}
-                            {% if profileform.address.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.address.errors }}</strong>
-                            </div> {% endif %}
-
-
-                        </div>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div class="form-group">
-                            {{ profileform.pincode|as_crispy_field }}
-                            {% if profileform.pincode.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.pincode.errors }}</strong>
-                            </div> {% endif %}
-
-
-                        </div>
-                    </div>
-
-                </div>
-                <input style='display:none' type="number" name="stateid" class="numberinput form-control"
-                    id="id_stateid"></input>
-            </div>
-        </div>
+        <!-- </div> -->
     </div>
-    <div class='row' style="text-align: center;">
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" id='flagForNeedOfShippingInfo' onclick="addshippingdetails()">
-                Use same for Shipping
-            </label>
-        </div>
-    </div>
+
 
 
 
