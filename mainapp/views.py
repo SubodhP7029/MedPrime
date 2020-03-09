@@ -44,7 +44,18 @@ from django.db import connection, connections, transaction
 
 @login_required
 def home(request):
-    return render(request, "index.html")
+    dealercount = Profile.objects.all().count()
+    customercount = CustomerProfile.objects.all().count()
+    productcount = Product.objects.all().count()
+    taxinvoice = taxInvoice.objects.all().count()
+    context = {
+        "dealercount":dealercount,
+        "customercount":customercount,
+        "productcount":productcount,
+        "taxinvoice":taxinvoice
+
+    }
+    return render(request, "index.html", context)
 
 
 # New Registration of dealer

@@ -65,7 +65,8 @@
         <div class="nano">
             <div class="nano-content">
                 <ul style="font-size: smaller;">
-                    <li><a class="sidebar-sub-toggle"><i class="ti-home"></i>Dashboard </a></li>
+                    <li><a class="sidebar-sub-toggle" href="{% url 'homepage' %}"><i class="ti-home"></i>Dashboard </a>
+                    </li>
                     <li><a class="sidebar-sub-toggle"><i class="ti-agenda"></i>Invoice
                             <!-- <span
                                 class="badge badge-primary">28
@@ -306,46 +307,32 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="row">
-                                <!-- <div class="col-lg-6">
-                                    <div class="card p-0">
-                                        <div class="stat-widget-three">
-                                            <div class="stat-icon bg-primary">
-                                                <i class="ti-eye"></i>
-                                            </div>
-                                            <div class="stat-content">
-                                                <div class="stat-text">Invoices Generated</div>
-                                                <div class="stat-digit">6,250</div>
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                </div> -->
 
 
                                 <div class="col-lg-6">
                                     <div class="card p-0">
                                         <div class="stat-widget-three">
                                             <div class="stat-icon bg-success">
-                                                <i class="ti-bag"></i>
+                                                <i class="ti-agenda"></i>
                                             </div>
                                             <div class="stat-content">
-                                                <div class="stat-text">Today Delevered</div>
-                                                <div class="stat-digit">2,584</div>
+                                                <div class="stat-text">Total Tax Invoice</div>
+                                                <div class="stat-digit">{{ taxinvoice }}</div>
                                             </div>
 
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-lg-6">
                                     <div class="card p-0">
                                         <div class="stat-widget-three">
-                                            <div class="stat-icon bg-warning">
+                                            <div class="stat-icon bg-primary">
                                                 <i class="ti-user"></i>
                                             </div>
                                             <div class="stat-content">
-                                                <div class="stat-text">New Dealers</div>
-                                                <div class="stat-digit">98</div>
+                                                <div class="stat-text">Total Dealer</div>
+                                                <div class="stat-digit">{{ dealercount }}</div>
                                             </div>
 
                                         </div>
@@ -356,11 +343,11 @@
                                     <div class="card p-0">
                                         <div class="stat-widget-three">
                                             <div class="stat-icon bg-danger">
-                                                <i class="ti-money"></i>
+                                                <i class="ti-package"></i>
                                             </div>
                                             <div class="stat-content">
-                                                <div class="stat-text">Net Earning</div>
-                                                <div class="stat-digit">3,5621</div>
+                                                <div class="stat-text">Total Products</div>
+                                                <div class="stat-digit">{{ productcount }}</div>
                                             </div>
 
                                         </div>
@@ -368,36 +355,21 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <div class="card bg-success">
-                                        <div class="stat-widget-six">
-                                            <div class="stat-icon p-15">
-                                                <i class="ti-stats-up"></i>
+                                    <div class="card p-0">
+                                        <div class="stat-widget-three">
+                                            <div class="stat-icon bg-success">
+                                                <i class="ti-crown"></i>
                                             </div>
-                                            <div class="stat-content p-t-12 p-b-12">
-                                                <div class="text-left dib">
-                                                    <div class="stat-heading">Daily sales</div>
-                                                    <div class="stat-text">Total: 9765</div>
-                                                </div>
+                                            <div class="stat-content">
+                                                <div class="stat-text">Total Customers</div>
+                                                <div class="stat-digit">{{ customercount }}</div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="card bg-primary">
-                                        <div class="stat-widget-six">
-                                            <div class="stat-icon p-15">
-                                                <i class="ti-stats-down"></i>
-                                            </div>
-                                            <div class="stat-content p-t-12 p-b-12">
-                                                <div class="text-left dib">
-                                                    <div class="stat-heading">Daily Expense</div>
-                                                    <div class="stat-text">Total: 6765</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                         <!-- /# column -->
