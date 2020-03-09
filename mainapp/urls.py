@@ -8,8 +8,9 @@ urlpatterns = [
     path("", views.home, name="homepage"),
     path("register/", views.Register, name="Registeruser"),
     path("registercustomer/", views.CustomerRegister, name="Registercustomer"),
-    path("viewdealers/", views.vieweditdealer, name="vieweditdealer"),
     path("viewcustomers/", views.vieweditcustomer, name="vieweditcustomer"),
+       path("viewdealer/", views.viewdealer, name="viewdealer"),
+
     path("vieweditproducts/", views.vieweditproducts, name="vieweditproducts"),
     path(
         "updatingdealer/submitupdatedealer/",
@@ -18,11 +19,19 @@ urlpatterns = [
     ),
     path("deletedealer/", views.deletedealer, name="deletedealer"),
     path("deletingdealer/<int:id>", views.deletingdealer, name="deletingdealer"),
+        path("removingdealer/<int:id>", views.removingdealer, name="removingdealer"),
+        path("editingdealer/<int:id>", views.editingdealer, name="editingdealer"),
+
     path("updatingdealer/<int:id>", views.updatingdealer, name="updatingdealer"),
+      path("editingproduct/<int:hsn>", views.editingproduct, name="editingproduct"),
+      path("deleteproduct/<int:hsn>", views.deleteproduct, name="deleteproduct"),
+
     path("cloninginvoice/<int:id>", views.cloninginvoice, name="cloninginvoice",),
     path("editinginvoice/<int:id>", views.editinginvoice, name="editinginvoice",),
     path("editingcustomer/<int:id>", views.editingcustomer, name="editingcustomer",),
     path("updatingproduct/<int:id>", views.updatingproduct, name="updatingproduct"),
+      path("removingcustomer/<int:id>", views.removingcustomer, name="removingcustomer"),
+
     path("invoicegetallprod/", views.invoicegetallprod, name="invoicegetallprod"),
     path("vieweinvoices/", views.vieweinvoices, name="vieweinvoices"),
     path("viewequotations/", views.viewequotations, name="viewequotations"),

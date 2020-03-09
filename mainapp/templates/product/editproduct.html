@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h3> Edit Product </h3>
+    {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <div class="alert alert-success fade in alert-dismissable" style="
+    color: black;
+">
+<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+<strong>Success!</strong> {{ message }}
+                                    </div>
+    {% endfor %}
+  </ul>
+{% endif %}
+    <form method="POST">
+    {% csrf_token %}
+    <div class='row'>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+     {{ productform.name|as_crispy_field }}
+</div>
+<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+               <div id='for_HSN' class="form-group has-warning has-feedback">
+
+     {{ productform.HSN|as_crispy_field }}
+
+                     <span id='for_HSN_symbol' class="ti-reload form-control-feedback"></span>
+            </div>
+
+</div>
+</div>
+    <div class='row'>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+     {{ productform.price|as_crispy_field }}
+</div>
+<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+     {{ productform.tax|as_crispy_field }}
+</div>
+</div>
+ <div class='row'>
+ <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+     {{ productform.description|as_crispy_field }}
+</div>
+</div>
+    <div class='form-group'>
+    <button class='btn btn-outline-info' type='submit'> Edit Product </button> 
+    </div>
+    </form>
+<script>
+    $(document).ready(function() {
+        // messages timeout for 10 sec 
+     $("#for_HSN").on("keyup", function () {
+    var input = $("#id_HSN").val()
+    var string = 'SELECT "HSN" FROM public.mainapp_product where "HSN" = ' + input 
+ document.getElementById('for_HSN').className = 'form-group has-warning has-feedback'
+    document.getElementById('for_HSN_symbol').className = 'ti-reload form-control-feedback'
+
+    $.get("/checkUserName/", { sqlParam: string }, function (data) {
+        if (data.length != 0) {
+            document.getElementById('for_HSN').className = 'form-group has-error has-feedback'
+            document.getElementById('for_HSN_symbol').className = 'ti-close form-control-feedback'
+
+        } else {
+                document.getElementById('for_HSN').className = 'form-group has-success has-feedback'
+                document.getElementById('for_HSN_symbol').className = 'ti-check form-control-feedback'
+           
+        }
+    })
+
+});
+
+    });
+</script>
+{% endblock %}

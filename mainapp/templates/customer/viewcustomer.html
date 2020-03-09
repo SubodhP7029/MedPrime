@@ -14,6 +14,15 @@
 {% block content %}
 
 <div class="card alert">
+{% for message in messages %}
+<div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {{ message }}
+</div>
+
+{% endfor %}
     <div class='row'>
         {% comment %} table table-striped {% endcomment %}
 
@@ -98,8 +107,7 @@
                     </div>
                     <div class='row'>
                         <button type="button" class="btn btn-warning btn-lg btn-rounded " id='editid'></button>
-                        <button type="button" class="btn btn-danger btn-lg btn-rounded "
-                            onclick='openconfirmationModal()'>Delete</button>
+                        <button type="button" class="btn btn-danger btn-lg btn-rounded " id='deleteid'></button>
                     </div>
                 </div>
             </div>

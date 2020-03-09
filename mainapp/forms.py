@@ -36,6 +36,27 @@ class UserRegisterForm(UserCreationForm):
             self.fields[fieldname].help_text = None
 
 
+#user update form
+class UserUpdateForm(forms.ModelForm):
+    
+    email = forms.EmailField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Email must be unique"}),
+    )
+    username = forms.CharField(
+        label="Username",
+        widget=forms.TextInput(attrs={"placeholder": "8 or more characters"}),
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email",
+          
+        ]
+
+
 # Dealer Registration Form
 class DealerRegisterForm(UserCreationForm):
     email = forms.EmailField(required=False)
@@ -88,14 +109,6 @@ class ProfileForm(forms.ModelForm):
             "parternshipcat": "Proposed Channel Partnership Category:",
         }
 
-
-# updating existing user
-class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField(required=False)
-
-    class Meta:
-        model = User
-        fields = ["username", "email"]
 
 
 # updating existing Dealer

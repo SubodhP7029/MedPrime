@@ -66,7 +66,7 @@
             <div class="nano-content">
                 <ul style="font-size: smaller;">
                     <li><a class="sidebar-sub-toggle"><i class="ti-home"></i>Dashboard </a></li>
-                    <li><a class="sidebar-sub-toggle"><i class="ti-pencil-alt"></i>Invoice
+                    <li><a class="sidebar-sub-toggle"><i class="ti-agenda"></i>Invoice
                             <!-- <span
                                 class="badge badge-primary">28
                                 </span> -->
@@ -84,54 +84,47 @@
                     </li>
                     {% if user.is_superuser %}
                     {% comment %} <li class="label">Dealer Management</li> {% endcomment %}
-                    <li><a class="sidebar-sub-toggle"><i class="ti-cup"></i> Distributer Management
+                    <li><a class="sidebar-sub-toggle"><i class="ti-user"></i> Distributer Management
                             <!-- <span
                                 class="badge badge-primary">7</span>  -->
                             <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                         <ul>
                             <li>
-                                <a href="{% url 'Registeruser' %}"><i class="fas fa-user"></i> Add Distributer</a>
+                                <a href="{% url 'Registeruser' %}"><i class="ti-plus"></i> Add Dealer</a>
                             </li>
                             <li>
-                                <a href="{% url 'vieweditdealer' %}"><i class="fas fa-table"></i> Edit Distributer</a>
+                                <a href="{% url 'viewdealer' %}"><i class="ti-user"></i> View Dealers</a>
                             </li>
-                            <li>
-                                <a href="{% url 'deletedealer' %}"><i class="fas fa-user-minus"></i> Delete
-                                    Distributer</a>
-                            </li>
+
                         </ul>
                     </li>
 
                     {% comment %} <li class="label">Apps</li> {% endcomment %}
-                    <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> Product Management <span
+                    <li><a class="sidebar-sub-toggle"><i class="ti-package"></i> Product Management <span
                                 class="sidebar-collapse-icon ti-angle-down"></span></a>
                         <ul>
                             <li>
-                                <a href="{% url 'addproduct' %}"><i class="fas fa-cart-plus"></i> Add Product</a>
+                                <a href="{% url 'addproduct' %}"><i class="ti-plus"></i> Add Product</a>
                             </li>
                             <li>
-                                <a href="{% url 'vieweditproducts' %}"><i class="fas fa-shopping-basket"></i> Edit
-                                    Product</a>
+                                <a href="{% url 'vieweditproducts' %}"><i class="ti-package"></i> View
+                                    Products</a>
                             </li>
-                            <li>
-                                <a href="#"><i class="fas fa-cart-arrow-down"></i> Delete Product</a>
-                            </li>
+
                         </ul>
                     </li>
                     {% endif %}
-                    <li><a class="sidebar-sub-toggle"><i class="ti-bar-chart-alt"></i> Customer Management <span
+                    <li><a class="sidebar-sub-toggle"><i class="ti-crown"></i> Customer Management <span
                                 class="sidebar-collapse-icon ti-angle-down"></span></a>
                         <ul>
                             <li>
-                                <a href="{% url 'Registercustomer' %}"><i class="fas fa-cube"></i> Add Customer</a>
+                                <a href="{% url 'Registercustomer' %}"><i class="ti-plus"></i> Add Customer</a>
                             </li>
                             <li>
-                                <a href="{% url 'vieweditcustomer' %}"><i class="fas fa-border-all"></i> View
+                                <a href="{% url 'vieweditcustomer' %}"><i class="ti-crown"></i> View
                                     Customer</a>
                             </li>
-                            <li>
-                                <a href="{% url 'deletedealer' %}"><i class="fas fa-book-dead"></i> Delete Customer</a>
-                            </li>
+
                         </ul>
                     </li>
             </div>

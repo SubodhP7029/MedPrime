@@ -58,32 +58,11 @@ $('#customerTables tbody').on('click', 'tr', function () {
     a.innerText = 'Edit'
     document.getElementById('editid').innerHTML = ''
     document.getElementById('editid').appendChild(a)
+    var a = document.createElement('a')
+    link = "/removingcustomer"
+    a.href = link + '/' + selectedRowData[0]
+    a.innerText = 'Delete'
+    document.getElementById('deleteid').innerHTML = ''
+    document.getElementById('deleteid').appendChild(a)
 
 });
-
-// open confirmation of delete modal
-function openconfirmationModal() {
-    $('#confirmdeletemodal').modal('show');
-
-}
-
-
-function removeinvoice(selectedRowData) {
-
-    var delteQuery = "DELETE FROM public.mainapp_customerprofile WHERE user_id= " + selectedRowData[0]
-    // var addtoinvoicedb = "INSERT INTO public.mainapp_invoicestorage(invoiceid, creatorid, deletorid,typeofchange) VALUES (" + invoiceid + ", " + creator + ", " + loggedinuser + ",'delete');"
-    // $.get("/addtoinvoicedb/", { sqlParam: addtoinvoicedb }, function (data) {
-    //     console.log(data)
-    $.get("/removecustomer/", { sqlParam: delteQuery }, function (data) {
-        console.log(data)
-        $('#customerModal').modal('hide');
-        $('#confirmdeletemodal').modal('hide');
-
-
-    })
-
-    // })
-
-
-
-}

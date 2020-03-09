@@ -192,6 +192,12 @@ def vieweditcustomer(request):
     allcustomer = CustomerProfile.objects.filter(distributer=request.user.username)
     return render(request, "customer/viewcustomer.html", {"allcustomer": allcustomer})
 
+# View/Edit dealer
+@login_required
+def viewdealer(request):
+    alldealer = Profile.objects.all() #filter(distributer=request.user.username)
+    return render(request, "distributer/viewdealer.html", {"alldealer": alldealer})
+
 
 # add new product
 @login_required
@@ -214,9 +220,8 @@ def addproduct(request):
 
 @login_required
 def vieweditproducts(request):
-    alldealer = Product.objects.all()
-
-    return render(request, "product/allproducts.html", {"alldealer": alldealer})
+    allproducts = Product.objects.all()
+    return render(request, "product/allproducts.html", {"allproducts": allproducts})
 
 
 # create invoice
@@ -413,6 +418,81 @@ def updatingproduct(request, id):
         {"userid": userid, "username": username, "profileform": productform},
     )
 
+@login_required
+def removingdealer(request, id):
+    try:
+        instance = User.objects.filter(id=id)
+        instance.delete()
+        messages.success(request, "Distributer removed Successfully !")
+    except User.DoesNotExist:
+        messages.error(request, "Something went Wrong!!")
+    alldealer = Profile.objects.all()
+    return render(request, "distributer/viewdealer.html",  {"alldealer": alldealer})
+
+@login_required
+def removingcustomer(request, id):
+    try:
+        instance = User.objects.filter(id=id)
+        instance.delete()
+        messages.success(request, "Customer removed Successfully !")
+    except User.DoesNotExist:
+        messages.error(request, "Something went Wrong!!")
+    allcustomer = CustomerProfile.objects.filter(distributer=request.user.username)
+    return render(request, "customer/viewcustomer.html", {"allcustomer": allcustomer})
+
+@login_required
+def deleteproduct(request, hsn):
+    try:
+        instance = Product.objects.filter(HSN=hsn)
+        instance.delete()
+        messages.success(request, "Product removed Successfully !")
+    except User.DoesNotExist:
+        messages.error(request, "Something went Wrong!!")
+    allproducts = Product.objects.all()
+    return render(request, "product/allproducts.html",  {"allproducts": allproducts})
+
+
+@login_required
+def editingdealer(request, id):
+    UserbasicData = User.objects.filter(id=id).first()
+    DealerProfileData = Profile.objects.filter(user_id=id).first()
+    # currentUserName = currentUser.nameofcontact
+    usercreationform = UserUpdateForm(instance=UserbasicData)
+    profileform = ProfileForm(instance=DealerProfileData)
+
+    if request.method == "POST":
+        usercreationform = UserUpdateForm(request.POST,instance=UserbasicData)
+        profileform = ProfileForm(request.POST,request.FILES, instance=DealerProfileData)
+        if usercreationform.is_valid() and profileform.is_valid():
+            usercreationform.save()
+            profileform.save()
+            messages.success(request, "Edited successfully")
+        else :
+            messages.warning(request, "Error in Editing!")
+    context = {
+        "form":usercreationform,
+        "profileform":profileform
+    }
+    return render(request, "distributer/editdealer.html", context)
+
+@login_required
+def editingproduct(request, hsn):
+    ProductData = Product.objects.filter(HSN=hsn).first()
+    # currentUserName = currentUser.nameofcontact
+    prodform = ProductForm(instance=ProductData)
+
+    if request.method == "POST":
+        prodform = ProductForm(request.POST, instance=ProductData)
+        if prodform.is_valid() :
+            prodform.save()
+            messages.success(request, "Edited successfully")
+        else :
+            messages.warning(request, "Error in Editing!")
+    context = {
+        "productform":prodform,
+    }
+    return render(request, "product/editproduct.html", context)
+
 
 # editing invoice
 @login_required
@@ -468,26 +548,28 @@ def editingcustomer(request, id):
     UserbasicData = User.objects.filter(id=id).first()
     CustomerProfileData = CustomerProfile.objects.filter(user_id=id).first()
     # currentUserName = currentUser.nameofcontact
-    usercreationform = UserRegisterForm(request.POST or None, request.FILES or None)
-    profileform = CustomerProfileForm(request.POST or None, request.FILES or None)
+    usercreationform = UserUpdateForm(instance=UserbasicData)
+    profileform = CustomerProfileForm(instance=CustomerProfileData)
 
+    if request.method == "POST":
+        usercreationform = UserUpdateForm(request.POST,instance=UserbasicData )
+        profileform = CustomerProfileForm(request.POST,instance=CustomerProfileData)
+        if usercreationform.is_valid() :
+            usercreationform.save()
+            profileform.save()
+
+        else:
+            usercreationform = UserUpdateForm(instance=UserbasicData)
+            profileform = CustomerProfileForm(instance=CustomerProfileData)
+            messages.warning(request, "Error in Editing!")
+    
     context = {
         "form": UserbasicData,
         "profileform": CustomerProfileData,
         "alldistributers": alldistributers,
+        "usercreationform":usercreationform,
+        "profileupform":profileform
     }
-    if request.method == "POST":
-        usercreationform = UserRegisterForm(request.POST, instance=UserbasicData)
-        profileform = CustomerProfileForm(request.POST, instance=CustomerProfileData)
-        if usercreationform.is_valid() and profileform.is_valid():
-            user = usercreationform.save()
-            user.save()
-            profile = profileform.save(commit=False)
-            profile.user = user
-            profile.save()
-            messages.success(request, "Edited successfully")
-        else:
-            messages.warning(request, "Error in Editing!")
     return render(request, "customer/editcustomer.html", context)
 
 

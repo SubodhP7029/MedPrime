@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block header %}
+
+<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block content %}
+<h3>View Dealers </h3>
+{% for message in messages %}
+<div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {{ message }}
+</div>
+
+{% endfor %}
+<div class="card alert">
+    <div class='row'>
+        {% comment %} table table-striped {% endcomment %}
+
+        <table id="dealerTables" class="hover" style="width:100%;font-size: 12px;">
+            <thead style="background-color: #03a9f4;">
+                <font color="white">
+                    <tr>
+                        {% comment %} <th>Actions </th> {% endcomment %}
+                        <th style='display: none;'>Dealer ID</th>
+                        <th style='color:aliceblue !important'>Username</th>
+                        <th style='color:aliceblue !important'>Name of Contact</th>
+                        <th style='color:aliceblue !important;'>Email</th>
+                        <th style='color:aliceblue !important'>Telephone</th>
+                        <th style='color:aliceblue !important'>Mobile</th>
+                    </tr>
+                </font>
+            </thead>
+            <tbody>
+                {% for eachDealer in alldealer.all %}
+                <tr>
+                    <td style='display: none;'>{{ eachDealer.user.id}}</td>
+                    <td class='dealerUsername'>{{ eachDealer.user.username}}</td>
+                    <td class='dealernameofcontact'>{{ eachDealer.nameofcontact}}</td>
+                    {% if  eachDealer.user.email %}
+                    <td class='dealerEmail'>{{ eachDealer.user.email}}</td>
+                    {% else %}
+                    <td class='dealerEmail' style='color:gray'>No Email</td>
+                    {% endif %}
+                    {% if  eachDealer.telephone %}
+                    <td class='dealerPhone'>{{ eachDealer.telephone}}</td>
+                    {% else %}
+                    <td class='dealerPhone' style='color:gray'>No Telephone</td>
+                    {% endif %}
+                    {% if  eachDealer.mobile %}
+                    <td class='dealermobile'>{{ eachDealer.mobile}}</td>
+                    {% else %}
+                    <td class='dealermobile' style='color:gray'>No mobile</td>
+                    {% endif %}
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- option modal -->
+<div id="DealerModal" class="modal fade" role="dialog">
+    <div class="modal-dialog  modal-sm">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dealer Information</h4>
+            </div>
+            <div class="modal-body" style='text-align: center;overflow-y: scroll;'>
+                <div class='container' style="width: 100%;">
+                    <div class='row'>
+                        <h4><b>Dealer Details for <span id='dealerusername'></span> </b></h4>
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-6">
+                            <p><b>Email :</b><span id='dealeremail'></span></p>
+                            <p><b>Address:</b><span id='dealeraddress'></span></p>
+                            <p><b>Pincode :</b><span id='dealerpincode'></span></p>
+                            <p><b>Telephone :</b><span id='dealertelephone'></span></p>
+                            <p><b>Mobile :</b><span id='dealermobile'></span></p>
+                            <p><b>Name of contact :</b><span id='dealerNameofcontact'></span></p>
+                            <p><b>Contact Particulars:</b><span id='dealerContactparticulars'></span></p>
+                            <p><b>Legal Status :</b><span id='dealerLegalstatus'></span></p>
+                            <p><b>GST No. :</b><span id='dealerGstno'></span></p>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-6">
+
+                            <p><b>CIN No. :</b><span id='dealerCinno'></span></p>
+                            <p><b>PAN No. :</b><span id='dealerPanno'></span></p>
+                            <p><b>Shop Act No. :</b><span id='dealerShopactno'></span></p>
+                            <p><b>Business Geography :</b><span id='dealerBusinessgeography'></span></p>
+                            <p><b>Market Segment :</b><span id='dealerMarketsegment'></span></p>
+                            <p><b>Current Product :</b><span id='dealerCurrentproducts'></span></p>
+                            <p><b>Current Staff Strength :</b><span id='dealerCurrentstaffstrength'></span></p>
+                            <p><b>Customers Handled:</b><span id='dealerCustomershandledsofar'></span></p>
+                            <p><b>Sales Turnover :</b><span id='dealerSalersturnover'></span></p>
+                            <p><b>Partnership Category :</b><span id='dealerParternshipcat'></span></p>
+
+
+
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <button type="button" class="btn btn-warning btn-lg btn-rounded " id='editid'></button>
+                        <button type="button" class="btn btn-danger btn-lg btn-rounded " id='deleteid'></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal of Confirmation of delete -->
+<div class="modal fade" id="confirmdeletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style='height: 40%;'>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Delete Customer </h4>
+            </div>
+            <div class="modal-body" style='text-align: center;'>
+                <!-- <embed id='previewOfPdf' width='100%' height='100%' /> -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick='removedealer(selectedRowData)'>Yes</button><br>
+                <!-- <small>Please note that entry regarding this delete will be store in servers</small> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+
+
+
+
+
+{% endblock %}
+{% block scripts %}
+
+<script src="{% static 'custom/js/dealer/viewdealer.js' %}"> </script>
+
+</script>
+{% endblock %}
