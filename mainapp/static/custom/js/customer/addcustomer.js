@@ -167,7 +167,14 @@ $(document).ready(function () {
     // $('#id_billingcountry').select2()
     // $('#id_country').select2()
 });
-
+function addshippingdetailsnew() {
+    if (document.getElementById('flagForNeedOfShippingInfo').checked) {
+        document.getElementById('ShippingInfo').style.display = 'none'
+    } else {
+        document.getElementById('ShippingInfo').style.display = 'block'
+    }
+    checkforshippingnew()
+}
 //add inputs for shipping
 function addshippingdetails() {
     if (document.getElementById('flagForNeedOfShippingInfo').checked) {
@@ -190,13 +197,6 @@ function checkforshipping() {
         $('#id_country').val($('#id_billingcountry').val())
         $('#id_state').val($('#id_tempbillingstate').val())
         $('#id_city').val($('#id_tempbillingcity').val())
-        // $('#id_country').select2().trigger('change');
-        // $('#id_state').select2().trigger('change');
-        // $('#id_city').select2().trigger('change');
-
-        // document.getElementById('id_country').value = document.getElementById('id_billingcountry').value
-        // document.getElementById('id_state').value = document.getElementById('id_tempbillingstate').value
-        // document.getElementById('id_city').value = document.getElementById('id_tempbillingcity').value
         document.getElementById('id_address').value = document.getElementById('id_billingaddress').value
         document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
     }
@@ -204,6 +204,17 @@ function checkforshipping() {
     // document.getElementById('dealerCreation').submit()
 }
 
+function checkforshippingnew() {
+    if (document.getElementById('flagForNeedOfShippingInfo').checked) {
+        $('#id_country').val($('#id_billingcountry').val())
+        $('#id_state').val($('#id_billingstate').val())
+        $('#id_city').val($('#id_billingcity').val())
+        document.getElementById('id_address').value = document.getElementById('id_billingaddress').value
+        document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
+    }
+    getStateid()
+    // document.getElementById('dealerCreation').submit()
+}
 $("#id_username").on("keyup", function () {
     var input = $("#id_username").val()
     var string = "SELECT username FROM public.auth_user where username = '" + input + "'"
