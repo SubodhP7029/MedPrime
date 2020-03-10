@@ -43,7 +43,7 @@ urlpatterns = [
     path("removecustomer/", views.removecustomer, name="removecustomer",),
     path("removeinvoices/", views.removeinvoices, name="removeinvoicess",),
     path("editinvoices/", views.editinvoices, name="editinvoices/"),
-    path("addtoinvoicedb/", views.addtoinvoicedb, name="addtoinvoicedbs",),
+    path("addtoinvoicedb/", views.addtoinvoicedb, name="addtoinvoicedbs"),
     path(
         "invoice/gettaxdetailofstate/",
         views.gettaxdetailofstate,

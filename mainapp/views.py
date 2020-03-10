@@ -741,7 +741,7 @@ def editinvoices(request):
     else:
         return HttpResponse("no setParam")
 
-    return redirect("vieweditdealer")
+    return redirect("vieweinvoices")
 
 
 @login_required
@@ -754,7 +754,7 @@ def addtoinvoicedb(request):
     else:
         return HttpResponse("no setParam")
 
-    return redirect("vieweditdealer")
+    return redirect("vieweinvoices")
 
 
 # raw query to get all product data
