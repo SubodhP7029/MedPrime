@@ -44,7 +44,18 @@ from django.db import connection, connections, transaction
 
 @login_required
 def home(request):
-    return render(request, "index.html")
+    dealercount = Profile.objects.all().count()
+    customercount = CustomerProfile.objects.all().count()
+    productcount = Product.objects.all().count()
+    taxinvoice = taxInvoice.objects.all().count()
+    context = {
+        "dealercount":dealercount,
+        "customercount":customercount,
+        "productcount":productcount,
+        "taxinvoice":taxinvoice
+
+    }
+    return render(request, "index.html", context)
 
 
 # New Registration of dealer
@@ -554,10 +565,10 @@ def editingcustomer(request, id):
     if request.method == "POST":
         usercreationform = UserUpdateForm(request.POST,instance=UserbasicData )
         profileform = CustomerProfileForm(request.POST,instance=CustomerProfileData)
-        if usercreationform.is_valid() :
+        if usercreationform.is_valid() and profileform.is_valid():
             usercreationform.save()
             profileform.save()
-
+            messages.success(request, "Edited successfully")
         else:
             usercreationform = UserUpdateForm(instance=UserbasicData)
             profileform = CustomerProfileForm(instance=CustomerProfileData)

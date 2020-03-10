@@ -3,11 +3,11 @@
 
 {% load crispy_forms_tags %}
 
-   {% block header %}
+{% block header %}
 
 <script src="{% static 'custom/js/customer/addcustomer.js' %}"> </script>
 
-    {% endblock %}
+{% endblock %}
 {% block content %}
 <h3> Edit Customer </h3>
 {% for message in messages %}
@@ -22,7 +22,7 @@
 <form method="post">
     {% csrf_token %}
     {% comment %} {{ usercreationform.as_p }}
-        {{ profileupform.as_p }} {% endcomment %}
+    {{ profileupform.as_p }} {% endcomment %}
 
     <div class='row'>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
@@ -76,7 +76,7 @@
                 <span id="for_email_symbol" class="ti-reload form-control-feedback"></span>
             </div>
         </div>
-     
+
 
         {% comment %} customer name input start {% endcomment %}
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-4  ">
@@ -172,36 +172,36 @@
                         </div> {% endif %}
                     </div>
                 </div>
-                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div id="div_id_billingcity" class="form-group">
-                            <label for="id_billingstate" class="">State</label><span class="asteriskField">*</span>
-                            <div id="typeofInput_billingstate">
-                                <input type="text" placeholder="Billing State" name="billingstate"
-                                    class="textinput form-control" id="id_billingstate" 
-                                    value='{{ profileform.billingstate }}'>
-                            </div>
-                            {% if profileform.billingstate.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.billingstate.errors }}</strong>
-                            </div> {% endif %}
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div id="div_id_tempbillingcity" class="form-group">
+                        <label for="id_tempbillingstate" class="">State</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_billingstate">
+                            <input type="text" placeholder="Billing State" name="billingstate"
+                                class="textinput form-control" id="id_tempbillingstate"
+                                value='{{ profileform.billingstate }}'>
+                        </div>
+                        {% if profileform.billingstate.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingstate.errors }}</strong>
+                        </div> {% endif %}
 
-                        </div>
                     </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                        <div id="div_id_billingstate" class="form-group">
-                            <label for="id_billingcity" class="">City</label><span class="asteriskField">*</span>
-                            <div id="typeofInput_billingcity">
-                                <input type="text" placeholder="billing City" name="billingcity"
-                                    class="textinput form-control" id="id_billingcity">
-                            </div>
-                            {% if profileform.billingcity.errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ profileform.billingcity.errors }}</strong>
-                            </div>
-                            {% endif %}
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <div id="div_id_tempbillingstate" class="form-group">
+                        <label for="id_tempbillingcity" class="">City</label><span class="asteriskField">*</span>
+                        <div id="typeofInput_billingcity">
+                            <input type="text" placeholder="billing City" name="billingcity"
+                                class="textinput form-control" id="id_tempbillingcity">
                         </div>
+                        {% if profileform.billingcity.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ profileform.billingcity.errors }}</strong>
+                        </div>
+                        {% endif %}
                     </div>
-             
+                </div>
+
             </div>
             <div class='row'>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -367,11 +367,20 @@
             </label>
         </div>
     </div>
+    <div style="display: none;">
+        <input type="text" name="billingcity" value="Nagpur" maxlength="50" required="" id="id_billingcity">
+        <input type="text" name="billingstate" value="Maharashtra" maxlength="50" required="" id="id_billingstate">
+        <button type='submit' id='saveform'>Save </button>
+
+    </div>
     <div class='row'>
         <div class='form-group'>
-            <button type='submit' class="btn btn-warning m-b-10 m-l-5">Save Edit</button>
+            <button onclick='checkdataandsubmit()' class="btn btn-warning m-b-10 m-l-5">Save Edit</button>
             <!-- <button id='submitForm' class='btn btn-outline-info' type='submit'> Save Edit </button> -->
         </div>
+
+        <!-- <button id='submitForm' class='btn btn-outline-info' type='submit'> Save Edit </button> -->
+
     </div>
 </form>
 
@@ -382,8 +391,8 @@
     </div>
 </div> {% endcomment %}
 
-{% comment %} {{usercreationform.as_table}}
-{{profileupform.as_table}}  {% endcomment %}
+<!-- {{usercreationform.as_table}}
+{{profileupform.as_table}} -->
 {% endblock %}
 
 
@@ -393,11 +402,11 @@
 <script>
     $(document).ready(function () {
         $('#id_billingcountry').val('{{ profileform.billingcountry }}').trigger('change')
-        // print_state("id_billingstate");
-       // stateandcitydropinbilling()
-        $('#id_billingstate').val('{{ profileform.billingstate }}').trigger('change')
-        print_city('id_billingcity', $("#id_billingstate").prop('selectedIndex'), 'id_billingstate')
-        $('#id_billingcity').val(' {{ profileform.billingcity }} ').trigger('change')
+        // print_state("id_tempbillingstate");
+        // stateandcitydropinbilling()
+        $('#id_tempbillingstate').val('{{ profileform.billingstate }}').trigger('change')
+        print_city('id_tempbillingcity', $("#id_tempbillingstate").prop('selectedIndex'), 'id_tempbillingstate')
+        $('#id_tempbillingcity').val(' {{ profileform.billingcity }} ').trigger('change')
         $('#id_country').val('{{ profileform.country }}').trigger('change')
         stateandcitydropinshipping()
         $('#id_state').val('{{ profileform.state }}').trigger('change')

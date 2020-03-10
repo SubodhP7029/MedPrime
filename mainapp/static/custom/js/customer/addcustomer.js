@@ -3,15 +3,15 @@
 //check if country in India in Billing
 function stateandcitydropinbilling() {
     if ($('#id_billingcountry').val() == 'India') {
-        document.getElementById('typeofInput_billingstate').innerHTML = '<select onchange="print_city(\'id_billingcity\', this.selectedIndex,\'id_billingstate\');" name="state" class="select form-control form-control" id="id_billingstate"></select>'
-        document.getElementById('typeofInput_billingcity').innerHTML = ' <select name="city" class="select form-control" id="id_billingcity">'
+        document.getElementById('typeofInput_billingstate').innerHTML = '<select onchange="print_city(\'id_tempbillingcity\', this.selectedIndex,\'id_tempbillingstate\');" name="state" class="select form-control form-control" id="id_tempbillingstate"></select>'
+        document.getElementById('typeofInput_billingcity').innerHTML = ' <select name="city" class="select form-control" id="id_tempbillingcity">'
         document.getElementById('typeofInput_gst').innerHTML = ' <label for="id_gst" class="">GST No.</label><input type="text" name="gst" maxlength="500" class="textinput textInput form-control" id="id_gst">'
-        print_state("id_billingstate");
-        // $('#id_billingcity').select2();
-        // $('#id_billingstate').select2();
+        print_state("id_tempbillingstate");
+        // $('#id_tempbillingcity').select2();
+        // $('#id_tempbillingstate').select2();
     } else {
-        document.getElementById('typeofInput_billingstate').innerHTML = ' <input type="text" placeholder="Billing State"  name="billingstate" class="textinput form-control" id="id_billingstate">'
-        document.getElementById('typeofInput_billingcity').innerHTML = '<input type="text" placeholder="Billing City" name="billingcity" class="textinput form-control" id="id_billingcity">'
+        document.getElementById('typeofInput_billingstate').innerHTML = ' <input type="text" placeholder="Billing State"  name="billingstate" class="textinput form-control" id="id_tempbillingstate">'
+        document.getElementById('typeofInput_billingcity').innerHTML = '<input type="text" placeholder="Billing City" name="billingcity" class="textinput form-control" id="id_tempbillingcity">'
         document.getElementById('typeofInput_gst').innerHTML = ''
     }
 }
@@ -136,8 +136,8 @@ function print_city(city_id, city_index, state_id) {
 
 
 $(document).ready(function () {
-    // $('#id_billingcity').select2();
-    // $('#id_billingstate').select2();
+    // $('#id_tempbillingcity').select2();
+    // $('#id_tempbillingstate').select2();
     // $('#id_distributer').select2();
 
 
@@ -188,15 +188,15 @@ function getStateid() {
 function checkforshipping() {
     if (document.getElementById('flagForNeedOfShippingInfo').checked) {
         $('#id_country').val($('#id_billingcountry').val())
-        $('#id_state').val($('#id_billingstate').val())
-        $('#id_city').val($('#id_billingcity').val())
+        $('#id_state').val($('#id_tempbillingstate').val())
+        $('#id_city').val($('#id_tempbillingcity').val())
         // $('#id_country').select2().trigger('change');
         // $('#id_state').select2().trigger('change');
         // $('#id_city').select2().trigger('change');
 
         // document.getElementById('id_country').value = document.getElementById('id_billingcountry').value
-        // document.getElementById('id_state').value = document.getElementById('id_billingstate').value
-        // document.getElementById('id_city').value = document.getElementById('id_billingcity').value
+        // document.getElementById('id_state').value = document.getElementById('id_tempbillingstate').value
+        // document.getElementById('id_city').value = document.getElementById('id_tempbillingcity').value
         document.getElementById('id_address').value = document.getElementById('id_billingaddress').value
         document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
     }
@@ -236,4 +236,11 @@ function uniqueChecker(sql, field, length) {
             }
         }
     })
+}
+
+
+function checkdataandsubmit() {
+    $('#id_billingstate').val($('#id_tempbillingstate').val())
+    $('#id_billingcity').val($('#id_tempbillingcity').val())
+    document.getElementById("saveform").click()
 }

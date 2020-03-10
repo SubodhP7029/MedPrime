@@ -30,7 +30,7 @@ $(document).ready(function () {
 //function when row is clicked
 $('#dealerTables tbody').on('click', 'tr', function () {
     selectedRowData = table.row(this).data();
-    SelectedCustomerUsername = "SELECT  address, pincode, telephone,  businessgeography, cinno, contactparticulars, currentproducts, currentstaffstrength, customershandledsofar, gstno, legalstatus, marketsegment, mobile, nameofcontact, panno, parternshipcat, salersturnover, shopactno, image FROM public.mainapp_profile WHERE user_id= " + selectedRowData[0]
+    SelectedCustomerUsername = "SELECT  address, pincode, telephone,  businessgeography, cinno, contactparticulars, currentproducts, currentstaffstrength, customershandledsofar, gstno, legalstatus, marketsegment, mobile, nameofcontact, panno, parternshipcat, salersturnover, shopactno FROM public.mainapp_profile WHERE user_id= " + selectedRowData[0]
     $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         // allCustomerData = data
         // customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
@@ -46,11 +46,12 @@ $('#dealerTables tbody').on('click', 'tr', function () {
         document.getElementById('dealerGstno').innerHTML = data[0][9]
         document.getElementById('dealerLegalstatus').innerHTML = data[0][10]
         document.getElementById('dealerMarketsegment').innerHTML = data[0][11]
-        document.getElementById('dealerNameofcontact').innerHTML = data[0][12]
-        document.getElementById('dealerPanno').innerHTML = data[0][13]
-        document.getElementById('dealerParternshipcat').innerHTML = data[0][14]
-        document.getElementById('dealerSalersturnover').innerHTML = data[0][15]
-        document.getElementById('dealerShopactno').innerHTML = data[0][16]
+        document.getElementById('dealermobile').innerHTML = data[0][12]
+        document.getElementById('dealerNameofcontact').innerHTML = data[0][13]
+        document.getElementById('dealerPanno').innerHTML = data[0][14]
+        document.getElementById('dealerParternshipcat').innerHTML = data[0][15]
+        document.getElementById('dealerSalersturnover').innerHTML = data[0][16]
+        document.getElementById('dealerShopactno').innerHTML = data[0][17]
 
         $('#DealerModal').modal('show')
     })
