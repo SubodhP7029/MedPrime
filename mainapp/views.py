@@ -565,10 +565,10 @@ def editingcustomer(request, id):
     if request.method == "POST":
         usercreationform = UserUpdateForm(request.POST,instance=UserbasicData )
         profileform = CustomerProfileForm(request.POST,instance=CustomerProfileData)
-        if usercreationform.is_valid() :
+        if usercreationform.is_valid() and profileform.is_valid():
             usercreationform.save()
             profileform.save()
-
+            messages.success(request, "Edited successfully")
         else:
             usercreationform = UserUpdateForm(instance=UserbasicData)
             profileform = CustomerProfileForm(instance=CustomerProfileData)
