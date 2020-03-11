@@ -72,7 +72,7 @@
         <div class=" col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
             <div class='form-group'>
                 Select Customers
-                <select onchange='getAllCustomerInfo()' id='selectedcustomer'>
+                <select  id='selectedcustomer'>
                     <option value=''>Select Customer</option>
                     {% for eachcustomer in allcustomers.all %}
                     <option value="{{ eachcustomer.user_id }}" id='thisCust-{{ eachcustomer.user_id }}'>{{ eachcustomer.customername }}
