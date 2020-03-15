@@ -324,7 +324,11 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 45, companyName)
     doc.setFontType('normal');
     doc.setFontSize(9)
-    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerAdd)
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerbuilding)
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 53, customerarea)
+
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 56, customerlandmark)
+
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 60, '' + customerPincode + ',' + customerCity + ',')
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 65, '' + customerState + ',' + customerCountry)
     if (customerGST != '' && customerGST != null) {
