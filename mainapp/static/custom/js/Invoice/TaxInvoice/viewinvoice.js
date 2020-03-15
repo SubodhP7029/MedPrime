@@ -1,5 +1,5 @@
 // // add variables 
-var allProductsData, shippingAdd, invoiceDate, invoiceDateEntered, dueDate, dueDateEntered, customerStateCode, shippingPincode, shippingCity, shippingState, shippingCountry, selectedStateCode, customerCity, stateSGSTflag, stateCGSTflag, stateIGSTflag, img, tableBodiesAllRows, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, companyName, customerAdd, customerPincode, customerState, customerCountry, customerGST, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+var allProductsData, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, invoiceDate, invoiceDateEntered, dueDate, dueDateEntered, customerStateCode, shippingPincode, shippingCity, shippingState, shippingCountry, selectedStateCode, customerCity, stateSGSTflag, stateCGSTflag, stateIGSTflag, img, tableBodiesAllRows, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, companyName, customerAdd, customerPincode, customerState, customerCountry, customerGST, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0, Finalamount
 var selectedRowData, invoiceID, clickedTR, typeofadjustment
@@ -92,7 +92,7 @@ $(document).ready(function () {
 function ViewPDF(selectedRowData) {
     SelectedState = "SELECT igst,cgst,sgst FROM public.mainapp_gsttable WHERE state= '" + selectedRowData[3] + "'"
     $.get("gettaxdetailofstate/", { sqlParam: SelectedState }, function (gsttype) {
-        SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country,customername FROM public.mainapp_customerprofile WHERE user_id=" + selectedRowData[1]
+        SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id=" + selectedRowData[1]
         $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
             var tableheadarray = ['Sr No.', 'Product', 'HSN/SAC', 'QTY', 'Rate', 'Discount']
             if (gsttype.length != 0) {
@@ -117,7 +117,9 @@ function ViewPDF(selectedRowData) {
             //assigning all variable values
             invoiceID = selectedRowData[0]
             companyName = data[0][12]
-            customerAdd = data[0][0]
+            customerbuilding = data[0][0]
+            customerarea = data[0][13]
+            customerlandmark = data[0][14]
             customerPincode = data[0][1]
             customerCity = data[0][2]
             customerState = data[0][3]
@@ -135,7 +137,9 @@ function ViewPDF(selectedRowData) {
             totalAdjustment = selectedRowData[11]
             typeofadjustment = selectedRowData[15]
             sign = selectedRowData[13]
-            shippingAdd = data[0][7]
+            shippingbuilding = data[0][7]
+            shippingarea = data[0][15]
+            shippinglandmark = data[0][16]
             shippingPincode = data[0][8]
             shippingCity = data[0][9]
             shippingState = data[0][10]
@@ -332,7 +336,11 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 40, 'Shipping Address:')
     doc.setFontSize(9)
 
-    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 45, shippingAdd)
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 45, shippingbuilding)
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 48, shippingarea)
+
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 51, shippinglandmark)
+
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 55, '' + shippingPincode + ',' + shippingCity + ',')
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 60, '' + shippingState + ',' + shippingCountry)
     if (customerStateCode != 0) {

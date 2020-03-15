@@ -30,17 +30,17 @@ $(document).ready(function () {
 $('#customerTables tbody').on('click', 'tr', function () {
     selectedRowData = table.row(this).data();
     document.getElementById('viewcustomername').innerHTML = selectedRowData[2]
-    SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,address, pincode,  city,state,  country ,distributer FROM public.mainapp_customerprofile WHERE user_id= " + selectedRowData[0]
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,building, pincode,  city,state,  country ,distributer,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedRowData[0]
     $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         // allCustomerData = data
         // customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-        document.getElementById('customerBillingAddress').innerHTML = data[0][0]
+        document.getElementById('customerBillingAddress').innerHTML = data[0][0] + " , " + data[0][12] + " , " + data[0][13]
         document.getElementById('customerBillingPincode').innerHTML = data[0][1]
         document.getElementById('customerBillingCity').innerHTML = data[0][2]
         document.getElementById('customerBillingState').innerHTML = data[0][3]
         document.getElementById('customerBillingCountry').innerHTML = data[0][4]
         document.getElementById('customergst').innerHTML = data[0][5]
-        document.getElementById('customerShippingAddress').innerHTML = data[0][6]
+        document.getElementById('customerShippingAddress').innerHTML = data[0][6] + " , " + data[0][14] + " , " + data[0][15]
         document.getElementById('customerShippingPincode').innerHTML = data[0][7]
         document.getElementById('customerShippingCity').innerHTML = data[0][8]
         document.getElementById('customerShippingState').innerHTML = data[0][9]

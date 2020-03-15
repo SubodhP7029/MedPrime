@@ -1,5 +1,5 @@
 // add variables 
-var allProductsData, selectedStateCode, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerAdd, shippingAdd, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+var allProductsData, selectedStateCode, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
@@ -56,25 +56,27 @@ function SavingNewQty(val) {
     } else {
         val.getElementsByClassName('productRate')[0].innerHTML = rate
     }
+    var discount = parseFloat(document.getElementById('newdesc').value)
+    var disctype = document.getElementById('typeOfDesc').value
+
+    if (disctype == 'perc') {
+        discount = (rate * discount / 100) * quantity
+    }
     if (flagForTax) {
         if (selectedStateIGST) {
-            var IGSTval = quantity * rate * selectedStateIGST / 100
+            var IGSTval = ((quantity * rate) - discount) * selectedStateIGST / 100
             // val.getElementsByClassName('gstvalue')[0].innerText = IGSTval
             val.getElementsByClassName('productIGST')[0].innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + selectedStateIGST + "%</p>"
 
         }
         else {
-            var CGSTval = quantity * rate * selectedStateCGST / 100
-            var SGSTval = quantity * rate * selectedStateSGST / 100
+            var CGSTval = ((quantity * rate) - discount) * selectedStateCGST / 100
+            var SGSTval = ((quantity * rate) - discount) * selectedStateSGST / 100
             val.getElementsByClassName('productCGST')[0].innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + selectedStateCGST + "%</p>"
             val.getElementsByClassName('productSGST')[0].innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + selectedStateSGST + "%</p>"
         }
     }
-    var disctype = document.getElementById('typeOfDesc').value
-    var discount = parseFloat(document.getElementById('newdesc').value)
-    if (disctype == 'perc') {
-        discount = (rate * discount / 100) * quantity
-    }
+
     val.getElementsByClassName('discount')[0].innerText = discount
 
     var finalVal = (quantity * rate) - discount
@@ -105,22 +107,23 @@ function addProduct() {
         }
     }
     rate = document.getElementById('selectedProductPrice').value
+    if (disctype == 'perc') {
+        discount = (rate * discount / 100) * quantity
+    }
     if (flagForTax) {
         if (stateIGSTflag) {
             selectedStateIGST = productTax
-            var IGSTval = quantity * rate * selectedStateIGST / 100
+            var IGSTval = ((quantity * rate) - discount) * selectedStateIGST / 100
         }
         else {
             selectedStateCGST = productTax / 2
             selectedStateSGST = productTax / 2
-            var CGSTval = quantity * rate * selectedStateCGST / 100
-            var SGSTval = quantity * rate * selectedStateSGST / 100
+            var CGSTval = ((quantity * rate) - discount) * selectedStateCGST / 100
+            var SGSTval = ((quantity * rate) - discount) * selectedStateSGST / 100
 
         }
     }
-    if (disctype == 'perc') {
-        discount = (rate * discount / 100) * quantity
-    }
+
     var finalVal = (quantity * rate) - discount
     if (product != '' && quantity != '') {
         var thebody = document.getElementById('bodyOfProductPreview')
@@ -202,18 +205,22 @@ function addProduct() {
 
 
 function getAllCustomerInfo() {
-    SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country,customername FROM public.mainapp_customerprofile WHERE user_id=" + document.getElementById('selectedcustomer').value
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id=" + document.getElementById('selectedcustomer').value
     $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         allCustomerData = data
         customerName = document.getElementById('thisCust-' + document.getElementById('selectedcustomer').value).innerHTML
-        customerAdd = data[0][0]
+        customerbuilding = data[0][0]
+        customerarea = data[0][13]
+        customerlandmark = data[0][14]
         customerPincode = data[0][1]
         customerCity = data[0][2]
         customerState = data[0][3]
         customerCountry = data[0][4]
         customerGST = data[0][5]
         customerStateCode = data[0][6]
-        shippingAdd = data[0][7]
+        shippingbuilding = data[0][7]
+        shippingarea = data[0][15]
+        shippinglandmark = data[0][16]
         shippingPincode = data[0][8]
         shippingCity = data[0][9]
         shippingState = data[0][10]

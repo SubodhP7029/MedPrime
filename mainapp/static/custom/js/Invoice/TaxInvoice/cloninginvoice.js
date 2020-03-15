@@ -2,7 +2,7 @@ var ProductJSON = {}, gstvaluesJSON = {}
 var selectedStateIGST, companyName, selectedStateSGST, itemJSON, totalItems
 var rowsCounter = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
-var allProductsData, selectedStateCode, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerAdd, shippingAdd, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+var allProductsData, selectedStateCode, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
@@ -30,14 +30,16 @@ $(document).ready(function () {
             }
 
 
-            // selectedcustid = $("#idofcustomer").val()
-            // $(function () {
-            //     $("#selectedcustomer").val(selectedcustid).attr("selected", "selected");
-            // });
+            selectedcustid = $("#idofcustomer").val()
+            $(function () {
+                $("#selectedcustomer").val(selectedcustid).attr("selected", "selected");
+
+                $("#selectedcustomer").select2()
+            });
 
             // getting all current cust info 
             function startingcust(selectedcustid) {
-                SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country ,customername FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
+                SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
                 $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
                     allCustomerData = data
                     if (allCustomerData.length == 0) {
@@ -58,14 +60,18 @@ $(document).ready(function () {
                             getAllCustomerInfo()
                         });
                         customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-                        customerAdd = data[0][0]
+                        customerbuilding = data[0][0]
+                        customerarea = data[0][13]
+                        customerlandmark = data[0][14]
                         customerPincode = data[0][1]
                         customerCity = data[0][2]
                         customerState = data[0][3]
                         customerCountry = data[0][4]
                         customerGST = data[0][5]
                         customerStateCode = data[0][6]
-                        shippingAdd = data[0][7]
+                        shippingbuilding = data[0][7]
+                        shippingarea = data[0][15]
+                        shippinglandmark = data[0][16]
                         shippingPincode = data[0][8]
                         shippingCity = data[0][9]
                         shippingState = data[0][10]
@@ -146,14 +152,14 @@ $(document).ready(function () {
                                             taxBrackets.push(taxValue)
                                         }
                                         if (stateIGSTflag) {
-                                            var IGSTval = quantity * rate * taxValue / 100
+                                            var IGSTval = ((quantity * rate) - theJSON[JSONlen[j]]['Discount']) * taxValue / 100
                                             var td = document.createElement('td')
                                             td.className = 'productIGST'
                                             td.innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + taxValue + "%</p>"
                                             tr.appendChild(td)
                                         } else {
-                                            var CGSTval = quantity * rate * taxValue / 200
-                                            var SGSTval = quantity * rate * taxValue / 200
+                                            var CGSTval = ((quantity * rate) - theJSON[JSONlen[j]]['Discount']) * taxValue / 200
+                                            var SGSTval = ((quantity * rate) - theJSON[JSONlen[j]]['Discount']) * taxValue / 200
 
                                             var td = document.createElement('td')
                                             td.className = 'productCGST'
@@ -211,21 +217,22 @@ function addProducts() {
         }
     }
     if (HSN) {
-        if (flagForTax) {
-            if (selectedStateIGST == 'True') {
-
-                var IGSTval = quantity * rate * productTax / 100
-            }
-            else {
-
-                var CGSTval = quantity * rate * productTax / 200
-                var SGSTval = quantity * rate * productTax / 200
-
-            }
-        }
         if (disctype == 'perc') {
             discount = (rate * discount / 100) * quantity
         }
+        if (flagForTax) {
+            if (selectedStateIGST == 'True') {
+
+                var IGSTval = ((quantity * rate) - discount) * productTax / 100
+            }
+            else {
+
+                var CGSTval = ((quantity * rate) - discount) * productTax / 200
+                var SGSTval = ((quantity * rate) - discount) * productTax / 200
+
+            }
+        }
+
 
 
         var finalVal = (quantity * rate) - discount
@@ -315,18 +322,22 @@ function getFinalAmountFromTable() {
 
 function getAllCustomerInfo() {
     selectedcustid = document.getElementById('selectedcustomer').value
-    SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country,customername FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
     $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         allCustomerData = data
         customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-        customerAdd = data[0][0]
+        customerbuilding = data[0][0]
+        customerarea = data[0][13]
+        customerlandmark = data[0][14]
         customerPincode = data[0][1]
         customerCity = data[0][2]
         customerState = data[0][3]
         customerCountry = data[0][4]
         customerGST = data[0][5]
         customerStateCode = data[0][6]
-        shippingAdd = data[0][7]
+        shippingbuilding = data[0][7]
+        shippingarea = data[0][15]
+        shippinglandmark = data[0][16]
         shippingPincode = data[0][8]
         shippingCity = data[0][9]
         shippingState = data[0][10]
@@ -462,6 +473,11 @@ function SavingNewQtyclone(val) {
     } else {
         val.getElementsByClassName('productRate')[0].innerHTML = rate
     }
+    var disctype = document.getElementById('typeOfDesc').value
+    var discount = parseFloat(document.getElementById('newdesc').value)
+    if (disctype == 'perc') {
+        discount = (rate * discount / 100) * quantity
+    }
     if (flagForTax) {
         var productTax
         for (v = 0; v < allProductJSONArray.length; v++) {
@@ -471,23 +487,19 @@ function SavingNewQtyclone(val) {
             }
         }
         if (selectedStateIGST == 'True') {
-            var IGSTval = quantity * rate * productTax / 100
+            var IGSTval = ((quantity * rate) - discount) * productTax / 100
             // val.getElementsByClassName('gstvalue')[0].innerText = IGSTval
             val.getElementsByClassName('productIGST')[0].innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + productTax + "%</p>"
 
         }
         else {
-            var CGSTval = quantity * rate * productTax / 200
-            var SGSTval = quantity * rate * productTax / 200
+            var CGSTval = ((quantity * rate) - discount) * productTax / 200
+            var SGSTval = ((quantity * rate) - discount) * productTax / 200
             val.getElementsByClassName('productCGST')[0].innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + productTax / 2 + "%</p>"
             val.getElementsByClassName('productSGST')[0].innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + productTax / 2 + "%</p>"
         }
     }
-    var disctype = document.getElementById('typeOfDesc').value
-    var discount = parseFloat(document.getElementById('newdesc').value)
-    if (disctype == 'perc') {
-        discount = (rate * discount / 100) * quantity
-    }
+
     val.getElementsByClassName('discount')[0].innerText = discount
 
     var finalVal = (quantity * rate) - discount
