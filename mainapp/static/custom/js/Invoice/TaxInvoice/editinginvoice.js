@@ -41,132 +41,138 @@ $(document).ready(function () {
             SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
             $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
                 allCustomerData = data
-                customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-                customerbuilding = data[0][0]
-                customerarea = data[0][13]
-                customerlandmark = data[0][14]
-                customerPincode = data[0][1]
-                customerCity = data[0][2]
-                customerState = data[0][3]
-                customerCountry = data[0][4]
-                customerGST = data[0][5]
-                customerStateCode = data[0][6]
-                shippingbuilding = data[0][7]
-                shippingarea = data[0][15]
-                shippinglandmark = data[0][16]
-                shippingPincode = data[0][8]
-                shippingCity = data[0][9]
-                shippingState = data[0][10]
-                shippingCountry = data[0][11]
-                companyName = data[0][12]
-                var tableheadarray = ['Sr No.', 'Product', 'HSN/SAC', 'QTY', 'Rate', 'Discount']
+                if (data.length != 0) {
+                    customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
+                    customerbuilding = data[0][0]
+                    customerarea = data[0][13]
+                    customerlandmark = data[0][14]
+                    customerPincode = data[0][1]
+                    customerCity = data[0][2]
+                    customerState = data[0][3]
+                    customerCountry = data[0][4]
+                    customerGST = data[0][5]
+                    customerStateCode = data[0][6]
+                    shippingbuilding = data[0][7]
+                    shippingarea = data[0][15]
+                    shippinglandmark = data[0][16]
+                    shippingPincode = data[0][8]
+                    shippingCity = data[0][9]
+                    shippingState = data[0][10]
+                    shippingCountry = data[0][11]
+                    companyName = data[0][12]
+                    var tableheadarray = ['Sr No.', 'Product', 'HSN/SAC', 'QTY', 'Rate', 'Discount']
 
-                if (gstvaluesJSON[shippingState]) {
-                    var gstJSON = JSON.parse(gstvaluesJSON[shippingState])
-                    if (gstJSON["igst"] != 'False') {
-                        tableheadarray.push('IGST')
-                        stateIGSTflag = true
-                        selectedStateIGST = 'True'
+                    if (gstvaluesJSON[shippingState]) {
+                        var gstJSON = JSON.parse(gstvaluesJSON[shippingState])
+                        if (gstJSON["igst"] != 'False') {
+                            tableheadarray.push('IGST')
+                            stateIGSTflag = true
+                            selectedStateIGST = 'True'
+                        } else {
+                            tableheadarray.push('CGST')
+                            tableheadarray.push('SGST')
+                            selectedStateIGST = 'False'
+                        }
+                        flagForTax = true
                     } else {
-                        tableheadarray.push('CGST')
-                        tableheadarray.push('SGST')
-                        selectedStateIGST = 'False'
+                        flagForTax = false
                     }
-                    flagForTax = true
-                } else {
-                    flagForTax = false
-                }
-                tableheadarray.push('Amount')
+                    tableheadarray.push('Amount')
 
 
-                //creating table of items
-                var tr = document.getElementById('headOfProductPreview')
-                tr.innerHTML = ''
-                tr.className = 'tableHead'
-                theJSON = JSON.parse(document.getElementById('iteminfo').innerText.split("'").join('"'))
-                JSONlen = Object.keys(theJSON)
-                var tbody = document.getElementById('bodyOfProductPreview')
-                tbody.innerHTML = ''
-                for (i = 0; i < tableheadarray.length; i++) {
-                    var td = document.createElement('td')
-                    td.innerText = tableheadarray[i]
-                    td.id = tableheadarray[i] + 'Column'
-                    tr.appendChild(td)
-                }
+                    //creating table of items
+                    var tr = document.getElementById('headOfProductPreview')
+                    tr.innerHTML = ''
+                    tr.className = 'tableHead'
+                    theJSON = JSON.parse(document.getElementById('iteminfo').innerText.split("'").join('"'))
+                    JSONlen = Object.keys(theJSON)
+                    var tbody = document.getElementById('bodyOfProductPreview')
+                    tbody.innerHTML = ''
+                    for (i = 0; i < tableheadarray.length; i++) {
+                        var td = document.createElement('td')
+                        td.innerText = tableheadarray[i]
+                        td.id = tableheadarray[i] + 'Column'
+                        tr.appendChild(td)
+                    }
 
-                for (j = 0; j < JSONlen.length; j++) {
+                    for (j = 0; j < JSONlen.length; j++) {
 
-                    //
-                    var tr = document.createElement('tr')
-                    tr.onclick = function () {
-                        $('#EditingRowInPreviewTable').modal('show');
-                        clickedTR = this
-                    };
-                    var td = document.createElement('td')
-                    td.innerHTML = ''
-                    tr.appendChild(td)
-                    var td = document.createElement('td')
-                    td.innerHTML = "<b class='productName'>" + theJSON[JSONlen[j]]['Product'] + "</b><br><p class='productDesc'>" + theJSON[JSONlen[j]]['Description'] + "</p>"
-                    tr.appendChild(td)
-                    var td = document.createElement('td')
-                    td.className = 'productHSN'
-                    td.innerHTML = theJSON[JSONlen[j]]['HSN']
-                    tr.appendChild(td)
-                    var td = document.createElement('td')
-                    td.className = 'productQuantity'
-                    td.innerHTML = theJSON[JSONlen[j]]['Quantity']
-                    quantity = theJSON[JSONlen[j]]['Quantity']
-                    tr.appendChild(td)
-                    var td = document.createElement('td')
-                    td.className = 'productRate'
-                    td.innerHTML = theJSON[JSONlen[j]]['Rate']
-                    rate = theJSON[JSONlen[j]]['Rate']
-                    tr.appendChild(td)
-                    var td = document.createElement('td')
-                    td.className = 'discount'
-                    td.innerHTML = theJSON[JSONlen[j]]['Discount']
-                    tr.appendChild(td)
-                    if (flagForTax) {
-                        for (h = 0; h < allProductJSONArray.length; h++) {
-                            if (theJSON[JSONlen[j]]['HSN'] == allProductJSONArray[h]["HSN"]) {
-                                var taxValue = allProductJSONArray[h]['tax']
-                                if (!taxBrackets.includes(taxValue)) {
-                                    taxBrackets.push(taxValue)
-                                }
-                                if (stateIGSTflag) {
-                                    var IGSTval = quantity * rate * taxValue / 100
-                                    var td = document.createElement('td')
-                                    td.className = 'productIGST'
-                                    td.innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + taxValue + "%</p>"
-                                    tr.appendChild(td)
-                                } else {
-                                    var CGSTval = quantity * rate * taxValue / 200
-                                    var SGSTval = quantity * rate * taxValue / 200
+                        //
+                        var tr = document.createElement('tr')
+                        tr.onclick = function () {
+                            $('#EditingRowInPreviewTable').modal('show');
+                            clickedTR = this
+                        };
+                        var td = document.createElement('td')
+                        td.innerHTML = ''
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.innerHTML = "<b class='productName'>" + theJSON[JSONlen[j]]['Product'] + "</b><br><p class='productDesc'>" + theJSON[JSONlen[j]]['Description'] + "</p>"
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.className = 'productHSN'
+                        td.innerHTML = theJSON[JSONlen[j]]['HSN']
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.className = 'productQuantity'
+                        td.innerHTML = theJSON[JSONlen[j]]['Quantity']
+                        quantity = theJSON[JSONlen[j]]['Quantity']
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.className = 'productRate'
+                        td.innerHTML = theJSON[JSONlen[j]]['Rate']
+                        rate = theJSON[JSONlen[j]]['Rate']
+                        tr.appendChild(td)
+                        var td = document.createElement('td')
+                        td.className = 'discount'
+                        td.innerHTML = theJSON[JSONlen[j]]['Discount']
+                        tr.appendChild(td)
+                        if (flagForTax) {
+                            for (h = 0; h < allProductJSONArray.length; h++) {
+                                if (theJSON[JSONlen[j]]['HSN'] == allProductJSONArray[h]["HSN"]) {
+                                    var taxValue = allProductJSONArray[h]['tax']
+                                    if (!taxBrackets.includes(taxValue)) {
+                                        taxBrackets.push(taxValue)
+                                    }
+                                    if (stateIGSTflag) {
+                                        var IGSTval = quantity * rate * taxValue / 100
+                                        var td = document.createElement('td')
+                                        td.className = 'productIGST'
+                                        td.innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + taxValue + "%</p>"
+                                        tr.appendChild(td)
+                                    } else {
+                                        var CGSTval = quantity * rate * taxValue / 200
+                                        var SGSTval = quantity * rate * taxValue / 200
 
-                                    var td = document.createElement('td')
-                                    td.className = 'productCGST'
-                                    td.innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + taxValue / 2 + "%</p>"
-                                    tr.appendChild(td)
+                                        var td = document.createElement('td')
+                                        td.className = 'productCGST'
+                                        td.innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + taxValue / 2 + "%</p>"
+                                        tr.appendChild(td)
 
-                                    var td = document.createElement('td')
-                                    td.className = 'productSGST'
-                                    td.innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + taxValue / 2 + "%</p>"
-                                    tr.appendChild(td)
+                                        var td = document.createElement('td')
+                                        td.className = 'productSGST'
+                                        td.innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + taxValue / 2 + "%</p>"
+                                        tr.appendChild(td)
+                                    }
                                 }
                             }
-                        }
 
+                        }
+                        var td = document.createElement('td')
+                        td.className = 'finalvalue'
+                        td.innerHTML = theJSON[JSONlen[j]]['Final Price']
+                        tr.appendChild(td)
+                        tbody.appendChild(tr)
+                        //
                     }
-                    var td = document.createElement('td')
-                    td.className = 'finalvalue'
-                    td.innerHTML = theJSON[JSONlen[j]]['Final Price']
-                    tr.appendChild(td)
-                    tbody.appendChild(tr)
-                    //
+                    insertSrNo()
+                    getFinalAmountFromTable()
+                } else {
+                    document.getElementById('ifcustexit').style.display = 'none'
+                    document.getElementById('ifcustdoesntexit').style.display = 'block'
                 }
-                insertSrNo()
-                getFinalAmountFromTable()
             })
+
         })
     })
 })
