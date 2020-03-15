@@ -93,7 +93,9 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 45, companyName)
     doc.setFontType('normal');
     doc.setFontSize(8)
-    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerAdd)
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerbuilding)
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 53, customerarea)
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 56, customerlandmark)
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 60, '' + customerPincode + ',' + customerCity + ',')
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 65, '' + customerState + ',' + customerCountry)
     if (customerGST != '' && customerGST != null) {
@@ -105,7 +107,11 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 40, 'Shipping Address:')
     doc.setFontSize(8)
 
-    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 45, shippingAdd)
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 45, shippingbuilding)
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 48, shippingarea)
+    doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 51, shippinglandmark)
+
+
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 55, '' + shippingPincode + ',' + shippingCity + ',')
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 60, '' + shippingState + ',' + shippingCountry)
     if (customerStateCode != 0) {
@@ -287,7 +293,7 @@ function getDataUri(url, cb) {
 function downloadPdf() {
     // $.get("increaseinvoicecounter/")
     saveDatatodb()
-    if (!PONo){
+    if (!PONo) {
         PONo = 'TaxInvoice'
     }
     doc.save(PONo + '.pdf')
@@ -377,7 +383,7 @@ function saveDatatodb() {
 //get selected customer's info from dropdown
 function getcustdetail() {
     document.getElementById('customerName').innerHTML = companyName
-    document.getElementById('customerAdd').innerHTML = shippingAdd
+    document.getElementById('customerAdd').innerHTML = shippingbuilding + " , " + shippingarea + " , " + shippinglandmark
     document.getElementById('customerCity').innerHTML = customerCity
     document.getElementById('customerState').innerHTML = customerState
     document.getElementById('customerCountry').innerHTML = customerCountry

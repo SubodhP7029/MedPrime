@@ -90,7 +90,7 @@ WSGI_APPLICATION = "medprime.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "medprime",
+        "NAME": "medprimenew",
         "USER": "postgres",
         "PASSWORD": "geoserver",
         "HOST": "127.0.0.1",

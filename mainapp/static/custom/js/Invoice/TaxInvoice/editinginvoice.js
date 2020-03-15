@@ -2,7 +2,7 @@ var ProductJSON = {}, gstvaluesJSON = {}
 var creator, loggedinuser, invoiceid, selectedStateIGST, companyName, selectedStateSGST, itemJSON, totalItems
 var rowsCounter = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
-var allProductsData, selectedStateCode, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerAdd, shippingAdd, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+var allProductsData, selectedStateCode, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
@@ -38,18 +38,22 @@ $(document).ready(function () {
             });
 
             // getting all current cust info 
-            SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country ,customername FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
+            SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
             $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
                 allCustomerData = data
                 customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-                customerAdd = data[0][0]
+                customerbuilding = data[0][0]
+                customerarea = data[0][13]
+                customerlandmark = data[0][14]
                 customerPincode = data[0][1]
                 customerCity = data[0][2]
                 customerState = data[0][3]
                 customerCountry = data[0][4]
                 customerGST = data[0][5]
                 customerStateCode = data[0][6]
-                shippingAdd = data[0][7]
+                shippingbuilding = data[0][7]
+                shippingarea = data[0][15]
+                shippinglandmark = data[0][16]
                 shippingPincode = data[0][8]
                 shippingCity = data[0][9]
                 shippingState = data[0][10]
@@ -296,18 +300,22 @@ function getFinalAmountFromTable() {
 
 function getAllCustomerInfo() {
     selectedcustid = document.getElementById('selectedcustomer').value
-    SelectedCustomerUsername = "SELECT billingaddress,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,address, pincode,  city,state,  country,customername FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id= " + selectedcustid
     $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         allCustomerData = data
         customerName = document.getElementById('thisCust-' + selectedcustid).innerHTML
-        customerAdd = data[0][0]
+        customerbuilding = data[0][0]
+        customerarea = data[0][13]
+        customerlandmark = data[0][14]
         customerPincode = data[0][1]
         customerCity = data[0][2]
         customerState = data[0][3]
         customerCountry = data[0][4]
         customerGST = data[0][5]
         customerStateCode = data[0][6]
-        shippingAdd = data[0][7]
+        shippingbuilding = data[0][7]
+        shippingarea = data[0][15]
+        shippinglandmark = data[0][16]
         shippingPincode = data[0][8]
         shippingCity = data[0][9]
         shippingState = data[0][10]

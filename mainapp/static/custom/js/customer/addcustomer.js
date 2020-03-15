@@ -173,7 +173,7 @@ function addshippingdetailsnew() {
     } else {
         document.getElementById('ShippingInfo').style.display = 'block'
     }
-    checkforshippingnew()
+    checkforshipping()
 }
 //add inputs for shipping
 function addshippingdetails() {
@@ -195,26 +195,24 @@ function getStateid() {
 function checkforshipping() {
     if (document.getElementById('flagForNeedOfShippingInfo').checked) {
         $('#id_country').val($('#id_billingcountry').val())
-        $('#id_state').val($('#id_tempbillingstate').val())
-        $('#id_city').val($('#id_tempbillingcity').val())
-        document.getElementById('id_address').value = document.getElementById('id_billingaddress').value
+        if ($('#id_tempbillingstate').val()) {
+            $('#id_state').val($('#id_tempbillingstate').val())
+            $('#id_city').val($('#id_tempbillingcity').val())
+        } else {
+            $('#id_state').val($('#id_billingstate').val())
+            $('#id_city').val($('#id_billingcity').val())
+
+        }
+        $('#id_building').val($('#id_billingbuilding').val())
+        $('#id_area').val($('#id_billingarea').val())
+        $('#id_landmark').val($('#id_billinglandmark').val())
         document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
     }
     getStateid()
     // document.getElementById('dealerCreation').submit()
 }
 
-function checkforshippingnew() {
-    if (document.getElementById('flagForNeedOfShippingInfo').checked) {
-        $('#id_country').val($('#id_billingcountry').val())
-        $('#id_state').val($('#id_billingstate').val())
-        $('#id_city').val($('#id_billingcity').val())
-        document.getElementById('id_address').value = document.getElementById('id_billingaddress').value
-        document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
-    }
-    getStateid()
-    // document.getElementById('dealerCreation').submit()
-}
+
 $("#id_username").on("keyup", function () {
     var input = $("#id_username").val()
     var string = "SELECT username FROM public.auth_user where username = '" + input + "'"

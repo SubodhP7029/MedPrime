@@ -177,10 +177,40 @@ class quotationInvoiceForm(forms.ModelForm):
 # add new customer
 class CustomerProfileForm(forms.ModelForm):
     # distributer = models.CharField(max_length=500)
-    billingaddress = forms.CharField(
-        label="Billing Address",
-        widget=forms.Textarea(
-            attrs={"placeholder": "Billing Address Here", "rows": 5, "cols": 20}
+    billingbuilding = forms.CharField(
+        label="Building",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Flat / Office no. / floor "}
+        ),
+    )
+    billingarea = forms.CharField(
+        label="Area",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Colony / Street / Locality "}
+        ),
+    )
+    billinglandmark = forms.CharField(
+        label="Landmark",
+        widget=forms.TextInput(
+            attrs={"placeholder": "E.g. : Near Ragalartech Ltd.. "}
+        ),
+    )
+    building = forms.CharField(
+        label="Building",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Flat / Office no. / floor "}
+        ),
+    )
+    area = forms.CharField(
+        label="Area",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Colony / Street / Locality "}
+        ),
+    )
+    landmark = forms.CharField(
+        label="Landmark",
+        widget=forms.TextInput(
+            attrs={"placeholder": "E.g. : Near Ragalartech Ltd.. "}
         ),
     )
     # billingcountry =
@@ -191,12 +221,7 @@ class CustomerProfileForm(forms.ModelForm):
     # billingcity = models.CharField( max_length=50)
     # billingstate = models.CharField( max_length=50)
     # country = models.CharField(max_length=50)
-    address = forms.CharField(
-        label="Shipping Address",
-        widget=forms.Textarea(
-            attrs={"placeholder": "Shipping Address Here", "rows": 5, "cols": 20}
-        ),
-    )
+
     pincode = forms.CharField(
         label="Shipping Pincode",
         widget=forms.TextInput(attrs={"placeholder": "Shipping Address Pincode Here"}),
@@ -206,7 +231,7 @@ class CustomerProfileForm(forms.ModelForm):
     # stateid = models.IntegerField(null=True)
 
     phone = forms.CharField(
-        label="Phone No.",
+        label="Phone No. (add Country Code)",
         required=False,
         widget=forms.TextInput(attrs={"placeholder": "+91XXXXXXXXX"}),
     )
