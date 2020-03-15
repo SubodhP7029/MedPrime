@@ -88,6 +88,7 @@ WSGI_APPLICATION = "medprime.wsgi.application"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # for mac
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "medprimenew",
@@ -96,6 +97,15 @@ DATABASES = {
         "HOST": "127.0.0.1",
         "PORT": "5432",
     }
+    # for deploy 
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": "medprimegit",
+    #     "USER": "postgres",
+    #     "PASSWORD": "postgres",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "5432",
+    # }
 }
 
 
