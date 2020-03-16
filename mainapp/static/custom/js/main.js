@@ -95,12 +95,17 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
     doc.setFontSize(8)
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerbuilding)
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 53, customerarea)
+    if (customerlandmark == null) {
+        customerlandmark = ''
+    }
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 56, customerlandmark)
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 60, '' + customerPincode + ',' + customerCity + ',')
     doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 65, '' + customerState + ',' + customerCountry)
-    if (customerGST != '' && customerGST != null) {
-        doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 70, 'GST No:' + customerGST)
+    if (customerGST == '' && customerGST == null) {
+        customerGST = 'Not Provided'
     }
+    doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 70, 'GST No:' + customerGST)
+
     //Shippinh Address
     var d = 50 //distance Between Billing And Shipping Text
     doc.setFontSize(11)
@@ -109,6 +114,9 @@ function headerOfPdf(doc, img, MedprimeAddressLocation) {
 
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 45, shippingbuilding)
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 48, shippingarea)
+    if (shippinglandmark == null) {
+        shippinglandmark = ''
+    }
     doc.text(MedprimeAddressLocation[0] + d, MedprimeAddressLocation[1] + 51, shippinglandmark)
 
 
@@ -376,6 +384,27 @@ function saveDatatodb() {
     }
     $('#id_items').val(JSON.stringify(finalJson))
 
+    var customerdetailjson = {
+        "customerbuilding": customerbuilding,
+        "customerarea": customerarea,
+        "customerlandmark": customerlandmark,
+        "customerPincode": customerPincode,
+        "customerCity": customerCity,
+        "customerState": customerState,
+        "customerCountry": customerCountry,
+        "customerGST": customerGST,
+        "customerStateCode": customerStateCode,
+        "shippingbuilding": shippingbuilding,
+        "shippingarea": shippingarea,
+        "shippinglandmark": shippinglandmark,
+        "shippingPincode": shippingPincode,
+        "shippingCity": shippingCity,
+        "shippingState": shippingState,
+        "shippingCountry": shippingCountry,
+        "companyName": companyName
+
+    }
+    $('#id_customerdetails').val(JSON.stringify(customerdetailjson))
     $('#saveDataToForm').click()
 }
 

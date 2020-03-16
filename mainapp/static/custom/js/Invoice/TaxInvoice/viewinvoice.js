@@ -92,166 +92,167 @@ $(document).ready(function () {
 function ViewPDF(selectedRowData) {
     SelectedState = "SELECT igst,cgst,sgst FROM public.mainapp_gsttable WHERE state= '" + selectedRowData[3] + "'"
     $.get("gettaxdetailofstate/", { sqlParam: SelectedState }, function (gsttype) {
-        SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id=" + selectedRowData[1]
-        $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
-            var tableheadarray = ['Sr No.', 'Product', 'HSN/SAC', 'QTY', 'Rate', 'Discount']
-            if (gsttype.length != 0) {
-                stateIGSTflag = gsttype[0][0]
-                stateCGSTflag = gsttype[0][1]
-                stateSGSTflag = gsttype[0][2]
-                if (stateIGSTflag) {
-                    tableheadarray.push('IGST')
+        var custDetails = selectedRowData[17]
+        var c = custDetails.split("'").join('"')
+        var custData = JSON.parse(c)
+        var tableheadarray = ['Sr No.', 'Product', 'HSN/SAC', 'QTY', 'Rate', 'Discount']
+        if (gsttype.length != 0) {
+            stateIGSTflag = gsttype[0][0]
+            stateCGSTflag = gsttype[0][1]
+            stateSGSTflag = gsttype[0][2]
+            if (stateIGSTflag) {
+                tableheadarray.push('IGST')
 
-                } else {
-                    tableheadarray.push('CGST')
-                    tableheadarray.push('SGST')
-                }
-                flagForTax = true
             } else {
-                flagForTax = false
+                tableheadarray.push('CGST')
+                tableheadarray.push('SGST')
             }
-            tableheadarray.push('Amount')
+            flagForTax = true
+        } else {
+            flagForTax = false
+        }
+        tableheadarray.push('Amount')
 
-            //create pdf 
-            doc = new jsPDF()
-            //assigning all variable values
-            invoiceID = selectedRowData[0]
-            companyName = data[0][12]
-            customerbuilding = data[0][0]
-            customerarea = data[0][13]
-            customerlandmark = data[0][14]
-            customerPincode = data[0][1]
-            customerCity = data[0][2]
-            customerState = data[0][3]
-            customerCountry = data[0][4]
-            customerGST = data[0][5]
-            customerStateCode = data[0][6]
-            invoiceDateEntered = selectedRowData[4].split('-')
-            invoiceDate = selectedRowData[4]
-            dueDate = selectedRowData[5]
-            dueDateEntered = selectedRowData[6].split('-')
-            PONo = selectedRowData[7]
-            Finalamount = selectedRowData[12]
-            totalAmt = selectedRowData[9]
-            totalGSTAmt = selectedRowData[10]
-            totalAdjustment = selectedRowData[11]
-            typeofadjustment = selectedRowData[15]
-            sign = selectedRowData[13]
-            shippingbuilding = data[0][7]
-            shippingarea = data[0][15]
-            shippinglandmark = data[0][16]
-            shippingPincode = data[0][8]
-            shippingCity = data[0][9]
-            shippingState = data[0][10]
-            shippingCountry = data[0][11]
-            //creat items table
-            stingdata = selectedRowData[8]
-            var c = stingdata.split("'").join('"')
-            var theJSON = JSON.parse(c)
-            var JSONlen = Object.keys(theJSON)
-            var tr = document.getElementById('headOfProductPreview')
-            tr.innerHTML = ''
-            tr.className = 'tableHead'
-            var tbody = document.getElementById('bodyOfProductPreview')
-            tbody.innerHTML = ''
-            for (i = 0; i < tableheadarray.length; i++) {
-                var td = document.createElement('td')
-                td.innerText = tableheadarray[i]
-                td.id = tableheadarray[i] + 'Column'
+        //create pdf 
+        doc = new jsPDF()
+        //assigning all variable values
+        invoiceID = selectedRowData[0]
+        companyName = custData["companyName"]
+        customerbuilding = custData["customerbuilding"]
+        customerarea = custData["customerarea"]
+        customerlandmark = custData["customerlandmark"]
+        customerPincode = custData["customerPincode"]
+        customerCity = custData["customerCity"]
+        customerState = custData["customerState"]
+        customerCountry = custData["customerCountry"]
+        customerGST = custData["customerGST"]
+        customerStateCode = custData["customerStateCode"]
+        invoiceDateEntered = selectedRowData[4].split('-')
+        invoiceDate = selectedRowData[4]
+        dueDate = selectedRowData[5]
+        dueDateEntered = selectedRowData[6].split('-')
+        PONo = selectedRowData[7]
+        Finalamount = selectedRowData[12]
+        totalAmt = selectedRowData[9]
+        totalGSTAmt = selectedRowData[10]
+        totalAdjustment = selectedRowData[11]
+        typeofadjustment = selectedRowData[15]
+        sign = selectedRowData[13]
+        shippingbuilding = custData["shippingbuilding"]
+        shippingarea = custData["shippingarea"]
+        shippinglandmark = custData["shippinglandmark"]
+        shippingPincode = custData["shippingPincode"]
+        shippingCity = custData["shippingCity"]
+        shippingState = custData["shippingState"]
+        shippingCountry = custData["shippingCountry"]
+        //creat items table
+        stingdata = selectedRowData[8]
+        var c = stingdata.split("'").join('"')
+        var theJSON = JSON.parse(c)
+        var JSONlen = Object.keys(theJSON)
+        var tr = document.getElementById('headOfProductPreview')
+        tr.innerHTML = ''
+        tr.className = 'tableHead'
+        var tbody = document.getElementById('bodyOfProductPreview')
+        tbody.innerHTML = ''
+        for (i = 0; i < tableheadarray.length; i++) {
+            var td = document.createElement('td')
+            td.innerText = tableheadarray[i]
+            td.id = tableheadarray[i] + 'Column'
 
-                tr.appendChild(td)
-            }
-            for (j = 0; j < JSONlen.length; j++) {
+            tr.appendChild(td)
+        }
+        for (j = 0; j < JSONlen.length; j++) {
 
-                //
-                var tr = document.createElement('tr')
-                tr.onclick = function () {
-                    $('#EditingRowInPreviewTable').modal('show');
-                    clickedTR = this
-                };
-                var td = document.createElement('td')
-                td.innerHTML = ''
-                tr.appendChild(td)
-                var td = document.createElement('td')
-                td.innerHTML = "<b class='productName'>" + theJSON[JSONlen[j]]['Product'] + "</b><br><p class='productDesc'>" + theJSON[JSONlen[j]]['Description'] + "</p>"
-                tr.appendChild(td)
-                var td = document.createElement('td')
-                td.className = 'productHSN'
-                td.innerHTML = theJSON[JSONlen[j]]['HSN']
-                tr.appendChild(td)
-                var td = document.createElement('td')
-                td.className = 'productQuantity'
-                td.innerHTML = theJSON[JSONlen[j]]['Quantity']
-                quantity = theJSON[JSONlen[j]]['Quantity']
-                tr.appendChild(td)
-                var td = document.createElement('td')
-                td.className = 'productRate'
-                td.innerHTML = theJSON[JSONlen[j]]['Rate']
-                rate = theJSON[JSONlen[j]]['Rate']
-                tr.appendChild(td)
-                var td = document.createElement('td')
-                td.className = 'discount'
-                td.innerHTML = theJSON[JSONlen[j]]['Discount']
-                tr.appendChild(td)
-                if (flagForTax) {
-                    for (h = 0; h < allProductJSONArray.length; h++) {
-                        if (theJSON[JSONlen[j]]['HSN'] == allProductJSONArray[h]["HSN"]) {
-                            var taxValue = allProductJSONArray[h]['tax']
-                            if (!taxBrackets.includes(taxValue)) {
-                                taxBrackets.push(taxValue)
-                            }
-                            if (stateIGSTflag) {
-                                var IGSTval = quantity * rate * taxValue / 100
-                                var td = document.createElement('td')
-                                td.className = 'productIGST'
-                                td.innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + taxValue + "%</p>"
-                                tr.appendChild(td)
-                            } else {
-                                var CGSTval = quantity * rate * taxValue / 200
-                                var SGSTval = quantity * rate * taxValue / 200
+            //
+            var tr = document.createElement('tr')
+            tr.onclick = function () {
+                $('#EditingRowInPreviewTable').modal('show');
+                clickedTR = this
+            };
+            var td = document.createElement('td')
+            td.innerHTML = ''
+            tr.appendChild(td)
+            var td = document.createElement('td')
+            td.innerHTML = "<b class='productName'>" + theJSON[JSONlen[j]]['Product'] + "</b><br><p class='productDesc'>" + theJSON[JSONlen[j]]['Description'] + "</p>"
+            tr.appendChild(td)
+            var td = document.createElement('td')
+            td.className = 'productHSN'
+            td.innerHTML = theJSON[JSONlen[j]]['HSN']
+            tr.appendChild(td)
+            var td = document.createElement('td')
+            td.className = 'productQuantity'
+            td.innerHTML = theJSON[JSONlen[j]]['Quantity']
+            quantity = theJSON[JSONlen[j]]['Quantity']
+            tr.appendChild(td)
+            var td = document.createElement('td')
+            td.className = 'productRate'
+            td.innerHTML = theJSON[JSONlen[j]]['Rate']
+            rate = theJSON[JSONlen[j]]['Rate']
+            tr.appendChild(td)
+            var td = document.createElement('td')
+            td.className = 'discount'
+            td.innerHTML = theJSON[JSONlen[j]]['Discount']
+            tr.appendChild(td)
+            if (flagForTax) {
+                for (h = 0; h < allProductJSONArray.length; h++) {
+                    if (theJSON[JSONlen[j]]['HSN'] == allProductJSONArray[h]["HSN"]) {
+                        var taxValue = allProductJSONArray[h]['tax']
+                        if (!taxBrackets.includes(taxValue)) {
+                            taxBrackets.push(taxValue)
+                        }
+                        if (stateIGSTflag) {
+                            var IGSTval = quantity * rate * taxValue / 100
+                            var td = document.createElement('td')
+                            td.className = 'productIGST'
+                            td.innerHTML = "<b class='igstvalue gstvalue'>" + IGSTval + "</b><br><p class='igstrate'>" + taxValue + "%</p>"
+                            tr.appendChild(td)
+                        } else {
+                            var CGSTval = quantity * rate * taxValue / 200
+                            var SGSTval = quantity * rate * taxValue / 200
 
-                                var td = document.createElement('td')
-                                td.className = 'productCGST'
-                                td.innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + taxValue / 2 + "%</p>"
-                                tr.appendChild(td)
+                            var td = document.createElement('td')
+                            td.className = 'productCGST'
+                            td.innerHTML = "<b class='cgstvalue gstvalue'>" + CGSTval + "</b><br><p class='cgstrate'>" + taxValue / 2 + "%</p>"
+                            tr.appendChild(td)
 
-                                var td = document.createElement('td')
-                                td.className = 'productSGST'
-                                td.innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + taxValue / 2 + "%</p>"
-                                tr.appendChild(td)
-                            }
+                            var td = document.createElement('td')
+                            td.className = 'productSGST'
+                            td.innerHTML = "<b class='sgstvalue gstvalue'>" + SGSTval + "</b><br><p class='sgstrate'>" + taxValue / 2 + "%</p>"
+                            tr.appendChild(td)
                         }
                     }
-
                 }
-                var td = document.createElement('td')
-                td.className = 'finalvalue'
-                td.innerHTML = theJSON[JSONlen[j]]['Final Price']
-                tr.appendChild(td)
-                tbody.appendChild(tr)
-                //
-            }
-            insertSrNo()
-            getFinalAmountFromTable()
-            // setup medprime info
-            function getImgFromUrl(logo_url, callback) {
-                img = new Image();
-                img.src = logo_url;
-                img.onload = function () {
-                    callback(img);
-                };
-            }
-            var logo_url = document.getElementById('logoofcompany').src;
-            getImgFromUrl(logo_url, function (img) {
-                imgUrl = document.getElementById('signatureOfAdmin').src
-                getDataUri(imgUrl, function (dataUri) {
-                    logo = dataUri;
-                    console.log("logo=" + logo);
-                    generatePDF(img);
-                });
 
+            }
+            var td = document.createElement('td')
+            td.className = 'finalvalue'
+            td.innerHTML = theJSON[JSONlen[j]]['Final Price']
+            tr.appendChild(td)
+            tbody.appendChild(tr)
+            //
+        }
+        insertSrNo()
+        getFinalAmountFromTable()
+        // setup medprime info
+        function getImgFromUrl(logo_url, callback) {
+            img = new Image();
+            img.src = logo_url;
+            img.onload = function () {
+                callback(img);
+            };
+        }
+        var logo_url = document.getElementById('logoofcompany').src;
+        getImgFromUrl(logo_url, function (img) {
+            imgUrl = document.getElementById('signatureOfAdmin').src
+            getDataUri(imgUrl, function (dataUri) {
+                logo = dataUri;
+                console.log("logo=" + logo);
+                generatePDF(img);
             });
-        })
+
+        });
+
     }
     )
 }

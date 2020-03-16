@@ -137,8 +137,8 @@ class AllCounters(models.Model):
 
 # Final invoice model
 class taxInvoice(models.Model):
-    invoiceid = models.IntegerField()
-    customerid = models.IntegerField()
+    invoiceid = models.IntegerField(null=True, blank=True)
+    customerid = models.IntegerField(null=True, blank=True)
     creatorid = models.IntegerField(null=True, blank=True)
     creatorname = models.CharField(max_length=500, null=True, blank=True)
     updatorid = models.IntegerField(null=True, blank=True)
@@ -147,7 +147,8 @@ class taxInvoice(models.Model):
     terms = models.CharField(max_length=500, blank=True)
     duedate = models.DateField(null=True, blank=True)
     po = models.CharField(max_length=500, blank=True,null=True)
-    items = JSONField()
+    items = JSONField( blank=True,null=True)
+    customerdetails = JSONField( blank=True,null=True)
     shippingState = models.CharField(max_length=500, blank=True)
     subtotalamount = models.FloatField(null=True, blank=True)
     taxamount = models.FloatField(null=True, blank=True)

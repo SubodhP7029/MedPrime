@@ -339,7 +339,7 @@ function createPDF() {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'error',
-                    title: 'Please select Payment date',
+                    title: 'Please select Due date',
                     showConfirmButton: false,
                     timer: 2000
                 })
