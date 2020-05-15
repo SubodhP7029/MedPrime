@@ -14,46 +14,44 @@
 {% block content %}
 
 
-<div class="card alert">
-    {% for message in messages %}
-    <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {{ message }}
-    </div>
-
-    {% endfor %}
-    <div class='row'>
-        {% comment %} table table-striped {% endcomment %}
-
-        <table id="productTables" class="hover" style="width:100%;font-size: 12px;">
-            <thead style="background-color: #03a9f4;">
-                <font color="white">
-                    <tr>
-                        <th style='color:aliceblue !important'>Name</th>
-                        <th style='color:aliceblue !important'>Price</th>
-                        <th style='color:aliceblue !important;'>HSN</th>
-                        <th style='color:aliceblue !important'>Tax(%)</th>
-                        <th style='display:none'>Desc</th>
-                    </tr>
-                </font>
-            </thead>
-            <tbody>
-                {% for eachproduct in allproducts.all %}
-                <tr>
-                    <td class='productname'>{{ eachproduct.name}}</td>
-                    <td class='productprice'>{{ eachproduct.price}}</td>
-                    <td class='producthsn'>{{ eachproduct.HSN}}</td>
-                    <td class='producttax'>{{ eachproduct.tax}}</td>
-                    <td style='display:none'>{{ eachproduct.description}}</td>
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">View Product</h6>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                  <table class="table table-bordered table-striped" id="view_product_datatable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Price</th>
+                          <th>HSN</th>
+                          <th>Tax</th>
+                          <th style='display:none'>Description</th>
+  
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% for eachproduct in allproducts.all %}
+                      <tr>
+                        <td class='productname'>{{ eachproduct.name}}</td>
+                        <td class='productprice'>{{ eachproduct.price}}</td>
+                        <td class='producthsn'>{{ eachproduct.HSN}}</td>
+                        <td class='producttax'>{{ eachproduct.tax}}</td>
+                        <td style='display:none'>{{ eachproduct.description}}</td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+  </div>
 <!-- option modal -->
 <div id="productModal" class="modal fade" role="dialog">
     <div class="modal-dialog  modal-sm">

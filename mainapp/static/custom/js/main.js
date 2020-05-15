@@ -290,7 +290,7 @@ function getDataUri(url, cb) {
 
         canvas.getContext('2d').drawImage(this, 0, 0);
 
-        cb(canvas.toDataURL('image/jpeg'));
+        cb(canvas.toDataURL('image/png'));
     };
 
     image.src = url;

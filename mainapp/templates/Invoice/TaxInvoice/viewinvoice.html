@@ -28,7 +28,9 @@
 <a id='redirectToHere' style='display: none;' href="{% url 'vieweinvoices' %}">Billing</a>
 <img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
 <input type="hidden" id='currentloggedinuser' value={{ user.id }} />
-<div class="card alert">
+
+
+<!-- <div class="card alert">
     <div class='row'>
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="card bg-info">
@@ -62,75 +64,119 @@
 
 
 
-        <button type="button" style="margin-top: 7.5px;"
+        <!-- <button type="button" style="margin-top: 7.5px;"
             class="btn btn-primary btn-flat btn-addon btn-lg m-b-10 m-l-5"><a href="{% url 'invoice' %}"><i
                     class="ti-plus"></i>Add
                 New Invoice</a></button>
+    </div> -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">View Invoice</h1>
+        <div class="row">
+           <div class="col-lg-6">
+              <!-- Circle Buttons -->
+              <div class="card shadow mb-4">
+                 <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Invoice</h6>
+                 </div>
+                 <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                       <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Invoice</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalInvoices }}</div>
+                       </div>
+                       <div class="col-auto">
+                          <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+           <div class="col-lg-3">
+            <!-- Brand Buttons -->
+            <div class="card shadow mb-4">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+                          <button type="button" class="btn btn-lg btn-primary"  ><a href="{% url 'invoice' %}" style="text-decoration: none; color: white;"><i class="fa fa-plus">
+                          </i>&nbsp;Add New Invoice</a></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="col-lg-12">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Invoice Table</h6>
+              </div>
+              <div class="card-body">
+                    <table class="table table-bordered table-striped" id="view_invoice_datatable" width="100%" cellspacing="0"
+                    style=".my-custom-scrollbar {
+                        position: relative;
+                        height: 200px;
+                        overflow: auto;
+                        }
+                        .table-wrapper-scroll-y {
+                        display: block;
+                        }">
+                      <thead>
+                        <tr>
+                          {% comment %} <th>Actions </th> {% endcomment %}
+                          <th>Invoice ID</th>
+                          <th style='display: none;'>Customer ID</th>
+                          <th>Customer Name</th>
+                          <th>Shipping State</th>
+                          <th>Invoice Date</th>
+                          <th style='display: none;'>Terms of payment</th>
+                          <th>Due Date</th>
+                          <th>P.O. No.</th>
+                          <th>items</th>
+                          <th>Total Rate</th>
+                          <th>Total Tax</th>
+                          <th>Adjustment Amt.</th>
+                          <th>Total Cost</th>
+                          <th style='display: none;'>Signature </th>
+                          <th style='display: none;'>Creator id</th>
+                          <th style='display: none;'>Adjustment Type</th>
+                          <th>Creator</th>
+                          <th style='display: none;'>customerdetails</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                      {% for eachInvoice in alltaxInvoice.all %}
+                        <tr>
+                            <td class='InvoiceInvoiceID'>{{ eachInvoice.invoiceid}}</td>
+                            <td class='Invoicecustomerid' style='display: none;'>{{ eachInvoice.customerid}}</td>
+                            <td class='Invoicecustomername'>{{ eachInvoice.customername}}</td>
+                            <td class='InvoiceshippingState'>{{ eachInvoice.shippingState}}</td>
+                            <td class='Invoiceinvoicedate'>{{ eachInvoice.invoicedate|date:"d-m-yy"}}</td>
+                            <td class='Invoiceterms' style='display: none;'>{{ eachInvoice.terms}}</td>
+                            <td class='Invoiceduedate'>{{ eachInvoice.duedate|date:"d-m-yy"}}</td>
+                            <td class='Invoicepo'>{{ eachInvoice.po}}</td>
+                            <td class='items Invoiceitems'>{{ eachInvoice.items}}</td>
+                            <td class='Invoicesubtotalamount'>{{ eachInvoice.subtotalamount}}</td>
+                            <td class='Invoicetaxamount'>{{ eachInvoice.taxamount}}</td>
+                            <td class='Invoiceadjustmentamount'>{{ eachInvoice.adjustmentamount}}</td>
+                            <td class='Invoicefinalamount'>{{ eachInvoice.finalamount}}</td>
+                            <td class='Invoicesignature' style='display: none;'>{{ eachInvoice.signature}}</td>
+                            <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.creatorid}}</td>
+                            <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.adjustmenttype}}</td>
+                            <td class='Invoicecreatorid'>{{ eachInvoice.creatorname}}</td>
+                            <td class='customerDetails' style='display: none;'>{{ eachInvoice.customerdetails}}</td>
+    
+                        </tr>
+    
+                        {% endfor %}
+                        </tbody>
+                      </table>
+    
+                  </div>
+                </div>
+          </div>
+        </div>
     </div>
-
-
-
-</div>
-<div class="card alert">
-    <div class='row'>
-        {% comment %} table table-striped {% endcomment %}
-
-        <table id="invoiceTables" class="hover" style="width:100%;font-size: 12px;">
-            <thead style="background-color: #03a9f4;">
-                <font color="white">
-                    <tr>
-                        {% comment %} <th>Actions </th> {% endcomment %}
-                        <th style='color:aliceblue !important'>Invoice ID</th>
-                        <th style='display: none;'>Customer ID</th>
-                        <th style='color:aliceblue !important'>Customer Name</th>
-                        <th style='color:aliceblue !important;'>Shipping State</th>
-                        <th style='color:aliceblue !important'>Invoice Date</th>
-                        <th style='color:aliceblue !important;display: none;'>Terms of payment</th>
-                        <th style='color:aliceblue !important'>Due Date</th>
-                        <th style='color:aliceblue !important'>P.O. No.</th>
-                        <th style='color:aliceblue !important'>items</th>
-                        <th style='color:aliceblue !important'>Total Rate</th>
-                        <th style='color:aliceblue !important'>Total Tax</th>
-                        <th style='color:aliceblue !important'>Adjustment Amt.</th>
-                        <th style='color:aliceblue !important'>Total Cost</th>
-                        <th style='color:aliceblue !important;display: none;'>Signature </th>
-                        <th style='display: none;'>Creator id</th>
-                        <th style='display: none;'>Adjustment Type</th>
-                        <th style='color:aliceblue !important'>Creator</th>
-                        <th style='display: none;'>customerdetails</th>
-
-                    </tr>
-                </font>
-            </thead>
-            <tbody>
-                {% for eachInvoice in alltaxInvoice.all %}
-                <tr>
-                    <td class='InvoiceInvoiceID'>{{ eachInvoice.invoiceid}}</td>
-                    <td class='Invoicecustomerid' style='display: none;'>{{ eachInvoice.customerid}}</td>
-                    <td class='Invoicecustomername'>{{ eachInvoice.customername}}</td>
-                    <td class='InvoiceshippingState'>{{ eachInvoice.shippingState}}</td>
-                    <td class='Invoiceinvoicedate'>{{ eachInvoice.invoicedate|date:"d-m-yy"}}</td>
-                    <td class='Invoiceterms' style='display: none;'>{{ eachInvoice.terms}}</td>
-                    <td class='Invoiceduedate'>{{ eachInvoice.duedate|date:"d-m-yy"}}</td>
-                    <td class='Invoicepo'>{{ eachInvoice.po}}</td>
-                    <td class='items Invoiceitems'>{{ eachInvoice.items}}</td>
-                    <td class='Invoicesubtotalamount'>{{ eachInvoice.subtotalamount}}</td>
-                    <td class='Invoicetaxamount'>{{ eachInvoice.taxamount}}</td>
-                    <td class='Invoiceadjustmentamount'>{{ eachInvoice.adjustmentamount}}</td>
-                    <td class='Invoicefinalamount'>{{ eachInvoice.finalamount}}</td>
-                    <td class='Invoicesignature' style='display: none;'>{{ eachInvoice.signature}}</td>
-                    <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.creatorid}}</td>
-                    <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.adjustmenttype}}</td>
-                    <td class='Invoicecreatorid'>{{ eachInvoice.creatorname}}</td>
-                    <td class='customerDetails' style='display: none;'>{{ eachInvoice.customerdetails}}</td>
-
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <!-- product table  -->
 <table id='Previewtable' style='display: none'>

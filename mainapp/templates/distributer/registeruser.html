@@ -1,21 +1,15 @@
 {% extends 'index.html' %}
 {% load crispy_forms_tags %}
-{% block head %}
-<h1>Add new Dealer </h1>
-{% endblock %}
+
 {% block content %}
-<div class='row'>
-    {% comment %} <h3> Add new Dealer </h3> {% endcomment %}
-    <div class="card alert" style="height: 79vh;overflow-y: scroll;">
-        <div class="card-header">
-            <h4>Register</h4>
-            <div class="card-header-right-icon">
-                <ul>
-                    <!-- <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li> -->
-                    <li class="doc-link"><a href="#"><i class="ti-link"></i></a></li>
-                </ul>
-            </div>
-        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">Add Dealer</h6>
+                    </div>
         <div class="card-body">
             <div class="basic-form">
 
@@ -185,4 +179,8 @@
         </div>
     </div>
 </div>
+</div>
+        </div>
+    
+
 {% endblock %}

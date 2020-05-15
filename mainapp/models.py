@@ -9,6 +9,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Profile Model
 
+class MyModel(models.Model):
+    name = models.CharField(max_length=128)
+    phone = PhoneField(blank=True, help_text='Contact phone number')
 
 class SerialNumbercounter(models.Model):
     counter = models.IntegerField()

@@ -1,4 +1,4 @@
-// add variables 
+// add variables
 var allProductsData, selectedStateCode, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
@@ -276,6 +276,7 @@ function getAllCustomerInfo() {
 
 
 
+
 // raw query to get all prouct data columns
 $.get("/invoicegetallprodcol/", function (data) {
     allProductsDataColumns = data
@@ -287,7 +288,7 @@ $.get("/invoicegetallprodcol/", function (data) {
         var ProductSelectDropdown = document.getElementById('selectedProduct')
         ProductSelectDropdown.innerHTML = "<option value=''>Select Product</option>"
 
-        //create allProductJSONArray 
+        //create allProductJSONArray
         for (i = 0; i < allProductsData.length; i++) {
             var eachIndividualProduct = {}
             for (j = 0; j < allProductsDataColumns.length; j++) {
@@ -295,7 +296,7 @@ $.get("/invoicegetallprodcol/", function (data) {
             }
             allProductJSONArray.push(eachIndividualProduct)
         }
-        // find index of name column in db 
+        // find index of name column in db
         var indexOfName
         for (j = 0; j < allProductsDataColumns.length; j++) {
             if (allProductsDataColumns[j].col[0] == 'name') {
@@ -312,7 +313,7 @@ $.get("/invoicegetallprodcol/", function (data) {
 })
 
 
-// Create invoice 
+// Create invoice
 function createPDF() {
 
     if (allCustomerData == undefined) {
@@ -362,6 +363,7 @@ function createPDF() {
                 function getImgFromUrl(logo_url, callback) {
                     img = new Image();
                     img.src = logo_url;
+                    
                     img.onload = function () {
                         callback(img);
                     };
@@ -437,4 +439,3 @@ function createPDF() {
 //     });
 //     e.preventDefault();
 // });
-

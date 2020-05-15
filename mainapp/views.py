@@ -239,9 +239,9 @@ def vieweditproducts(request):
 @login_required
 def invoice(request):
     # alldealers = Profile.objects.all()
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
-    currentUser = Profile.objects.filter(user=request.user).first()
-    currentUserName = currentUser.nameofcontact
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = currentUser.values_list('nameofcontact', flat=True)
     currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
     taxinfform = TaxInvoiceForm(request.POST or None)
     context = {

@@ -22,52 +22,58 @@
 </div>
 
 {% endfor %}
-<div class="card alert">
-    <div class='row'>
-        {% comment %} table table-striped {% endcomment %}
-
-        <table id="dealerTables" class="hover" style="width:100%;font-size: 12px;">
-            <thead style="background-color: #03a9f4;">
-                <font color="white">
-                    <tr>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">View Product</h6>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                  <table class="table table-bordered table-striped" id="view_product_datatable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
                         {% comment %} <th>Actions </th> {% endcomment %}
                         <th style='display: none;'>Dealer ID</th>
-                        <th style='color:aliceblue !important'>Username</th>
-                        <th style='color:aliceblue !important'>Name of Contact</th>
-                        <th style='color:aliceblue !important;'>Email</th>
-                        <th style='color:aliceblue !important'>Telephone</th>
-                        <th style='color:aliceblue !important'>Mobile</th>
+                        <th>Username</th>
+                        <th>Name of Contact</th>
+                        <th>Email</th>
+                        <th>Telephone</th>
+                        <th>Mobile</th>
                     </tr>
-                </font>
-            </thead>
-            <tbody>
-                {% for eachDealer in alldealer.all %}
-                <tr>
-                    <td style='display: none;'>{{ eachDealer.user.id}}</td>
-                    <td class='dealerUsername'>{{ eachDealer.user.username}}</td>
-                    <td class='dealernameofcontact'>{{ eachDealer.nameofcontact}}</td>
-                    {% if  eachDealer.user.email %}
-                    <td class='dealerEmail'>{{ eachDealer.user.email}}</td>
-                    {% else %}
-                    <td class='dealerEmail' style='color:gray'>No Email</td>
-                    {% endif %}
-                    {% if  eachDealer.telephone %}
-                    <td class='dealerPhone'>{{ eachDealer.telephone}}</td>
-                    {% else %}
-                    <td class='dealerPhone' style='color:gray'>No Telephone</td>
-                    {% endif %}
-                    {% if  eachDealer.mobile %}
-                    <td class='dealermobile'>{{ eachDealer.mobile}}</td>
-                    {% else %}
-                    <td class='dealermobile' style='color:gray'>No mobile</td>
-                    {% endif %}
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+                  </thead>
+                  <tbody>
+                    {% for eachDealer in alldealer.all %}
+                      <tr>
+                          <td style='display: none;'>{{ eachDealer.user.id}}</td>
+                          <td class='dealerUsername'>{{ eachDealer.user.username}}</td>
+                          <td class='dealernameofcontact'>{{ eachDealer.nameofcontact}}</td>
+                          {% if  eachDealer.user.email %}
+                          <td class='dealerEmail'>{{ eachDealer.user.email}}</td>
+                          {% else %}
+                          <td class='dealerEmail' style='color:gray'>No Email</td>
+                          {% endif %}
+                          {% if  eachDealer.telephone %}
+                          <td class='dealerPhone'>{{ eachDealer.telephone}}</td>
+                          {% else %}
+                          <td class='dealerPhone' style='color:gray'>No Telephone</td>
+                          {% endif %}
+                          {% if  eachDealer.mobile %}
+                          <td class='dealermobile'>{{ eachDealer.mobile}}</td>
+                          {% else %}
+                          <td class='dealermobile' style='color:gray'>No mobile</td>
+                          {% endif %}
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
 <!-- option modal -->
 <div id="DealerModal" class="modal fade" role="dialog">
     <div class="modal-dialog  modal-sm">

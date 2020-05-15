@@ -13,7 +13,6 @@
 {% endblock %}
 {% block content %}
 
-<div class="card alert">
 {% for message in messages %}
 <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -21,47 +20,55 @@
     </button>
     {{ message }}
 </div>
-
 {% endfor %}
-    <div class='row'>
-        {% comment %} table table-striped {% endcomment %}
-
-        <table id="customerTables" class="hover" style="width:100%;font-size: 12px;">
-            <thead style="background-color: #03a9f4;">
-                <font color="white">
-                    <tr>
-                        {% comment %} <th>Actions </th> {% endcomment %}
-                        <th style='display: none;'>Customer ID</th>
-                        <th style='color:aliceblue !important'>Username</th>
-                        <th style='color:aliceblue !important'>Customer Name</th>
-                        <th style='color:aliceblue !important;'>Email</th>
-                        <th style='color:aliceblue !important'>Phone</th>
-                    </tr>
-                </font>
-            </thead>
-            <tbody>
-                {% for eachCustomer in allcustomer.all %}
-                <tr>
-                    <td style='display: none;'>{{ eachCustomer.user.id}}</td>
-                    <td class='CustomerUsername'>{{ eachCustomer.user.username}}</td>
-                    <td class='CustomerCustomername'>{{ eachCustomer.customername}}</td>
-                    {% if  eachCustomer.user.email %}
-                    <td class='CustomerEmail'>{{ eachCustomer.user.email}}</td>
-                    {% else %}
-                    <td class='CustomerEmail' style='color:gray'>No Email</td>
-                    {% endif %}
-                    {% if  eachCustomer.phone %}
-                    <td class='CustomerPhone'>{{ eachCustomer.phone}}</td>
-                    {% else %}
-                    <td class='CustomerPhone' style='color:gray'>No Phone</td>
-                    {% endif %}
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">View Customer</h6>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                  <table class="table table-bordered table-striped" id="view_product_datatable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                          {% comment %} <th>Actions </th> {% endcomment %}
+                          <th style='display: none;'>Customer ID</th>
+                          <th>Username</th>
+                          <th>Customer Name</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for eachCustomer in allcustomer.all %}
+                        <tr>
+                            <td style='display: none;'>{{ eachCustomer.user.id}}</td>
+                            <td class='CustomerUsername'>{{ eachCustomer.user.username}}</td>
+                            <td class='CustomerCustomername'>{{ eachCustomer.customername}}</td>
+                            {% if  eachCustomer.user.email %}
+                            <td class='CustomerEmail'>{{ eachCustomer.user.email}}</td>
+                            {% else %}
+                            <td class='CustomerEmail' style='color:gray'>No Email</td>
+                            {% endif %}
+                            {% if  eachCustomer.phone %}
+                            <td class='CustomerPhone'>{{ eachCustomer.phone}}</td>
+                            {% else %}
+                            <td class='CustomerPhone' style='color:gray'>No Phone</td>
+                            {% endif %}
+                        </tr>
+  
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+  </div>
+    
 <!-- option modal -->
 <div id="customerModal" class="modal fade" role="dialog">
     <div class="modal-dialog  modal-sm">

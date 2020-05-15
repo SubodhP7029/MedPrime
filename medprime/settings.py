@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "phone_field",
     "phonenumber_field",
+    'django_static_jquery_ui',
     # Preloaded apps
     "django.contrib.admin",
     "django.contrib.auth",
@@ -89,23 +90,23 @@ WSGI_APPLICATION = "medprime.wsgi.application"
 
 DATABASES = {
     # for mac
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "medprimenew",
-        "USER": "postgres",
-        "PASSWORD": "geoserver",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
-    }
-    # for deploy 
     # "default": {
     #     "ENGINE": "django.db.backends.postgresql_psycopg2",
-    #     "NAME": "medprimegit",
+    #     "NAME": "medprimenew",
     #     "USER": "postgres",
-    #     "PASSWORD": "postgres",
+    #     "PASSWORD": "geoserver",
     #     "HOST": "127.0.0.1",
     #     "PORT": "5432",
     # }
+    # for deploy 
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "medprimegit",
+        "USER": "postgres",
+        "PASSWORD": "admin",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    }
 }
 
 
@@ -141,9 +142,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 # Root to save profile pics
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
 # which package to use with crispy
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -152,3 +154,4 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # redirect after log in
 LOGIN_REDIRECT_URL = "homepage"
 LOGIN_URL = "login"
+
