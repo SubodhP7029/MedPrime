@@ -54,18 +54,25 @@ $(document).ready(function () {
     //function when row is clicked
     $('#invoiceTables tbody').on('click', 'tr', function () {
         selectedRowData = table.row(this).data();
+        console.log(selectedRowData)
         var a = document.createElement('a')
-        link = "/cloninginvoice"
+        link = "/cloningproformainvoice"
         a.href = link + '/' + selectedRowData[0]
         a.innerText = 'Clone'
         document.getElementById('cloningid').innerHTML = ''
         document.getElementById('cloningid').appendChild(a)
         var a = document.createElement('a')
-        link = "/editinginvoice"
+        link = "/editingproformainvoice"
         a.href = link + '/' + selectedRowData[0]
         a.innerText = 'Edit'
         document.getElementById('editid').innerHTML = ''
         document.getElementById('editid').appendChild(a)
+        var a = document.createElement('a')
+        link = "/proformatoinvoice"
+        a.href = link + '/' + selectedRowData[0]
+        a.innerText = 'Convert'
+        document.getElementById('convertid').innerHTML = ''
+        document.getElementById('convertid').appendChild(a)
         $('#optionsModal').modal('show');
     });
 
@@ -516,11 +523,13 @@ function getDataUri(url, cb) {
 }
 
 function removeinvoice(selectedRowData) {
-    var creator = selectedRowData[14]
+    // var creator = document.getElementsByClassName('Invoicecreatorid').innerHTML
+    var creator = document.getElementsByClassName("Invoicecreatorid").innerText
+    alert(creator)
     var loggedinuser = document.getElementById('currentloggedinuser').value
     var invoiceid = selectedRowData[0]
-    var delteQuery = 'DELETE FROM mainapp_taxinvoice WHERE invoiceid = ' + invoiceid
-    var addtoinvoicedb = "INSERT INTO public.mainapp_invoicestorage(invoiceid, creatorid, deletorid,typeofchange) VALUES (" + invoiceid + ", " + creator + ", " + loggedinuser + ",'delete');"
+    var delteQuery = 'DELETE FROM mainapp_proformainvoice WHERE invoiceid = ' + invoiceid
+    var addtoinvoicedb = "INSERT INTO public.mainapp_proformainvoicestorage(invoiceid, creatorid, deletorid,typeofchange) VALUES (" + invoiceid + ", " + creator + ", " + loggedinuser + ",'delete');"
     $.get("/addtoinvoicedb/", { sqlParam: addtoinvoicedb }, function (data) {
         console.log(data)
         $.get("/removeinvoices", { sqlParam: delteQuery }, function (data) {

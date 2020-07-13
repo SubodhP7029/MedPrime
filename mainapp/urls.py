@@ -5,45 +5,65 @@ from django.conf import settings
 from django.conf.urls.static import static  # new
 
 urlpatterns = [
+    # home path's
     path("", views.home, name="homepage"),
     path("register/", views.Register, name="Registeruser"),
     path("registercustomer/", views.CustomerRegister, name="Registercustomer"),
-    path("viewcustomers/", views.vieweditcustomer, name="vieweditcustomer"),
-       path("viewdealer/", views.viewdealer, name="viewdealer"),
+    path("invoice/", views.invoice, name="invoice"),
+    path("proformatoinvoice/<int:id>", views.proforma_to_invoice, name="proformatoinvoice",),
+    path("deliverychallan/", views.deliverychallan, name="deliverychallan"),
+    path("installationReport/", views.installation_Report, name="installationReport"),
+    path("contractorbill/", views.contractorbill, name="contractorbill"),
+    path("createquotation/", views.createQuotation, name="createquotation"),
+    path("proformainvoice/", views.proformainvoice, name="proformainvoice"),
+    path("addproduct/", views.addproduct, name="addproduct"),
+    path("checkUserName/", views.checkUserName, name="checkUserName"),
+    path("profile/", views.dealerProfile, name="UserProfile"),
+    
 
+    # view Path's
+    path("viewcustomers/", views.vieweditcustomer, name="vieweditcustomer"),
+    path("viewdealer/", views.viewdealer, name="viewdealer"),
     path("vieweditproducts/", views.vieweditproducts, name="vieweditproducts"),
-    path(
-        "updatingdealer/submitupdatedealer/",
-        views.submitupdatedealer,
-        name="submitupdatedealer",
-    ),
+    path("vieweinvoices/", views.vieweinvoices, name="vieweinvoices"),
+    path("viewproinvoices/",views.viewproinvoices, name="viewproinvoices"),
+    path("viewequotations/", views.viewequotations, name="viewequotations"),
+    path("viewinstallationreport/", views.view_installation_report, name="viewinstallationreport"),
+    path("vieweditdealer/",views.vieweditdealer,name="vieweditdealer",),
+    path("viewdeliverychallan/", views.viewdeliverychallan, name="viewdeliverychallan"),
+    
+
+    # edit path's
+    path("editingdealer/<int:id>", views.editingdealer, name="editingdealer"),
+    path("editingproduct/<int:hsn>", views.editingproduct, name="editingproduct"),
+    path("editinginvoice/<int:id>", views.editinginvoice, name="editinginvoice",),
+    path("editingproformainvoice/<int:id>", views.editing_proforma_invoice, name="editingproformainvoice",),
+    path("editingcustomer/<int:id>", views.editingcustomer, name="editingcustomer",),
+    path("editinvoices/", views.editinvoices, name="editinvoices/"),
+
+
+    # delete path's
     path("deletedealer/", views.deletedealer, name="deletedealer"),
     path("deletingdealer/<int:id>", views.deletingdealer, name="deletingdealer"),
-        path("removingdealer/<int:id>", views.removingdealer, name="removingdealer"),
-        path("editingdealer/<int:id>", views.editingdealer, name="editingdealer"),
+    path("deleteproduct/<int:hsn>", views.deleteproduct, name="deleteproduct"),
 
-    path("updatingdealer/<int:id>", views.updatingdealer, name="updatingdealer"),
-      path("editingproduct/<int:hsn>", views.editingproduct, name="editingproduct"),
-      path("deleteproduct/<int:hsn>", views.deleteproduct, name="deleteproduct"),
-
+    # cloning path's
     path("cloninginvoice/<int:id>", views.cloninginvoice, name="cloninginvoice",),
-    path("editinginvoice/<int:id>", views.editinginvoice, name="editinginvoice",),
-    path("editingcustomer/<int:id>", views.editingcustomer, name="editingcustomer",),
+    path("cloningproformainvoice/<int:id>", views.cloning_proforma_invoice, name="cloningproformainvoice",),
+    
+    # update path's
     path("updatingproduct/<int:id>", views.updatingproduct, name="updatingproduct"),
-      path("removingcustomer/<int:id>", views.removingcustomer, name="removingcustomer"),
+    path("updatingdealer/<int:id>", views.updatingdealer, name="updatingdealer"), 
 
-    path("invoicegetallprod/", views.invoicegetallprod, name="invoicegetallprod"),
-    path("vieweinvoices/", views.vieweinvoices, name="vieweinvoices"),
-    path("viewequotations/", views.viewequotations, name="viewequotations"),
-    path(
-        "getdetailofselectedcustmor/",
-        views.getdetailofselectedcustmor,
-        name="getdetailofselectedcustmors",
-    ),
+    # remove path's
     path("removecustomer/", views.removecustomer, name="removecustomer",),
     path("removeinvoices/", views.removeinvoices, name="removeinvoicess",),
-    path("editinvoices/", views.editinvoices, name="editinvoices/"),
+    path("removingdealer/<int:id>", views.removingdealer, name="removingdealer"),
+    path("removingcustomer/<int:id>", views.removingcustomer, name="removingcustomer"),
+    
+    # database path's
     path("addtoinvoicedb/", views.addtoinvoicedb, name="addtoinvoicedbs"),
+    path("invoicegetallprod/", views.invoicegetallprod, name="invoicegetallprod"),
     path(
         "invoice/gettaxdetailofstate/",
         views.gettaxdetailofstate,
@@ -55,19 +75,38 @@ urlpatterns = [
         name="vieweinvoices-gettaxdetailofstate",
     ),
     path(
+        "createquotation/gettaxdetailofstate/",
+        views.gettaxdetailofstate,
+        name="createquotation-gettaxdetailofstate",
+    ),
+    path(
+        "deliverychallan/gettaxdetailofstate/",
+        views.gettaxdetailofstate,
+        name="createquotation-gettaxdetailofstate",
+    ),
+    path(
+        "viewproinvoices/gettaxdetailofstate/",
+        views.gettaxdetailofstate,
+        name="viewproinvoices-gettaxdetailofstate",
+    ),
+    path(
         "invoicegetallprodcol/",
         views.invoicegetallprodcol,
         name="invoicegetallprodcol",
     ),
-    path("invoice/", views.invoice, name="invoice"),
-    path("deliverychallan/", views.deliverychallan, name="deliverychallan"),
-    path("InstallationReport/", views.InstallationReport, name="InstallationReport"),
-    path("contractorbill/", views.contractorbill, name="contractorbill"),
-    path("quotation/", views.quotation, name="quotation"),
-    path("proformainvoice/", views.proformainvoice, name="proformainvoice"),
-    path("addproduct/", views.addproduct, name="addproduct"),
-    path("checkUserName/", views.checkUserName, name="checkUserName"),
-    path("profile/", views.dealerProfile, name="UserProfile"),
+    path(
+        "getdetailofselectedcustmor/",
+        views.getdetailofselectedcustmor,
+        name="getdetailofselectedcustmors",
+    ),
+    path(
+        "updatingdealer/submitupdatedealer/",
+        views.submitupdatedealer,
+        name="submitupdatedealer",
+    ),
+    
+   
+    #Login and logout path's
     path(
         "login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"
     ),

@@ -179,7 +179,6 @@ $(document).ready(function () {
 
 // get product price in input box
 function priceOfProducts() {
-    alert("Hiii");
     $('#selectedProductPrice').val($('#selectedProduct').val())
 }
 
@@ -284,7 +283,6 @@ function addProducts() {
         })
     }
 }
-
 //get final amount when product is added or removed
 function getFinalAmountFromTable() {
     var totalGSTItems = document.getElementsByClassName('gstvalue')
@@ -631,10 +629,8 @@ function SaveInvoice() {
     }
     var invdatearr = $('#datepicker_invoice').datepicker().val().split('-')
     var invdate = invdatearr[2] + '-' + invdatearr[1] + '-' + invdatearr[0]
-    var duedatearr = $('#datepicker').datepicker().val().split('-')
-    var duedate = duedatearr[2] + '-' + duedatearr[1] + '-' + duedatearr[0]
     var addtoinvoicedb = "INSERT INTO public.mainapp_invoicestorage(invoiceid, creatorid, deletorid,typeofchange) VALUES (" + invoiceid + ", " + creator + ", " + loggedinuser + ",'edit');"
-    var editQuery = "UPDATE public.mainapp_taxinvoice SET customerid=" + $('#selectedcustomer').val() + ", customername='" + companyName + "', invoicedate='" + invdate + "', terms='" + document.getElementById('termsNcondition').value + "', duedate='" + duedate + "', po='" + $('#PONo').val() + "', items='" + JSON.stringify(finalJson) + "', adjustmentamount=" + $('#adjustment').val() + ", finalamount=" + $('#FinalAmount').val() + ", subtotalamount=" + totalAmt + ", taxamount=" + totalGSTAmt + ", signature=" + document.getElementById('sign').checked + ", creatorid=" + creator + ", updatorid=" + loggedinuser + ", \"shippingState\"='" + shippingState + "', adjustmenttype='" + $('#typeofadjustment').val() + "', creatorname='" + $('#currentUserName').val() + "' WHERE invoiceid =" + $('#invoiceeid').val()
+    var editQuery = "UPDATE public.mainapp_proformainvoice SET customerid=" + $('#selectedcustomer').val() + ", customername='" + companyName + "', invoicedate='" + invdate + "', terms='" + document.getElementById('termsNcondition').value + "', po='" + $('#PONo').val() + "', items='" + JSON.stringify(finalJson) + "', finalamount=" + $('#FinalAmount').val() + ", subtotalamount=" + totalAmt + ", taxamount=" + totalGSTAmt + ", signature=" + document.getElementById('sign').checked + ", creatorid=" + creator + ", updatorid=" + loggedinuser + ", \"shippingState\"='" + shippingState + "', creatorname='" + $('#currentUserName').val() + "' WHERE invoiceid =" + $('#invoiceeid').val()
     $.get("/addtoinvoicedb/", { sqlParam: addtoinvoicedb }, function (data) {
         console.log(data)
         $.get("/editinvoices/", { sqlParam: editQuery }, function (data) {

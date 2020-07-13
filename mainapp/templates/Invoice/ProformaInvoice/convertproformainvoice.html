@@ -3,46 +3,77 @@
 
 {% block header %}
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
     integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
     crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
     integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
-    
 <script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+{% comment %}
+<script src="{% static 'custom/js/Invoice/invoice.js' %}" crossorigin="anonymous"></script> {% endcomment %}
+<script defer src="{% static 'custom/js/main.js' %}"></script>
 
+<script src="{% static 'custom/js/Invoice/TaxInvoice/cloninginvoice.js' %}" crossorigin="anonymous"></script>
 
-<!-- <script src="{% static 'custom/js/Invoice/Quotation/Quotation.js' %}" crossorigin="anonymous"></script>  -->
-
-<script src="{% static 'custom/js/Invoice/InstallationReport/InstallationReport.js' %}"></script>
-
-{% endblock %}
-{% block head %}
-<!-- <h1>Create Invoice</h1>
-<div> - Current User <div id='currentUser'> {{ currentUserName }}</div>
-</div> -->
 {% endblock %}
 
 {% block content %}
-<div class='row'>
-    {% for message in messages %}
-    <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {{ message }}
+    <div class='row'>
+        {% for message in messages %}
+        <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-    <!--Main Content-->
+    {% comment %} hidden values {% endcomment %}
+    <div style='display:none'>
+        <input id='idofuser' value="{{ user.id }}" />
+        <input id='idofcreator' value="{{ creatorid }}" />
+        <input id='idofcustomer' value="{{ customerid }}" />
+        <input id='currentnumber' value="{{ currentcounter }}" />
+         <div id='currentUser'> {{ currentUserName }}</div>
+
+        {{ signature }}
+        {{ invoiceid }}
+        <div id='iteminfo'>{{ items }}</div>
+        <!-- all products list -->
+        <div class="shipment">
+            <div class="box" data-boxid="a">
+                {% for eachproduct in allproducts.all %}
+                <div class="candy" data-hsn="{{ eachproduct.HSN }}" data-price="{{ eachproduct.price }}"
+                    data-description="{{ eachproduct.description }}" data-name="{{ eachproduct.name }}">
+                    <!-- unimportant content -->
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- all products list end-->
+        <!-- all gst list -->
+        <div class="shipment">
+            <div class="box" data-boxid="a">
+                {% for eachstate in gstvalues.all %}
+                <div class="gstvalues" data-state="{{ eachstate.state }}" data-igst="{{ eachstate.igst }}"
+                    data-cgst="{{ eachstate.cgst }}" data-sgst="{{ eachstate.sgst }}">
+                    <!-- unimportant content -->
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- all products list end-->
+
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Create Installation Report</h6>
-                  <div style="display: none;"> Current User <div id='currentUser'> {{ currentUserName }}</div></div>
-                </div>
+                    <h6 class="m-0 font-weight-bold text-primary">Cloning Invoice for PO - {{ thatInvoice.po }}</h6>
+                    
+                  </div>
                 <div class="card-body">
                     <input type='hidden' id='idofuser' value="{{ user.id }}" />
                     <input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
@@ -67,8 +98,13 @@
                        </div>
       
                        <div class="form-group col-md-4">
-                         <label for="reportNo"><b>Service/Installation Report No</b></label><br>
-                         <input id='reportNo' class="form-control" type='number' />
+                         <label for="selectedProduct"><b>Select Product</b></label><br>
+                         <select onchange='priceOfProducts()' id='selectedProduct'  class="form-control">
+                            <option value=''>Select Product</option>
+                            {% for eachproduct in allproducts.all %}
+                            <option value="{{ eachproduct.price }}">{{ eachproduct }}</option>
+                            {% endfor %}
+                        </select>
                        </div>
       
                        <div class="form-group col-md-4">
@@ -80,73 +116,118 @@
       <!-- -->
       <br>
                 <div class="form-row">
-                   <div class="form-group col-md-3">
-                     <label for="deviceName"><b>Device Name</b></label><br>
-                     <input id='deviceName' class="form-control" type='text' />
+                   <div class="form-group col-md-4">
+                     <label for="selectedProductPrice"><b>Product Price</b></label><br>
+                     <input id='selectedProductPrice' class="form-control" type='number' />
                         </div>
       
                      <div class="form-group col-md-3">
-                       <label for="serialNo"><b>Serial No</b></label>
-                       <input id='serialNo' type='number' value='1' class="form-control" />
+                       <label for="selectedProductQuanity"><b>Select Quantity</b></label>
+                       <input id='selectedProductQuanity' type='number' value='1' class="form-control" />
                      </div>
       
-                     <div class="form-group col-md-3">
-                       <label for="imeiNo" ><b>Tablet/Mobile Imei No</b> </label>
-                       <input id='imeiNo' type='number' class="form-control" />
+                     <div class="form-group col-md-1">
+                       <label for="typeofdiscout" ><b>&#8377; or &#37;</b> </label>
+                        <select id='typeofdiscout' class="form-control" name="typeofdiscout">
+                           <option value='rs' selected>₹</option>
+                           <option value='perc'>%</option>
+                       </select>
                      </div>
       
-                     <div class="form-group col-md-3">
-                       <label for="accessories"><b>Accessories</b> </label>
-                     <input id='accessories' type='text' class="form-control"  />
+                     <div class="form-group col-md-4">
+                       <label for="selectedProductDiscount"><b>Alloted Discount</b> </label>
+                     <input id='selectedProductDiscount' type='number' placeholder='1' value='0' class="form-control"  />
                      </div>
-                </div>
+                 </div>
       
        
                 <img src="{% static 'custom/images/logo.png' %}"  id='logoofcompany' style="display: none;">
       
       <br>
                  <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <label for="problemDescription" ><b>Problem Description</b> </label><br>
-                      <textarea class="form-control" id="problemDescription" rows="3" cols="70">
-                          </textarea>
+                    <div class="form-group col-md-2">
+                      <label for="addproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="addproductbtn" class="btn btn-success" onclick='addProducts()'>Add Product</button>
                          </div>
-
+      
+                      <div class="form-group col-md-2">
+                        <label for="removeproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="removeproductbtn" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="datepicker" ><b>Due Date</b> </label>
+                        <input type="text" class="form-control" id='datepicker' name="due date" value={{ duedate|date:"d-m-yy"}}>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="PONo"><b>PO Number</b> </label>
+                        <input type="text" class="form-control" id="PONo" placeholder="PO Number" >
+                      </div>
                   </div>
-
-    <br>
+      <!-- -->
+      <br>
                   <div class="form-row">
                      <div class="form-group col-md-12">
-                       <label for="actionTaken" ><b>Action Taken</b> </label><br>
-                       <textarea class="form-control" id="actionTaken" rows="3" cols="70"></textarea>
-                           
-                          </div>
- 
+                       <label for="Previewtable" ><b>Preview</b> </label><br>
+                       <table id='Previewtable' class="table table-bordered">
+                              <thead>
+                                  <tr id='headOfProductPreview'>
+                                  </tr>
+                              </thead>
+                              <tbody id='bodyOfProductPreview'>
+                              </tbody>
+                          </table>
+                        </div>
                    </div>
-    <br>
-                   <div class="form-row">
-                      <div class="form-group col-md-12">
-                        <label for="testing" ><b>Testing Done & Callibration </b> </label><br>
-                        <textarea class="form-control" id="testing" rows="3" cols="70">
-                            </textarea>
-                           </div>
-  
-                    </div>
-     <br>
-                    <div class="form-row">
-                       <div class="form-group col-md-12">
-                         <label for="customerComment" ><b>Customer Comment </b> </label><br>
-                         <textarea class="form-control" id="customerComment" rows="3" cols="70">
-                             </textarea>
-                            </div>
-   
-                     </div>
+      
+      <br>
+                    <div class='row'>
+                      <div class="form-group col-md-2">
+                        <label for="typeofadjustment" ><b>Adjustment</b> </label>
+                         <select id='typeofadjustment' class="form-control">
+                            <option value='add' selected>Add</option>
+                            <option value='remove'>Remove</option>
+                        </select>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="adjustment" style="color: white;"><b>Adjustment</b> </label>
+                      <input id='adjustment' type='number' placeholder='1' class="form-control" 
+                      onkeyup='getFinalAmountFromTable()'value=0 />
+                      </div>
+      
+                      <div class="form-group col-md-4" style="margin-left: 100px;">
+                        <label for="FinalAmount"><b>Final Amount:</b> </label>
+                      <input readonly id='FinalAmount' class="form-control" type='number' value={{ finalamount }} />
+                      </div>
+                  </div>
+      
       <br>
       
                   <div class='row'>
                     <div class="form-group col-md-6">
-                      <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick="javascript:createPDF()"><i
-                                class="ti-plus"></i>Create Report</button>
+                      <label for="termsNcondition"><b>Terms</b> </label>
+                      <textarea class="form-control" id="termsNcondition" rows="5" cols="70">
+                      Medprime is giving this invoice today
+                      Payment : 25% Payment should be given in advance
+                      Remaining Payment should be given in the agreed date
+                      All parts have 6 months warrenty
+                      </textarea>
+                    </div>
+      
+                    <div class="form-group col-md-4">
+                      <label for="sign"><b>Add Signature</b> </label>&nbsp;
+                      <input id='sign' type='checkbox' checked />
+                    </div>
+                  </div>
+      
+      <br>
+      
+                  <div class='row'>
+                    <div class="form-group col-md-6">
+                      <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick='createPDF()'><i
+                                class="ti-plus"></i>Create Invoice</button>
                     </div>
       
                   </div>
@@ -157,10 +238,12 @@
           </div>
       </div>
       </div>
-      
 
+    
+    
+    
+     
 
-    <!--end-Main Content-->
 
     <!-- Modal of Preview -->
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
@@ -185,6 +268,19 @@
         </div>
     </div>
 
+
+
+    <script>
+        $(".candy").each(function () {
+            ProductJSON[$(this).data()['name']] = JSON.stringify($(this).data())
+        });
+        $(".gstvalues").each(function () {
+            gstvaluesJSON[$(this).data()['state']] = JSON.stringify($(this).data())
+        });
+
+
+    </script>
+
     <!-- Modal of Editing row in preview table -->
     <div class="modal fade" id="EditingRowInPreviewTable" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -197,7 +293,7 @@
                     </button>
                 </div>
                 <div class="modal-body" style='text-align: center;'>
-                    <button type="button" onclick="EditingTr(clickedTR)"
+                    <button type="button" onclick="EditingTrclone(clickedTR)"
                         class="btn btn-primary btn-lg btn-rounded m-b-10 m-l-5" id='editButton'>Edit</button>
                     <button type="button" onclick="removingTr(clickedTR)"
                         class="btn btn-danger btn-lg btn-rounded m-b-10 m-l-5" data-dismiss="modal"
@@ -256,7 +352,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h2 style="text-align: center;">Customer Detail</h2>
+                    <h2 style="
+                    text-align: center;
+                ">Customer Detail</h2>
                     <table class='table-bordered' style="margin: auto;">
                         <tr>
                             <th>Customer Name</th>
@@ -277,7 +375,6 @@
                         <tr>
                             <th>Customer Country</th>
                             <td style='text-align: left;' id='customerCountry'></td>
-                        
                         </tr>
                     </table>
 
@@ -288,18 +385,26 @@
             </div>
         </div>
     </div>
-
-
     <div style='display:none'>
         <form action="" method="post" id='invoice_to_db'>
             {% csrf_token %}
-            {{ installationreportform.as_p }}
+            {{ taxinfform.as_p }}
             <input type="submit" value="Submit" id='saveDataToForm'>
 
         </form>
     </div>
-    <script>
-        
-    </script>
-    
+    {% if form.errors %}
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endblock %}

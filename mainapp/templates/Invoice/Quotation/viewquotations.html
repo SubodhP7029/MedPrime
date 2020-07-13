@@ -11,6 +11,9 @@
 <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+<script defer src="{% static 'custom/js/main.js' %}"></script>
+
+<script defer src="{% static 'custom/js/Invoice/TaxInvoice/viewinvoice.js' %}"></script>
 
 <!--<script src="https://cdn.datatables.net/plug-ins/1.10.20/filtering/row-based/range_dates.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
@@ -22,117 +25,104 @@
 
 {% endblock %}
 {% block head %}
-<h1>View Quotations </h1>
+<h1>View Invoices </h1>
 {% endblock %}
 {% block content %}
 <a id='redirectToHere' style='display: none;' href="{% url 'vieweinvoices' %}">Billing</a>
 <img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
 <input type="hidden" id='currentloggedinuser' value={{ user.id }} />
-<div class="card alert">
-    <div class='row'>
-        <div class="col-lg-3 col-md-4 col-sm-6">
-            <div class="card bg-info">
-                <div class="media">
-                    <div class="media-left meida media-middle">
-                        <span><i class="ti-layers f-s-48 color-white"></i></span>
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">View Quotation</h1>
+        <div class="row">
+           <div class="col-lg-6">
+              <!-- Circle Buttons -->
+              <div class="card shadow mb-4">
+                 <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quotation</h6>
+                 </div>
+                 <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                       <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Quotation</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalInvoices }}</div>
+                       </div>
+                       <div class="col-auto">
+                          <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                       </div>
                     </div>
-                    <div class="media-body media-text-right">
-                        <h4>{{ totalInvoices }}</h4>
-                        <h6>Total Quotations</h6>
-                    </div>
-                </div>
+                 </div>
+              </div>
+           </div>
+           <div class="col-lg-3">
+            <!-- Brand Buttons -->
+            <div class="card shadow mb-4">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+                          <button type="button" class="btn btn-lg btn-primary"  ><a href="{% url 'createquotation' %}" style="text-decoration: none; color: white;"><i class="fa fa-plus">
+                          </i>&nbsp;Add New Quotation</a></button>
+                     </div>
+                  </div>
+               </div>
             </div>
+         </div>
+
+
+         <div class="col-lg-12">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Quotation Table</h6>
+              </div>
+              <div class="card-body">
+                    <table class="table table-bordered table-striped" id="invoiceTables" class="hover" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          {% comment %} <th>Actions </th> {% endcomment %}
+                          <th>Quotation ID</th>
+                          <th style='display: none;'>Customer ID</th>
+                          <th>Customer Name</th>
+                          <th>Shipping State</th>
+                          <th>Creator</th>
+                          <th>Quotation Date</th>
+                          <th style='display: none;'>Terms of payment</th>    
+                          <th>P.O. No.</th>
+                          <th>items</th>
+                          <th>Total Rate</th>
+                          <th style='display: none;'>Signature </th>
+                          <th style='display: none;'>Creator id</th>
+                          
+                          <th style='display: none;'>customerdetails</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                      {% for eachInvoice in allquotationInvoice.all %}
+                        <tr>
+                            <td class='InvoiceInvoiceID'>{{ eachInvoice.quotationid}}</td>
+                            <td class='Invoicecustomerid' style='display: none;'>{{ eachInvoice.customerid}}</td>
+                            <td class='Invoicecustomername'>{{ eachInvoice.customername}}</td>
+                            <td class='InvoiceshippingState'>{{ eachInvoice.shippingState}}</td>
+                            <td class='Invoicecreatorid'>{{ eachInvoice.creatorname}}</td>
+                            <td class='Invoiceinvoicedate'>{{ eachInvoice.quotationdate|date:"d-m-yy"}}</td>
+                            <td class='Invoiceterms' style='display: none;'>{{ eachInvoice.terms}}</td>
+                            <td class='Invoicepo'>{{ eachInvoice.po}}</td>
+                            <td class='items Invoiceitems'>{{ eachInvoice.items}}</td>
+                            <td class='Invoicesubtotalamount'>{{ eachInvoice.subtotalamount}}</td>
+                            <td class='Invoicefinalamount'>{{ eachInvoice.finalamount}}</td>
+                            <td class='Invoicesignature' style='display: none;'>{{ eachInvoice.signature}}</td>
+                            <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.creatorid}}</td>
+                            <td class='customerDetails' style='display: none;'>{{ eachInvoice.customerdetails}}</td>
+                        </tr>
+    
+                        {% endfor %}
+                        </tbody>
+                      </table>
+    
+                  </div>
+                </div>
+          </div>
         </div>
-        <!-- <div class="col-lg-3 col-md-4 col-sm-6">
-            <div class="card bg-info">
-                <div class="media">
-                    <div class="media-left meida media-middle">
-                        <span><i class="ti-layers f-s-48 color-white"></i></span>
-                    </div>
-                    <div class="media-body media-text-right">
-                        <h4>{{ totalthismonthsInvoices }}</h4>
-                        {{ enddate }}
-                        <br>
-                        {{ startdate }}
-                        <h6>Last Fortnight Invoices</h6>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-
-
-        <button type="button" style="margin-top: 7.5px;"
-            class="btn btn-primary btn-flat btn-addon btn-lg m-b-10 m-l-5"><a href="{% url 'invoice' %}"><i
-                    class="ti-plus"></i>Add
-                New Quotation</a></button>
     </div>
-
-
-
-</div>
-<div class="card alert">
-    <div class='row'>
-        {% comment %} table table-striped {% endcomment %}
-
-        <table id="invoiceTables" class="hover" style="width:100%;font-size: 12px;">
-            <thead style="background-color: #03a9f4;">
-                <font color="white">
-                    <tr>
-                        {% comment %} <th>Actions </th> {% endcomment %}
-                          <th style='color:aliceblue !important'>Quotation ID</th>
-                        <th style='color:aliceblue !important'>Customer ID</th>
-                        <th style='display: none;'>Customer Name</th>
-                        <th style='color:aliceblue !important;display: none;'>Customer Address</th>
-                        <th style='color:aliceblue !important;display: none;'>Customer Pincode</th>
-                        <th style='color:aliceblue !important;display: none;'>Customer State</th>
-                        <th style='color:aliceblue !important;display: none;'>Customer GST No.</th>
-                        <th style='color:aliceblue !important;display: none;'>Customer Place Of Supply</th>
-                        <th style='color:aliceblue !important'>Quotation Date</th>
-                        <th style='color:aliceblue !important;display: none;'>Terms of payment</th>
-                        <th style='color:aliceblue !important'>Expiry Date</th>
-                        <th style='color:aliceblue !important'>Quotation No.</th>
-                        <th style='color:aliceblue !important'>items</th>
-                        <th style='color:aliceblue !important'>Total Rate</th>
-                        <th style='color:aliceblue !important'>Total Tax</th>
-                        <th style='color:aliceblue !important'>Adjustment Amt.</th>
-                        <th style='color:aliceblue !important'>Total Cost</th>
-                        <th style='color:aliceblue !important;display: none;'>Signature </th>
-                        <th style='display: none;'>Creator id</th>
-
-                    </tr>
-                </font>
-            </thead>
-            <tbody>
-                {% for eachInvoice in allquotationInvoice.all %}
-                <tr>
-                    <td>{{ eachInvoice.quotationid}}</td>
-                    <td>{{ eachInvoice.customerid}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customername}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customeraddress}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customerpincode}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customerstate}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customergst}}</td>
-                    <td style='display: none;'>{{ eachInvoice.customerplaceofsupply}}</td>
-                    <td>{{ eachInvoice.quotationdate|date:"d-m-yy"}}</td>
-                    <td style='display: none;'>{{ eachInvoice.terms}}</td>
-                    <td>{{ eachInvoice.expirydate|date:"d-m-yy"}}</td>
-                    <td>{{ eachInvoice.quotationnumber}}</td>
-                    <td class='items'>{{ eachInvoice.items}}</td>
-                    <td>{{ eachInvoice.subtotalamount}}</td>
-                    <td>{{ eachInvoice.taxamount}}</td>
-                    <td>{{ eachInvoice.adjustmentamount}}</td>
-                    <td>{{ eachInvoice.finalamount}}</td>
-                    <td style='display: none;'>{{ eachInvoice.signature}}</td>
-                    <td style='display: none;'>{{ eachInvoice.creatorid}}</td>
-
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <!-- product table  -->
 <table id='Previewtable' style='display: none'>
@@ -157,9 +147,9 @@
             <div class="modal-body" style='text-align: center;'>
                 <button type="button" class="btn btn-success btn-lg btn-rounded m-b-10 m-l-5"
                     onclick='ViewPDF(selectedRowData)'>View</button>
-                <!-- <button type="button" class="btn btn-primary btn-lg btn-rounded m-b-10 m-l-5">Edit</button> -->
-                <button type="button" class="btn btn-pink btn-lg btn-rounded m-b-10 m-l-5" id='cloningid'>
-                </button>
+       <button type="button" class="btn btn-warning btn-lg btn-rounded m-b-10 m-l-5" id='editid'></button>
+
+                <button type="button" class="btn btn-pink btn-lg btn-rounded m-b-10 m-l-5" id='cloningid'></button>
                 <button type="button" class="btn btn-danger btn-lg btn-rounded m-b-10 m-l-5"
                     onclick='opencoinfirmationModal()'>Delete</button>
             </div>
@@ -196,7 +186,7 @@
         <div class="modal-content" style='height: 40%;'>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">×</button>
-                <h4 class="modal-title">Delete Invoice </h4>
+                <!-- <h4 class="modal-title">Delete Invoice </h4> -->
             </div>
             <div class="modal-body" style='text-align: center;'>
                 <!-- <embed id='previewOfPdf' width='100%' height='100%' /> -->
@@ -214,12 +204,7 @@
     Medprime is giving this invoice today
     Payment : 25% pAyment should be given in advance
     Remaining Payment should be given in the agreed date
-    All parts have 6 months warreny
-    </textarea>
-<script defer src="{% static 'custom/js/Invoice/TaxInvoice/viewinvoice.js' %}"></script>
-
-
-
-
+    All parts have 6 months warranty.
+</textarea>
 
 {% endblock %}

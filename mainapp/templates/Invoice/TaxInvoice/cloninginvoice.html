@@ -3,6 +3,7 @@
 
 {% block header %}
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
     integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
     crossorigin="anonymous"></script>
@@ -16,11 +17,8 @@
 <script src="{% static 'custom/js/Invoice/TaxInvoice/cloninginvoice.js' %}" crossorigin="anonymous"></script>
 
 {% endblock %}
-{% block head %}
-<h1>Cloning Invoice</h1>
-{% endblock %}
+
 {% block content %}
-<div class='card alert' style="height: 79vh;overflow-y: scroll;">
     <div class='row'>
         {% for message in messages %}
         <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
@@ -68,161 +66,183 @@
         <!-- all products list end-->
 
     </div>
-    <div class='row'>
-        <div class=" col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
-            <div class='form-group'>
-                Select Customers
-                <select  id='selectedcustomer'>
-                    <option value=''>Select Customer</option>
-                    {% for eachcustomer in allcustomers.all %}
-                    <option value="{{ eachcustomer.user_id }}" id='thisCust-{{ eachcustomer.user_id }}'>{{ eachcustomer.customername }}
-                    </option>
-                    {% endfor %}
-                              </select> <button type="button" class="btn btn-primary btn-rounded m-b-5 m-l-2"
-                        onclick="getcustdetail()">Details</button>
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-            <div class='form-group'>
-                Select Product
-                <select onchange='priceOfProducts()' id='selectedProduct'>
-                    <option value=''>Select Product</option>
-                    {% for eachproduct in allproducts.all %}
-                    <option value="{{ eachproduct.price }}">{{ eachproduct }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-            <div class='form-group'>
-                <span>Invoice date : </span> <input type="text" class="form-control"  id='datepicker_invoice' name="invoice date"
-                    value={{ invoicedate  }}>
-            </div>
-        </div>
-    </div>
-    <div class='row'>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-            <div class='form-group'>
-                <span>Price of Product: </span>
-                <input id='selectedProductPrice' class="form-control" type='number' />
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-            <div class='form-group'>
-                <span> Select Quantity : </span>
-                <input id='selectedProductQuanity' class="form-control" type='number' value='1' />
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-            <div class='form-group'>
-                <span> Alloted Discount
-                    <select id='typeofdiscout'>
-                        <option value='rs' selected>₹</option>
-                        <option value='perc'>%</option>
-
-                    </select>: </span>
-                <input id='selectedProductDiscount' type='number' class="form-control" placeholder='1' value='0' />
-            </div>
-        </div>
-
-    </div>
-
-    <br>
-    <img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
-    <div class='row' style='text-align: center;'>
-        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3  ">
-            <div class='form-group'>
-                <button type="button" class="btn btn-success" onclick='addProducts()'>Add Product</button>
-            </div>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3  ">
-            <div class='form-group'>
-                <button type="button" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
-            </div>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3  ">
-            <div class='form-group'>
-                <span>Payment date : </span> <input type="text" class="form-control" id='datepicker' name="due date"
-                    value={{ duedate|date:"d-m-yy"}}>
-            </div>
-        </div>
-
-        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3  ">
-            <div class='form-group'>
-                <span>PO Number: </span>
-                <input id='PONo' class="form-control" type='text' value={{ po }} />
-            </div>
-        </div>
-    </div>
-    <div class='row'>
-        <div class='form-group'>
-            Preview
-            <table id='Previewtable' class="table table-bordered">
-                <thead>
-                    <tr style="background-color: aliceblue;" id='headOfProductPreview'>
-
-                    </tr>
-                </thead>
-                <tbody id='bodyOfProductPreview'>
-                </tbody>
-            </table>
-        </div>
-        <div class='row'>
-
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3  ">
-                <div class='form-group'>
-                     <span>Adjustment
-                        <select id='typeofadjustment' onchange="getFinalAmountFromTable()">
-                            <option value='add'>Add</option>
-                            <option value='remove' selected>Remove</option>
-                        </select> :</span>
-                    <input type="number" class="form-control" id='adjustment' name="adjustment"
-                        onkeyup='getFinalAmountFromTable()' value=0>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Cloning Invoice for PO - {{ thatInvoice.po }}</h6>
+                    
+                  </div>
+                <div class="card-body">
+                    <input type='hidden' id='idofuser' value="{{ user.id }}" />
+                    <input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
+                  <div class="form-row">
+                     <div class="form-group col-md-3">
+                       <label for="selectedcustomer"><b>Select Customer</b></label><br>
+                       <select onchange='getAllCustomerInfo()' id='selectedcustomer' class="form-control">
+                        <option value=''>Select Customer</option>
+                        {% for eachcustomer in allcustomers.all %}
+                        <option value="{{ eachcustomer.user_id }}" id='thisCust-{{ eachcustomer.user_id }}'>
+                            {{ eachcustomer.customername }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                        
+                          </div>
+                          <!--  -->
+                       <div class="form-group col-md-1">
+                       <label for="getcustdetail" style="color: white;"><b>Details</b></label>
+                       <button type="button" class="btn btn-primary btn-rounded m-b-5 m-l-2" id="getcustdetail"
+                       onclick="getcustdetail()">Details</button>
+                       </div>
+      
+                       <div class="form-group col-md-4">
+                         <label for="selectedProduct"><b>Select Product</b></label><br>
+                         <select onchange='priceOfProducts()' id='selectedProduct'  class="form-control">
+                            <option value=''>Select Product</option>
+                            {% for eachproduct in allproducts.all %}
+                            <option value="{{ eachproduct.price }}">{{ eachproduct }}</option>
+                            {% endfor %}
+                        </select>
+                       </div>
+      
+                       <div class="form-group col-md-4">
+                       <label for="datepicker_invoice"><b>Invoice Date</b></label>
+                       <input type="text" class="form-control" id='datepicker_invoice' name="invoice date">
+                       </div>
+                   </div>
+      
+      <!-- -->
+      <br>
+                <div class="form-row">
+                   <div class="form-group col-md-4">
+                     <label for="selectedProductPrice"><b>Product Price</b></label><br>
+                     <input id='selectedProductPrice' class="form-control" type='number' />
+                        </div>
+      
+                     <div class="form-group col-md-3">
+                       <label for="selectedProductQuanity"><b>Select Quantity</b></label>
+                       <input id='selectedProductQuanity' type='number' value='1' class="form-control" />
+                     </div>
+      
+                     <div class="form-group col-md-1">
+                       <label for="typeofdiscout" ><b>&#8377; or &#37;</b> </label>
+                        <select id='typeofdiscout' class="form-control" name="typeofdiscout">
+                           <option value='rs' selected>₹</option>
+                           <option value='perc'>%</option>
+                       </select>
+                     </div>
+      
+                     <div class="form-group col-md-4">
+                       <label for="selectedProductDiscount"><b>Alloted Discount</b> </label>
+                     <input id='selectedProductDiscount' type='number' placeholder='1' value='0' class="form-control"  />
+                     </div>
+                 </div>
+      
+       
+                <img src="{% static 'custom/images/logo.png' %}"  id='logoofcompany' style="display: none;">
+      
+      <br>
+                 <div class="form-row">
+                    <div class="form-group col-md-2">
+                      <label for="addproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="addproductbtn" class="btn btn-success" onclick='addProducts()'>Add Product</button>
+                         </div>
+      
+                      <div class="form-group col-md-2">
+                        <label for="removeproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="removeproductbtn" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="datepicker" ><b>Due Date</b> </label>
+                        <input type="text" class="form-control" id='datepicker' name="due date" value={{ duedate|date:"d-m-yy"}}>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="PONo"><b>PO Number</b> </label>
+                        <input type="text" class="form-control" id="PONo" placeholder="PO Number" >
+                      </div>
+                  </div>
+      <!-- -->
+      <br>
+                  <div class="form-row">
+                     <div class="form-group col-md-12">
+                       <label for="Previewtable" ><b>Preview</b> </label><br>
+                       <table id='Previewtable' class="table table-bordered">
+                              <thead>
+                                  <tr id='headOfProductPreview'>
+                                  </tr>
+                              </thead>
+                              <tbody id='bodyOfProductPreview'>
+                              </tbody>
+                          </table>
+                        </div>
+                   </div>
+      
+      <br>
+                    <div class='row'>
+                      <div class="form-group col-md-2">
+                        <label for="typeofadjustment" ><b>Adjustment</b> </label>
+                         <select id='typeofadjustment' class="form-control">
+                            <option value='add' selected>Add</option>
+                            <option value='remove'>Remove</option>
+                        </select>
+                      </div>
+      
+                      <div class="form-group col-md-4">
+                        <label for="adjustment" style="color: white;"><b>Adjustment</b> </label>
+                      <input id='adjustment' type='number' placeholder='1' class="form-control" 
+                      onkeyup='getFinalAmountFromTable()'value=0 />
+                      </div>
+      
+                      <div class="form-group col-md-4" style="margin-left: 100px;">
+                        <label for="FinalAmount"><b>Final Amount:</b> </label>
+                      <input readonly id='FinalAmount' class="form-control" type='number' value={{ finalamount }} />
+                      </div>
+                  </div>
+      
+      <br>
+      
+                  <div class='row'>
+                    <div class="form-group col-md-6">
+                      <label for="termsNcondition"><b>Terms</b> </label>
+                      <textarea class="form-control" id="termsNcondition" rows="5" cols="70">
+                      Medprime is giving this invoice today
+                      Payment : 25% Payment should be given in advance
+                      Remaining Payment should be given in the agreed date
+                      All parts have 6 months warrenty
+                      </textarea>
+                    </div>
+      
+                    <div class="form-group col-md-4">
+                      <label for="sign"><b>Add Signature</b> </label>&nbsp;
+                      <input id='sign' type='checkbox' checked />
+                    </div>
+                  </div>
+      
+      <br>
+      
+                  <div class='row'>
+                    <div class="form-group col-md-6">
+                      <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick='createPDF()'><i
+                                class="ti-plus"></i>Clone Invoice</button>
+                    </div>
+      
+                  </div>
+                
                 </div>
-            </div>
-            <div
-                class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6 col-xl-offset-6   ">
-                <div class='form-group'>
-                    <span>Final Amount: </span>
-                    <input id='FinalAmount' readonly type='text' class="form-control" value={{ finalamount }} />
-                </div>
-            </div>
+                
+              </div>
+          </div>
+      </div>
+      </div>
 
-        </div>
-        <div class='row'>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                <div class='form-group'>
-                    Terms
-                    <textarea rows="4" cols="70" id='termsNcondition'>
-                    Medprime is giving this invoice today
-                    Payment : 25% pAyment should be given in advance
-                    Remaining Payment should be given in the agreed date
-                    All parts have 6 months warreny
-                    </textarea>
-                </div>
-            </div>
-        </div>
-        <div class='row'>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-                <div class='form-group'>
-                    <span>Add Signature: </span>
-                    {% if signature == True %}
-                    <input id='sign' type='checkbox' checked />
-                    {% else %}
-                    <input id='sign' type='checkbox' />
-
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-                <div class='form-group'>
-                    <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick='createPDF()'><i
-                            class="ti-plus"></i>Create Invoice</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    
+    
+     
 
 
     <!-- Modal of Preview -->

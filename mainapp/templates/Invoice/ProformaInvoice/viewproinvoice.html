@@ -13,7 +13,7 @@
 <script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
 <script defer src="{% static 'custom/js/main.js' %}"></script>
 
-<script defer src="{% static 'custom/js/Invoice/TaxInvoice/viewinvoice.js' %}"></script>
+<script defer src="{% static 'custom/js/Invoice/ProformaInvoice/viewproinvoice.js' %}"></script>
 
 <!--<script src="https://cdn.datatables.net/plug-ins/1.10.20/filtering/row-based/range_dates.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
@@ -28,24 +28,25 @@
 <h1>View Invoices </h1>
 {% endblock %}
 {% block content %}
-<a id='redirectToHere' style='display: none;' href="{% url 'vieweinvoices' %}">Billing</a>
+<a id='redirectToHere' style='display: none;' href="{% url 'viewproinvoices' %}">Billing</a>
 <img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
 <input type="hidden" id='currentloggedinuser' value={{ user.id }} />
+<!-- <input type="hidden" id='creatorid' value={{ thatInvoice.creatorid }} /> -->
     <div class="container-fluid">
         <!-- Page Heading -->
-        <h1 class="h3 mb-4 text-gray-800">View Invoice</h1>
+        <h1 class="h3 mb-4 text-gray-800">View Proforma Invoice</h1>
         <div class="row">
            <div class="col-lg-6">
               <!-- Circle Buttons -->
               <div class="card shadow mb-4">
                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Invoice</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Proforma Invoice</h6>
                  </div>
                  <div class="card-body">
                     <div class="row no-gutters align-items-center">
                        <div class="col mr-2">
-                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Invoice</div>
-                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalInvoices }}</div>
+                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Proforma Invoice</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalProformaInvoices }}</div>
                        </div>
                        <div class="col-auto">
                           <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -60,8 +61,8 @@
                <div class="card-body">
                   <div class="row no-gutters align-items-center">
                      <div class="col mr-2">
-                          <button type="button" class="btn btn-lg btn-primary"  ><a href="{% url 'invoice' %}" style="text-decoration: none; color: white;"><i class="fa fa-plus">
-                          </i>&nbsp;Add New Invoice</a></button>
+                          <button type="button" class="btn btn-lg btn-primary"  ><a href="{% url 'proformainvoice' %}" style="text-decoration: none; color: white;"><i class="fa fa-plus">
+                          </i>&nbsp;Add New Proforma Invoice</a></button>
                      </div>
                   </div>
                </div>
@@ -72,7 +73,7 @@
          <div class="col-lg-12">
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Invoice Table</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Proforma Invoice Table</h6>
               </div>
               <div class="card-body">
                     <table class="table table-bordered table-striped" id="invoiceTables" class="hover" width="100%" cellspacing="0">
@@ -82,51 +83,44 @@
                           <th>Invoice ID</th>
                           <th style='display: none;'>Customer ID</th>
                           <th>Customer Name</th>
-                          <th>Shipping State</th>
                           <th>Invoice Date</th>
                           <th style='display: none;'>Terms of payment</th>
-                          <th>Due Date</th>
+                          
                           <th>P.O. No.</th>
                           <th>items</th>
-                          <th>Total Rate</th>
-                          <th>Total Tax</th>
-                          <th>Adjustment Amt.</th>
+                          <th>Rate</th>
+                          <th>Tax</th>
                           <th>Total Cost</th>
                           <th style='display: none;'>Signature </th>
                           <th style='display: none;'>Creator id</th>
-                          <th style='display: none;'>Adjustment Type</th>
                           <th>Creator</th>
                           <th style='display: none;'>customerdetails</th>
                          </tr>
                     </thead>
                     <tbody>
-                      {% for eachInvoice in alltaxInvoice.all %}
+                      {% for eachInvoice in allProformaInvoice.all %}
                         <tr>
                             <td class='InvoiceInvoiceID'>{{ eachInvoice.invoiceid}}</td>
                             <td class='Invoicecustomerid' style='display: none;'>{{ eachInvoice.customerid}}</td>
                             <td class='Invoicecustomername'>{{ eachInvoice.customername}}</td>
-                            <td class='InvoiceshippingState'>{{ eachInvoice.shippingState}}</td>
                             <td class='Invoiceinvoicedate'>{{ eachInvoice.invoicedate|date:"d-m-yy"}}</td>
                             <td class='Invoiceterms' style='display: none;'>{{ eachInvoice.terms}}</td>
-                            <td class='Invoiceduedate'>{{ eachInvoice.duedate|date:"d-m-yy"}}</td>
                             <td class='Invoicepo'>{{ eachInvoice.po}}</td>
                             <td class='items Invoiceitems'>{{ eachInvoice.items}}</td>
                             <td class='Invoicesubtotalamount'>{{ eachInvoice.subtotalamount}}</td>
                             <td class='Invoicetaxamount'>{{ eachInvoice.taxamount}}</td>
-                            <td class='Invoiceadjustmentamount'>{{ eachInvoice.adjustmentamount}}</td>
                             <td class='Invoicefinalamount'>{{ eachInvoice.finalamount}}</td>
                             <td class='Invoicesignature' style='display: none;'>{{ eachInvoice.signature}}</td>
                             <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.creatorid}}</td>
-                            <td class='Invoicecreatorid' style='display: none;'>{{ eachInvoice.adjustmenttype}}</td>
-                            <td class='Invoicecreatorid'>{{ eachInvoice.creatorname}}</td>
+                            <td class='Invoicecreatorname'>{{ eachInvoice.creatorname}}</td>
                             <td class='customerDetails' style='display: none;'>{{ eachInvoice.customerdetails}}</td>
-
+    
                         </tr>
-
+    
                         {% endfor %}
                         </tbody>
                       </table>
-
+    
                   </div>
                 </div>
           </div>
@@ -159,6 +153,8 @@
        <button type="button" class="btn btn-warning btn-lg btn-rounded m-b-10 m-l-5" id='editid'></button>
 
                 <button type="button" class="btn btn-pink btn-lg btn-rounded m-b-10 m-l-5" id='cloningid'></button>
+               <!-- <a href="{% url 'invoice' %}" id="#" style="text-decoration: none; display: none;"></a>  -->
+               <button type="button" class="btn btn-pink btn-lg btn-rounded m-b-10 m-l-5" id='convertid'></button>
                 <button type="button" class="btn btn-danger btn-lg btn-rounded m-b-10 m-l-5"
                     onclick='opencoinfirmationModal()'>Delete</button>
             </div>
@@ -166,6 +162,7 @@
                 <button type="button" class="btn" data-dismiss="modal">Close</button>
             </div>
         </div>
+
     </div>
 </div>
 <!-- Modal of Preview -->

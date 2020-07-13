@@ -104,7 +104,7 @@ class CustomerProfile(models.Model):
         return f"{self.user}"
 
     def __unicode__(self):
-        return
+        return self.customername
 
 
 class Product(models.Model):
@@ -175,26 +175,45 @@ class invoicestorage(models.Model):
 
 
 # Quotation model
+# class quotationInvoice(models.Model):
+#     quotationid = models.IntegerField()
+#     customerid = models.IntegerField()
+#     creatorid = models.IntegerField(null=True, blank=True)
+#     updatorid = models.IntegerField(null=True, blank=True)
+#     customername = models.CharField(max_length=500)
+#     customeraddress = models.CharField(null=True, blank=True, max_length=500)
+#     customerpincode = models.CharField(null=True, blank=True, max_length=500)
+#     customerstate = models.CharField(null=True, blank=True, max_length=500)
+#     customergst = models.CharField(null=True, blank=True, max_length=500)
+#     customerplaceofsupply = models.CharField(null=True, blank=True, max_length=500)
+#     quotationdate = models.DateField()
+#     terms = models.CharField(max_length=500, blank=True)
+#     exiprydate = models.DateField()
+#     quotationnumber = models.IntegerField()
+#     items = JSONField()
+#     subtotalamount = models.FloatField(null=True, blank=True)
+#     taxamount = models.FloatField(null=True, blank=True)
+#     adjustmentamount = models.FloatField(null=True, blank=True)
+#     finalamount = models.FloatField(null=True, blank=True)
+#     signature = models.BooleanField(null=True, blank=True)
+
+#     def __str__(self):
+#         return f"{self.quotationid}"
+
 class quotationInvoice(models.Model):
-    quotationid = models.IntegerField()
-    customerid = models.IntegerField()
+    quotationid = models.IntegerField(null=True, blank=True)
+    customerid = models.IntegerField(null=True, blank=True)
     creatorid = models.IntegerField(null=True, blank=True)
+    creatorname = models.CharField(max_length=500, null=True, blank=True)
     updatorid = models.IntegerField(null=True, blank=True)
     customername = models.CharField(max_length=500)
-    customeraddress = models.CharField(null=True, blank=True, max_length=500)
-    customerpincode = models.CharField(null=True, blank=True, max_length=500)
-    customerstate = models.CharField(null=True, blank=True, max_length=500)
-    customergst = models.CharField(null=True, blank=True, max_length=500)
-    customerplaceofsupply = models.CharField(null=True, blank=True, max_length=500)
-    quotationdate = models.DateField()
+    quotationdate = models.DateField(null=True,blank=True)
     terms = models.CharField(max_length=500, blank=True)
-    exiprydate = models.DateField()
-    quotationnumber = models.IntegerField()
-    items = JSONField()
+    po = models.CharField(max_length=500, blank=True,null=True)
+    items = JSONField( blank=True,null=True)
+    customerdetails = JSONField( blank=True,null=True)
+    shippingState = models.CharField(max_length=500, blank=True)
     subtotalamount = models.FloatField(null=True, blank=True)
-    taxamount = models.FloatField(null=True, blank=True)
-    adjustmentamount = models.FloatField(null=True, blank=True)
-    finalamount = models.FloatField(null=True, blank=True)
     signature = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
@@ -208,3 +227,91 @@ class quotationstorage(models.Model):
 
     def __str__(self):
         return self.quotationid
+
+class proformaInvoice(models.Model):
+    invoiceid = models.IntegerField(null=True, blank=True)
+    customerid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    creatorname = models.CharField(max_length=500, null=True, blank=True)
+    updatorid = models.IntegerField(null=True, blank=True)
+    customername = models.CharField(max_length=500)
+    invoicedate = models.DateField(null=True, blank=True)
+    terms = models.CharField(max_length=500, blank=True)
+    subtotalamount = models.FloatField(null=True, blank=True)
+    shippingState = models.CharField(max_length=500, blank=True)
+    taxamount = models.FloatField(null=True, blank=True)
+    subtotalamount = models.FloatField(null=True, blank=True)
+    po = models.CharField(max_length=500, blank=True,null=True)
+    items = JSONField( blank=True,null=True)
+    customerdetails = JSONField( blank=True,null=True)
+    finalamount = models.FloatField(null=True, blank=True)
+    signature = models.BooleanField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.invoiceid}"
+
+class proformainvoicestorage(models.Model):
+    invoiceid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    deletorid = models.IntegerField(null=True, blank=True)
+    typeofchange = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return str(self.invoiceid)
+
+class deliveryChallan(models.Model):
+    challanid = models.IntegerField(null=True, blank=True)
+    customerid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    creatorname = models.CharField(max_length=500, null=True, blank=True)
+    customername = models.CharField(max_length=500)
+    challandate = models.DateField(null=True,blank=True)
+    po = models.CharField(max_length=500, blank=True,null=True)
+    challannumber = models.CharField(max_length=500, blank=True,null=True)
+    items = JSONField( blank=True,null=True)
+    customerdetails = JSONField( blank=True,null=True)
+    shippingState = models.CharField(max_length=500, blank=True)
+    subtotalamount = models.FloatField(null=True, blank=True)
+    signature = models.BooleanField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.challanid}"
+
+class deliveryinvoicestorage(models.Model):
+    challanid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    deletorid = models.IntegerField(null=True, blank=True)
+    typeofchange = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return str(self.challanid)
+
+class installationReport(models.Model):
+    installationid = models.IntegerField(null=True, blank=True)
+    customerid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    creatorname = models.CharField(max_length=500, null=True, blank=True)
+    customername = models.CharField(max_length=500)
+    reportnumber = models.CharField(max_length=500, blank=True,null=True)
+    installationDate = models.DateField(null=True,blank=True)
+    devicename = models.CharField(max_length=500, null=True, blank=True)
+    serialnumber = models.IntegerField(null=True, blank=True)
+    imeinumber = models.IntegerField(null=True, blank=True)
+    accessories = models.CharField(max_length=500, null=True, blank=True)
+    problemDescription = models.CharField(max_length=500, null=True, blank=True)
+    actionTaken = models.CharField(max_length=500, null=True, blank=True)
+    testing = models.CharField(max_length=500, null=True, blank=True)
+    customerComment = models.CharField(max_length=500, null=True, blank=True)
+    customerdetails = JSONField( blank=True,null=True)
+
+    def __str__(self):
+        return f"{self.installationid}"
+
+class installationinvoicestorage(models.Model):
+    installationid = models.IntegerField(null=True, blank=True)
+    creatorid = models.IntegerField(null=True, blank=True)
+    deletorid = models.IntegerField(null=True, blank=True)
+    typeofchange = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return str(self.installationid)

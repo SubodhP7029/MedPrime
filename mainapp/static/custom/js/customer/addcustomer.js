@@ -3,15 +3,15 @@
 //check if country in India in Billing
 function stateandcitydropinbilling() {
     if ($('#id_billingcountry').val() == 'India') {
-        document.getElementById('typeofInput_billingstate').innerHTML = '<select onchange="print_city(\'id_tempbillingcity\', this.selectedIndex,\'id_tempbillingstate\');" name="state" class="select form-control form-control" id="id_tempbillingstate"></select>'
-        document.getElementById('typeofInput_billingcity').innerHTML = ' <select name="city" class="select form-control" id="id_tempbillingcity">'
+        document.getElementById('typeofInput_billingstate').innerHTML = '<select onchange="print_city(\'id_billingcity\', this.selectedIndex,\'id_billingstate\');" name="state" class="select form-control form-control" id="id_billingstate"></select>'
+        document.getElementById('typeofInput_billingcity').innerHTML = ' <select name="city" class="select form-control" id="id_billingcity">'
         document.getElementById('typeofInput_gst').innerHTML = ' <label for="id_gst" class="">GST No.</label><input type="text" name="gst" maxlength="500" class="textinput textInput form-control" id="id_gst">'
-        print_state("id_tempbillingstate");
-        // $('#id_tempbillingcity').select2();
-        // $('#id_tempbillingstate').select2();
+        print_state("id_billingstate");
+        // $('#id_billingcity').select2();
+        // $('#id_billingstate').select2();
     } else {
-        document.getElementById('typeofInput_billingstate').innerHTML = ' <input type="text" placeholder="Billing State"  name="billingstate" class="textinput form-control" id="id_tempbillingstate">'
-        document.getElementById('typeofInput_billingcity').innerHTML = '<input type="text" placeholder="Billing City" name="billingcity" class="textinput form-control" id="id_tempbillingcity">'
+        document.getElementById('typeofInput_billingstate').innerHTML = ' <input type="text" placeholder="Billing State"  name="billingstate" class="textinput form-control" id="id_billingstate">'
+        document.getElementById('typeofInput_billingcity').innerHTML = '<input type="text" placeholder="Billing City" name="billingcity" class="textinput form-control" id="id_billingcity">'
         document.getElementById('typeofInput_gst').innerHTML = ''
     }
 }
@@ -136,8 +136,8 @@ function print_city(city_id, city_index, state_id) {
 
 
 $(document).ready(function () {
-    // $('#id_tempbillingcity').select2();
-    // $('#id_tempbillingstate').select2();
+    // $('#id_billingcity').select2();
+    // $('#id_billingstate').select2();
     // $('#id_distributer').select2();
 
 
@@ -192,27 +192,54 @@ function getStateid() {
     }
     document.getElementById('id_stateid').value = code
 }
-function checkforshipping() {
-    if (document.getElementById('flagForNeedOfShippingInfo').checked) {
-        $('#id_country').val($('#id_billingcountry').val())
-        if ($('#id_tempbillingstate').val()) {
-            $('#id_state').val($('#id_tempbillingstate').val())
-            $('#id_city').val($('#id_tempbillingcity').val())
-        } else {
-            $('#id_state').val($('#id_billingstate').val())
-            $('#id_city').val($('#id_billingcity').val())
 
-        }
-        $('#id_building').val($('#id_billingbuilding').val())
-        $('#id_area').val($('#id_billingarea').val())
-        $('#id_landmark').val($('#id_billinglandmark').val())
-        document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
+// function CopyFormFields(checked) {
+//     if (checked) {
+//         alert("Hiii");
+//         document.getElementById('ShippingInfo').style.display = 'none'
+//     } else {
+//         document.getElementById('ShippingInfo').style.display = 'block'
+//     }
+//     checkforshipping()
+// }
+// function getStateid() {
+//     var state = document.getElementById('id_state').value
+//     var code = stateCode[state]
+//     if (!code) {
+//         code = 00
+//     }
+//     document.getElementById('id_stateid').value = code
+// }
+// function checkforshipping() {
+//     if (document.getElementById('flagForNeedOfShippingInfo').checked) {
+//         $('#id_country').val($('#id_billingcountry').val())
+//         if ($('#id_billingstate').val()) {
+//             $('#id_state').val($('#id_billingstate').val())
+//             $('#id_city').val($('#id_billingcity').val())
+//         } else {
+//             $('#id_state').val($('#id_billingstate').val())
+//             $('#id_city').val($('#id_billingcity').val())
+
+//         }
+//         $('#id_building').val($('#id_billingbuilding').val())
+//         $('#id_area').val($('#id_billingarea').val())
+//         $('#id_landmark').val($('#id_billinglandmark').val())
+//         document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
+//     }
+//     getStateid()
+//     // document.getElementById('dealerCreation').submit()
+// }
+
+function checkforshipping()
+{
+    var CopyFromList = new Array( "billing_country", "billing_state", "billing_city", "billing_building", "billing_area", "billing_landmark","billing_pincode" );
+    var CopyToList = new Array( "shipping_country", "shipping_state", "shipping_city", "shipping_building", "shipping_area", "shipping_landmark","shipping_pincode" );
+    for( var i=0; i<CopyFromList.length; i++ )
+    {
+        document.getElementById(CopyToList[i]).value = document.getElementById(CopyFromList[i]).value;
     }
-    getStateid()
-    // document.getElementById('dealerCreation').submit()
+   
 }
-
-
 $("#id_username").on("keyup", function () {
     var input = $("#id_username").val()
     var string = "SELECT username FROM public.auth_user where username = '" + input + "'"
@@ -249,7 +276,7 @@ function uniqueChecker(sql, field, length) {
 
 
 function checkdataandsubmit() {
-    $('#id_billingstate').val($('#id_tempbillingstate').val())
-    $('#id_billingcity').val($('#id_tempbillingcity').val())
+    $('#id_billingstate').val($('#id_billingstate').val())
+    $('#id_billingcity').val($('#id_billingcity').val())
     document.getElementById("saveform").click()
 }

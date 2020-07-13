@@ -1,3 +1,8 @@
+var allProductsData,selectedStateCode,Nextcounter, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+var allProductJSONArray = []
+var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
+var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
+var taxBrackets = []
 
 function insertSrNo() {
     var allrows = document.getElementById('bodyOfProductPreview').getElementsByTagName('tr')
@@ -313,6 +318,7 @@ function savePdf() {
     // $.get("increaseinvoicecounter/")
     saveDatatodb()
     Nextcounter = parseInt(document.getElementById('currentnumber').value) + 1
+    alert(Nextcounter);
     // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter = " + Nextcounter + " where id = 1"
 
 }

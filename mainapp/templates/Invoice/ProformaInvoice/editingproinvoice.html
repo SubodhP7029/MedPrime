@@ -13,7 +13,7 @@
 <script src="{% static 'custom/js/Invoice/invoice.js' %}" crossorigin="anonymous"></script> {% endcomment %}
 <script defer src="{% static 'custom/js/main.js' %}"></script>
 
-<script src="{% static 'custom/js/Invoice/TaxInvoice/editinginvoice.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'custom/js/Invoice/ProformaInvoice/editingproinvoice.js' %}" crossorigin="anonymous"></script>
 
 {% endblock %}
 {% block head %}
@@ -33,7 +33,7 @@
     {% endfor %}
 </div>
 <div style='display:none'>
-    <a id='redirectToHere' style='display: none;' href="{% url 'vieweinvoices' %}">Billing</a>
+    <a id='redirectToHere' style='display: none;' href="{% url 'viewproinvoices' %}">Billing</a>
 
     <input id='idofuser' value="{{ user.id }}" />
     <input id='idofcreator' value="{{ creatorid }}" />
@@ -161,10 +161,7 @@
                         <button type="button" id="removeproductbtn" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
                       </div>
       
-                      <div class="form-group col-md-4">
-                        <label for="datepicker" ><b>Due Date</b> </label>
-                        <input type="text" class="form-control" id='datepicker' name="due date" value={{ duedate|date:"d-m-yy"}}>
-                      </div>
+                      
       
                       <div class="form-group col-md-4">
                         <label for="PONo"><b>PO Number</b> </label>
@@ -189,21 +186,8 @@
       
       <br>
                     <div class='row'>
-                      <div class="form-group col-md-2">
-                        <label for="typeofadjustment" ><b>Adjustment</b> </label>
-                         <select id='typeofadjustment' class="form-control">
-                            <option value='add' selected>Add</option>
-                            <option value='remove'>Remove</option>
-                        </select>
-                      </div>
       
-                      <div class="form-group col-md-4">
-                        <label for="adjustment" style="color: white;"><b>Adjustment</b> </label>
-                      <input id='adjustment' type='number' placeholder='1' class="form-control" 
-                      onkeyup='getFinalAmountFromTable()'value=0 />
-                      </div>
-      
-                      <div class="form-group col-md-4" style="margin-left: 100px;">
+                      <div class="form-group col-md-4" style="margin-left: 100px;display: none;">
                         <label for="FinalAmount"><b>Final Amount:</b> </label>
                       <input readonly id='FinalAmount' class="form-control" type='number' value={{ finalamount }} />
                       </div>

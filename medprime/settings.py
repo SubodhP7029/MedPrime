@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
 ]
 
 MIDDLEWARE = [
@@ -150,8 +151,8 @@ MEDIA_URL = "/media/"
 # which package to use with crispy
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+# DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
 
 # redirect after log in
 LOGIN_REDIRECT_URL = "homepage"
 LOGIN_URL = "login"
-

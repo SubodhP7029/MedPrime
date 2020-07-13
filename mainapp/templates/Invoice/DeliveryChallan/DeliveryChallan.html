@@ -3,137 +3,316 @@
 
 {% block header %}
 
-<script src="{% static 'custom/js/Invoice/DeliveryChallan/DeliveryChallan.js' %}" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
     integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
     crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
     integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/jspdf-autotable@3.2.10/dist/jspdf.plugin.autotable.js"></script>
+    
+<script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+<!-- <script defer src="{% static 'custom/js/main.js' %}"></script>
 
+<script src="{% static 'custom/js/Invoice/TaxInvoice/invoice.js' %}" crossorigin="anonymous"></script> -->
+
+<script src="{% static 'custom/js/Invoice/DeliveryChallan/DeliveryChallan.js' %}" crossorigin="anonymous"></script>
+    
 {% endblock %}
+{% block head %}
+<!-- <h1>Create Invoice</h1>
+<div> - Current User <div id='currentUser'> {{ currentUserName }}</div>
+</div> -->
+{% endblock %}
+
 {% block content %}
-<h1>Create Delivery Challan</h1>
-<input type='hidden' id='idofuser' value="{{ user.id }}" />
-<input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
 <div class='row'>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            Select Customers
-            <select onchange='getAllCustomerInfo()' id='selectedcustomer'>
-                <option value=''>Select Customer</option>
-                {% for eachcustomer in allcustomers.all %}
-                <option value="{{ eachcustomer.user_id }}" id='thisCust-{{ eachcustomer.user_id }}'>{{ eachcustomer }}</option>
-                {% endfor %}
-            </select>
-        </div>
+    {% for message in messages %}
+    <div style='color:black' class="alert {{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
     </div>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            <span>Challan date : </span> <input type="date" id='datepicker_invoice' name="invoice date">
-        </div>
-    </div>
-
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            Challan Number
-            <input id='PONo' type='text' />
-        </div>
-    </div>
+    {% endfor %}
 </div>
-<div class='row'>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            Select Product
-            <select onchange='priceOfProduct()' id='selectedProduct'>
-                <option value=''>Select Product</option>
-                {% for eachproduct in allproducts.all %}
-                <option value="{{ eachproduct }}">{{ eachproduct }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            Select Quantity
-            <input id='selectedProductQuanity' type='number' onkeyup="addinputs()" value='1' />
-        </div>
-    </div>
+    <!--Main Content-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Create Challan</h6>
+                  <div style="display: none;"> Current User <div id='currentUser'> {{ currentUserName }}</div></div>
+                </div>
+                <div class="card-body">
+                    <input type='hidden' id='idofuser' value="{{ user.id }}" />
+                    <input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
+                  <div class="form-row">
+                     <div class="form-group col-md-3">
+                       <label for="selectedcustomer"><b>Select Customer</b></label><br>
+                       <select onchange='getAllCustomerInfo()' id='selectedcustomer' class="form-control">
+                        <option value=''>Select Customer</option>
+                        {% for eachcustomer in allcustomers.all %}
+                        <option value="{{ eachcustomer.user_id }}" id='thisCust-{{ eachcustomer.user_id }}'>
+                            {{ eachcustomer.customername }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                        
+                          </div>
+                          <!--  -->
+                       <div class="form-group col-md-1">
+                       <label for="getcustdetail" style="color: white;"><b>Details</b></label>
+                       <button type="button" class="btn btn-primary btn-rounded m-b-5 m-l-2" id="getcustdetail"
+                       onclick="getcustdetail()">Details</button>
+                       </div>
+      
+                       <div class="form-group col-md-4">
+                         <label for="selectedProduct"><b>Select Product</b></label><br>
+                         <select onchange='priceOfProduct()' id='selectedProduct' class="form-control">
+                            <option value=''>Select Product</option>
+                            {% for eachproduct in allproducts.all %}
+                            <option value="{{ eachproduct }}">{{ eachproduct }}</option>
+                            {% endfor %}
+                        </select>
+                       </div>
+      
+                       <div class="form-group col-md-4">
+                       <label for="datepicker_invoice"><b>Challan Date</b></label>
+                       <input type="text" class="form-control" id='datepicker_invoice' name="invoice date">
+                       </div>
+                   </div>
+      
+      <!-- -->
+      <br>
+                <div class="form-row">
+                   <div class="form-group col-md-4">
+                     <label for="selectedProductPrice"><b>Product Price</b></label><br>
+                     <input id='selectedProductPrice' class="form-control" type='number' />
+                        </div>
+      
+                     <div class="form-group col-md-2">
+                       <label for="selectedProductQuanity"><b>Select Quantity</b></label>
+                       <input id='selectedProductQuanity' type='text' onkeyup="addinputs()" value='1' class="form-control" />
+                     </div>
 
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            PO Number
-            <input id='POONo' type='text' />
-        </div>
-    </div>
+                     <div class="form-group col-md-2">
+                        <label for="#" style="color: white;"><b>#to avoid blank space</b> </label>
+                        <input type="hidden" class="form-control" id="#" >
+                      </div>
 
-</div>
-<div class='row'>
+                      <div class="form-group col-md-4">
+                        <label for="PONo"><b>Challan Number</b> </label>
+                        <input type="text" class="form-control" id="PONo" placeholder="PO Number" >
+                      </div>
+            
+                </div>
+    <br>
+                        <div class="form-grpup">
+                        <div id='typeserialnumbers' class='row'>
+
+                        </div>
+                    </div>
+         <img src="{% static 'custom/images/logo.png' %}"  id='logoofcompany' style="display: none;">
+      
+      <br>
+                 <div class="form-row">
+                    <div class="form-group col-md-2">
+                      <label for="addproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="addproductbtn" class="btn btn-success" onclick='addProduct()'>Add Product</button>
+                         </div>
+      
+                      <div class="form-group col-md-2">
+                        <label for="removeproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="removeproductbtn" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
+                      </div>
+                      
+                      <div class="form-group col-md-4">
+                        <label for="POONo"><b>PO Number</b> </label>
+                        <input type="text" class="form-control" id="POONo" placeholder="PO Number" >
+                      </div>
+
+                      
+                  </div>
+      <!-- -->
+      <br>
+                  <div class="form-row">
+                     <div class="form-group col-md-12">
+                       <label for="Previewtable" ><b>Preview</b> </label><br>
+                       <table id='Previewtable' class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Serial Number </th>
+                                    <th>Quanity</th>
+                                </tr>
+                            </thead>
+                            <tbody id='bodyOfProductPreview'>
+                            </tbody>
+                        </table>
+                        </div>
+                   </div>
+      
+
+      
+      <br>
+      
+                  <div class='row'>
+                    <div class="form-group col-md-6">
+                      <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick="javascript:createPDF()"><i
+                                class="ti-plus"></i>Create Challan</button>
+                    </div>
+      
+                  </div>
+                
+                </div>
+                
+              </div>
+          </div>
+      </div>
+      </div>
+      
 
 
-</div>
-<br>
-<img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
-<div class='row' style='text-align: center;'>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-        <div class='form-group'>
-            <button type="button" class="btn btn-success" onclick='addProduct()'>Add Product</button>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-        <div class='form-group'>
-            <button type="button" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
-        </div>
-    </div>
-</div>
-<div id='typeserialnumbers' class='row' style="border: 1px solid black;padding:5px 5px">
+    <!--end-Main Content-->
 
-</div>
-<div class='form-group'>
-    Preview
-    <table id='Previewtable' class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Serial Number </th>
-                <th>Quanity</th>
-            </tr>
-        </thead>
-        <tbody id='bodyOfProductPreview'>
-        </tbody>
-    </table>
-
-
-    <div class='row'>
-
-        <div class='form-group'>
-
-            <button class='btn btn-outline-success' onclick='createPDF()'>Create Invoice</button>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal of Preview -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document" style='height: 80%;'>
-        <div class="modal-content" style='height: 100%;'>
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">PDF Preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <!-- Modal of Preview -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document" style='height: 80%;'>
+            <div class="modal-content" style='height: 100%;'>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">PDF Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="height: 70%;" id='previewModalBody'>
+                    <!-- <embed id='previewOfPdf' width='100%' height='100%' /> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
+                    <button type="button" class="btn btn-primary" onclick='savePdf()'>Save</button>
+                    <button type="button" class="btn btn-primary" onclick='downloadPdf()'>Download</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <embed id='previewOfPdf' width='100%' height='100%' />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Edit</button>
-                <button type="button" class="btn btn-primary" onclick='downloadPdf()'>Download</button>
+        </div>
+    </div>
+
+    <!-- Modal of Editing row in preview table -->
+    <div class="modal fade" id="EditingRowInPreviewTable" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document" style='height: 80%;'>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style='text-align: center;'>
+                    <button type="button" onclick="EditingTr(clickedTR)"
+                        class="btn btn-primary btn-lg btn-rounded m-b-10 m-l-5" id='editButton'>Edit</button>
+                    <button type="button" onclick="removingTr(clickedTR)"
+                        class="btn btn-danger btn-lg btn-rounded m-b-10 m-l-5" data-dismiss="modal"
+                        id='deleteButton'>Delete</button>
+                    <div id='newQtydiv' style='display: none;'>
+                        <div class='row'>
+                            <label for="Name">Name</label>
+                            <input type="text" name="Name" id="newName" />
+                            <label for="Description">Description</label>
+                            <input type="text" name="Description" id="newDescription" /><br>
+                        </div>
+                        <div class='row'>
+                            <label for="newQty">
+                                Quantity :
+                            </label>
+                            <input type="number" name="newQty" id="newqt">
+                            <label for="newRate">
+                                Rate :
+                            </label>
+                            <input type="number" name="newRate" id="newrate">
+                        </div>
+                        <div class='row'>
+
+
+                            <label for="newDisc">
+                                Discount :
+                                <select name="typeOfDesc" id="typeOfDesc">
+                                    <option value="perc">%</option>
+                                    <option value="rs" selected>₹</option>
+                                </select>
+                            </label>
+
+                            <input type="number" name="newDisc" id="newdesc">
+                        </div>
+                        <button type="button" class="btn btn-success btn-outline btn-rounded m-b-10 m-l-5"
+                            data-dismiss="modal" id='saveButton'>Save</button>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-{% endblock %}
+    <!-- Modal of customer detail table -->
+    <div class="modal fade" id="detailofcust" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2 style="text-align: center;">Customer Detail</h2>
+                    <table class='table-bordered' style="margin: auto;">
+                        <tr>
+                            <th>Customer Name</th>
+                            <td style='text-align: left;' id='customerName'></td>
+                        </tr>
+                        <tr>
+                            <th>Customer Address</th>
+                            <td style='text-align: left;' id='customerAdd'></td>
+                        </tr>
+                        <tr>
+                            <th>Customer City</th>
+                            <td style='text-align: left;' id='customerCity'></td>
+                        </tr>
+                        <tr>
+                            <th>Customer State</th>
+                            <td style='text-align: left;' id='customerState'></td>
+                        </tr>
+                        <tr>
+                            <th>Customer Country</th>
+                            <td style='text-align: left;' id='customerCountry'></td>
+                        
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style='display:none'>
+        <form action="" method="post" id='invoice_to_db'>
+            {% csrf_token %}
+            {{ deliveryform.as_p }}
+            <input type="submit" value="Submit" id='saveDataToForm'>
+
+        </form>
+    </div>
+    <script>
+        
+    </script>
+    
+    {% endblock %}

@@ -1,9 +1,17 @@
-// add variables 
-var allProductsData, tableBodiesAllRows, logo, allCustomerData, customerName, customerAdd, customerPincode, customerState, customerGST, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+// add variables
+var allProductsData,selectedStateCode,Nextcounter, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
-var TotalDisc = 0
+var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
+var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
+var taxBrackets = []
 
 
+
+// $("#Previewtable tbody tr").on("click", function (event) {
+//     alert(event)
+
+
+// });
 //price of selected product
 function priceOfProduct() {
     var product = document.getElementById('selectedProduct').value
@@ -11,8 +19,29 @@ function priceOfProduct() {
     for (i = 0; i < allProductJSONArray.length; i++) {
         if (product == allProductJSONArray[i].name) {
             document.getElementById('selectedProductPrice').value = allProductJSONArray[i].price
+            productTax = allProductJSONArray[i].tax
+            if (!taxBrackets.includes(productTax)) {
+                taxBrackets.push(productTax)
+            }
         }
     }
+}
+
+function getFinalAmountFromTable() {
+    var totalGSTItems = document.getElementsByClassName('gstvalue')
+    var totalAmtItems = document.getElementsByClassName('finalvalue')
+
+    totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
+    for (i = 0; i < totalGSTItems.length; i++) {
+        totalGSTAmt += parseFloat(totalGSTItems[i].innerHTML)
+    }
+    for (i = 0; i < totalAmtItems.length; i++) {
+        totalAmt += parseFloat(totalAmtItems[i].innerHTML)
+    }
+
+
+    finalAmout = totalGSTAmt + totalAmt
+    $('#FinalAmount').val(finalAmout)
 }
 
 // add new product to preview
@@ -40,18 +69,22 @@ function addProduct() {
         var thebody = document.getElementById('bodyOfProductPreview')
         var tr = document.createElement('tr')
         var td = document.createElement('td')
-        td.innerHTML = "<b>" + product + "</b><br><p>" + desc + "</p>"
+        td.innerHTML = "<b class='productName'>" + product + "</b><br><p>" + desc + "</p>"
         tr.appendChild(td)
         var td = document.createElement('td')
+        td.className = 'productHSN'
         td.innerHTML = HSN
         tr.appendChild(td)
         var td = document.createElement('td')
+        td.className = 'productQuantity'
         td.innerHTML = quantity
         tr.appendChild(td)
         var td = document.createElement('td')
+        td.className = 'productRate'
         td.innerHTML = rate
         tr.appendChild(td)
         var td = document.createElement('td')
+        td.className = 'discount'
         td.innerHTML = discount
         tr.appendChild(td)
         var td = document.createElement('td')
@@ -66,38 +99,51 @@ function addProduct() {
 }
 
 
-// remove last product from preview
-function removeProduct() {
-    var thebody = document.getElementById('bodyOfProductPreview')
-    var alltrs = thebody.getElementsByTagName('tr')
-    alltrs[alltrs.length - 1].remove()
-}
+
+
+
 
 function getAllCustomerInfo() {
-    SelectedCustomerUsername = "SELECT * FROM public.mainapp_customerprofile WHERE id=" + document.getElementById('selectedcustomer').value
-    $.get("getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id=" + document.getElementById('selectedcustomer').value
+    $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
         allCustomerData = data
         customerName = document.getElementById('thisCust-' + document.getElementById('selectedcustomer').value).innerHTML
-        customerAdd = data[0][1]
-        customerPincode = data[0][2]
-        customerState = data[0][7]
-        customerGST = data[0][8]
+        customerbuilding = data[0][0]
+        customerarea = data[0][13]
+        customerlandmark = data[0][14]
+        customerPincode = data[0][1]
+        customerCity = data[0][2]
+        customerState = data[0][3]
+        customerCountry = data[0][4]
+        customerGST = data[0][5]
+        customerStateCode = data[0][6]
+        shippingbuilding = data[0][7]
+        shippingarea = data[0][15]
+        shippinglandmark = data[0][16]
+        shippingPincode = data[0][8]
+        shippingCity = data[0][9]
+        shippingState = data[0][10]
+        shippingCountry = data[0][11]
+        companyName = data[0][12]
     })
+
 }
+
 
 
 
 // raw query to get all prouct data columns
-$.get("invoicegetallprodcol/", function (data) {
+$.get("/invoicegetallprodcol/", function (data) {
     allProductsDataColumns = data
 
     //  raw query to get all product data
-    $.get("invoicegetallprod/", function (data) {
+    $.get("/invoicegetallprod/", function (data) {
         allProductsData = data
+
         var ProductSelectDropdown = document.getElementById('selectedProduct')
         ProductSelectDropdown.innerHTML = "<option value=''>Select Product</option>"
 
-        //create allProductJSONArray 
+        //create allProductJSONArray
         for (i = 0; i < allProductsData.length; i++) {
             var eachIndividualProduct = {}
             for (j = 0; j < allProductsDataColumns.length; j++) {
@@ -105,7 +151,7 @@ $.get("invoicegetallprodcol/", function (data) {
             }
             allProductJSONArray.push(eachIndividualProduct)
         }
-        // find index of name column in db 
+        // find index of name column in db
         var indexOfName
         for (j = 0; j < allProductsDataColumns.length; j++) {
             if (allProductsDataColumns[j].col[0] == 'name') {
@@ -113,17 +159,16 @@ $.get("invoicegetallprodcol/", function (data) {
                 break;
             }
         }
+
         for (i = 0; i < allProductsData.length; i++) {
             ProductSelectDropdown.innerHTML += "<option value='" + allProductsData[i].data[indexOfName] + "'>" + allProductsData[i].data[indexOfName] + "</option>"
         }
 
     })
 })
-//  animation for datepicker
-// $("#datepicker").datepicker("option", "showAnim", "slideDown");
-$("#datepicker_invoice").datepicker({ dateFormat: "mm/dd/yyyy" }).datepicker("setDate", new Date());
 
-// Create invoice 
+
+// Create invoice
 function createPDF() {
 
     if (allCustomerData == undefined) {
@@ -203,11 +248,20 @@ function createPDF() {
             doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 45, customerName)
             doc.setFontType('normal');
             doc.setFontSize(9)
-            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerAdd)
-            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 60, '' + customerPincode + '')
+            // doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerAdd)
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 50, customerbuilding)
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 53, customerarea)
+            if (customerlandmark == null) {
+                customerlandmark = ''
+            }
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 56, customerlandmark)
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 60, '' + customerPincode + ',' + customerCity + ',')
             doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 65, 'Place Of Supply:' + customerState)
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 70, '' + customerState + ',' + customerCountry)
+            doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 75, '' + customerPincode + '')
+
             if (customerGST != '') {
-                doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 70, 'GST No:' + customerGST)
+                doc.text(MedprimeAddressLocation[0], MedprimeAddressLocation[1] + 80, 'GST No:' + customerGST)
             }
 
 
@@ -215,8 +269,9 @@ function createPDF() {
 
 
 
+
             //setup table of product
-            doc.autoTable({ html: '#Previewtable', margin: { top: MedprimeAddressLocation[1] + 80, left: MedprimeAddressLocation[0] } });
+            doc.autoTable({ html: '#Previewtable', margin: { top: MedprimeAddressLocation[1] + 85, left: MedprimeAddressLocation[0] } });
             let finalY = doc.lastAutoTable.finalY;
             var totalGSTItems = document.getElementsByClassName('gstvalue')
             var totalAmtItems = document.getElementsByClassName('finalvalue')
@@ -234,7 +289,7 @@ function createPDF() {
                 totalAdjustment += (totalAmt + "").split(".")[1] / 100
             }
 
-            finalAmout = totalGSTAmt + totalAmt - totalAdjustment
+            finalAmout = totalGSTAmt + totalAmt
 
             if (finalAmout == 0) {
                 Swal.fire({
@@ -255,8 +310,8 @@ function createPDF() {
                     doc.text("IGST (18%)", 120, finalY + 14, null, null, 'left')
                 }
                 doc.text('' + totalGSTAmt + '', 190, finalY + 14, null, null, 'right')
-                doc.text("Adjustment(-)", 120, finalY + 21, null, null, 'left')
-                doc.text('' + totalAdjustment + '', 190, finalY + 21, null, null, 'right')
+                // doc.text("Adjustment(-)", 120, finalY + 21, null, null, 'left')
+                // doc.text('' + totalAdjustment + '', 190, finalY + 21, null, null, 'right')
                 doc.setFontType('bold');
                 doc.text("Total", 120, finalY + 28, null, null, 'left')
                 doc.text('' + finalAmout + '', 190, finalY + 28, null, null, 'right')
@@ -272,7 +327,7 @@ function createPDF() {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
-                        title: 'Please Insert PI Number',
+                        title: 'Please Insert PO Number',
                         showConfirmButton: false,
                         timer: 2000
                     })
@@ -312,7 +367,14 @@ function createPDF() {
 
                         // doc.save(PONo + '.pdf')
                         var string = doc.output('datauristring');
-                        document.getElementById('previewOfPdf').setAttribute('src', string)
+                        var modalBody = document.getElementById('previewModalBody')
+                        modalBody.innerHTML = ''
+                        var emb = document.createElement('embed')
+                        emb.width = '100%'
+                        emb.height = '100%'
+                        emb.src = string
+                        modalBody.appendChild(emb)
+                        //document.getElementById('previewOfPdf').setAttribute('src', string)
                         // var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
                         // var x = window.open();
                         // x.document.open();
@@ -335,16 +397,13 @@ function createPDF() {
     }
 }
 
-//download the pdf
-function downloadPdf() {
-    doc.save(PONo + '_proforma.pdf')
-    // Nextcounter = parseInt(document.getElementById('currentnumber').value) + 1
-    // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter =" + Nextcounter + " where id = 1"
-    // $.get("increaseinvoicecounter/", { sqlParam: SelectedCustomerUsername })
-}
-
-//signature
-
+// $('#invoice_to_db').submit(function (e) {
+//     $.post('nvoice/', $(this).serialize(), function (data) {
+//         console.log(data)
+//         // of course you can do something more fancy with your respone
+//     });
+//     e.preventDefault();
+// });
 function getDataUri(url, cb) {
     var image = new Image();
     image.setAttribute('crossOrigin', 'anonymous'); //getting images from external domain
@@ -365,4 +424,155 @@ function getDataUri(url, cb) {
     };
 
     image.src = url;
+}
+
+function downloadPdf() {
+    // $.get("increaseinvoicecounter/")
+    saveDatatodb()
+    if (!PONo) {
+        PONo = 'ProformaInvoice'
+    }
+    doc.save(PONo + '.pdf')
+    // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter = " + Nextcounter + " where id = 1"
+
+}
+//download the pdf
+function savePdf() {
+    // $.get("increaseinvoicecounter/")
+    saveDatatodb()
+    // Nextcounter = parseInt(document.getElementById('currentnumber').value) + 1
+
+    // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter = " + Nextcounter + " where id = 1"
+
+}
+
+function saveDatatodb()
+{
+    var rowCounts = document.getElementById("bodyOfProductPreview").rows.length;
+
+    for(var i = 0; i <  rowCounts; i++)
+    {
+        var temptotalAmt = parseInt(document.getElementsByClassName("productRate")[i].innerText)
+        totalAmt +=  temptotalAmt;
+        for(var j=0;j<1;j++)
+        {
+            var temptotalGSTAmt = parseInt(document.getElementsByClassName("gstvalue")[j].innerText)
+            totalGSTAmt += temptotalGSTAmt;
+        }
+    }
+
+    finalAmout = totalAmt + totalGSTAmt
+    //set invoice id
+    // document.getElementById('id_invoiceid').value = parseInt(document.getElementById('currentnumber').value)
+    //$('#id_invoiceid').val(Nextcounter)
+    // $('#id_invoiceid').value = Nextcounter;
+    document.getElementById('id_invoiceid').value = parseInt($('#currentnumber').val()) + 1;
+    //$('#id_invoiceid').val(Nextcounter)
+    // set customer id a1
+    $('#id_customerid').val(parseInt($('#selectedcustomer').val()))
+    //creator's name
+    currentUserName = document.getElementById('currentUser').innerHTML
+    $('#id_creatorname').val(currentUserName)
+    //set customer name
+    $('#id_customername').val(companyName)
+    //set customer shipping state
+    $('#id_shippingState').val(shippingState)
+    // invoice date
+    $('#id_invoicedate').val($('#datepicker_invoice').val())
+    // due date
+    // $('#id_duedate').val($('#datepicker').val())
+    //set terms
+    $('#id_terms').val($('#termsNcondition').val())
+    //set po
+    $('#id_po').val($('#PONo').val())
+    //set creator id
+    $('#id_creatorid').val($('#idofuser').val())
+
+    //$('#id_subtotalamount').val(Math.round(totalAmt * 100) / 100)
+    //set gst
+    //$('#id_taxamount').val(Math.round(totalGSTAmt * 100) / 100)
+    //set subtotal
+    // $('#id_subtotalamount').val()
+    document.getElementById('id_subtotalamount').value = Math.round(totalAmt * 100) / 100
+    //set gst
+    // $('#id_taxamount').val()
+     document.getElementById('id_taxamount').value = Math.round(totalGSTAmt * 100) / 100
+    //set adjustment
+    // $('#id_adjustmentamount').val(Math.round(totalAdjustment * 100) / 100)
+    // set adjustment type
+    // $('#id_adjustmenttype').val($('#typeofadjustment').val())
+    //set finaltotal
+    //$('#id_finalamount').val(Math.round(parseFloat($('#FinalAmount').val()) * 100) / 100)
+    document.getElementById('id_finalamount').value = Math.round(finalAmout * 100) / 100
+    //set Signature
+    if ($('#sign').prop("checked")
+    ) {
+        $("#id_signature").val("true").attr("selected", "selected");
+    } else {
+        $("#id_signature").val("false").attr("selected", "selected");
+    }
+    //create item json
+    var finalJson = {}
+    var t = document.getElementById('Previewtable')
+    var allRowsInTable = t.rows
+    var headsOfTable = allRowsInTable[0].cells
+    var headsOfTable = ['Product', 'HSN', 'Quantity', 'Rate', 'Discount','Igst','Final Price']
+
+    var jsonkeys = []
+    for (i = 0; i < headsOfTable.length; i++) {
+        jsonkeys.push(headsOfTable[i].innerText)
+    }
+    for (j = 1; j < allRowsInTable.length; j++) {
+        var eachrowobj = {}
+        eachrowobj['Product'] = allRowsInTable[j].getElementsByClassName('productName')[0].innerText
+        eachrowobj['HSN'] = parseInt(allRowsInTable[j].getElementsByClassName('productHSN')[0].innerText)
+        eachrowobj['Rate'] = parseFloat(allRowsInTable[j].getElementsByClassName('productRate')[0].innerText)
+        eachrowobj['Quantity'] = parseInt(allRowsInTable[j].getElementsByClassName('productQuantity')[0].innerText)
+        eachrowobj['Discount'] = parseFloat(allRowsInTable[j].getElementsByClassName('discount')[0].innerText)
+        eachrowobj['Igst'] = parseFloat(allRowsInTable[j].getElementsByClassName('gstvalue')[0].innerText)
+        eachrowobj['Final Price'] = parseFloat(allRowsInTable[j].getElementsByClassName('finalvalue')[0].innerText)
+        finalJson[j] = eachrowobj
+
+    }
+    $('#id_items').val(JSON.stringify(finalJson))
+
+    var customerdetailjson = {
+        "customerbuilding": customerbuilding,
+        "customerarea": customerarea,
+        "customerlandmark": customerlandmark,
+        "customerPincode": customerPincode,
+        "customerCity": customerCity,
+        "customerState": customerState,
+        "customerCountry": customerCountry,
+        "customerGST": customerGST,
+        "customerStateCode": customerStateCode,
+        "shippingbuilding": shippingbuilding,
+        "shippingarea": shippingarea,
+        "shippinglandmark": shippinglandmark,
+        "shippingPincode": shippingPincode,
+        "shippingCity": shippingCity,
+        "shippingState": shippingState,
+        "shippingCountry": shippingCountry,
+        "companyName": companyName
+
+    }
+    $('#id_customerdetails').val(JSON.stringify(customerdetailjson))
+    $('#saveDataToForm').click()
+}
+
+function getcustdetail() {
+    document.getElementById('customerName').innerHTML = companyName
+    document.getElementById('customerAdd').innerHTML = shippingbuilding + " , " + shippingarea + " , " + shippinglandmark
+    document.getElementById('customerCity').innerHTML = customerCity
+    document.getElementById('customerState').innerHTML = customerState
+    document.getElementById('customerCountry').innerHTML = customerCountry
+    $('#detailofcust').modal('show')
+}
+
+function removeProduct() {
+    var thebody = document.getElementById('bodyOfProductPreview')
+    var alltrs = thebody.getElementsByTagName('tr')
+    alltrs[alltrs.length - 1].remove()
+    getFinalAmountFromTable()
+    insertSrNo()
 }

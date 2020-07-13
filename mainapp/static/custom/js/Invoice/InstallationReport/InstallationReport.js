@@ -1,3 +1,5 @@
+var allProductsData,selectedStateCode,Nextcounter, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+
 
 $("#datepicker_invoice").datepicker({ dateFormat: "mm/dd/yyyy" }).datepicker("setDate", new Date());
 
@@ -9,18 +11,43 @@ $("#datepicker_invoice").datepicker({ dateFormat: "mm/dd/yyyy" }).datepicker("se
 
 // Create invoice 
 function createPDF() {
+    
+    getAllCustomerInfo()
     //get all details from front end
-    var reportNo = document.getElementById('reportnum').value
-    var custInfo = document.getElementById('custnameadd').value
-    var deviceInfo = document.getElementById('devicename').value
-    var serialNo = document.getElementById('serialno').value
-    var imeiNo = document.getElementById('iemino').value
-    var probDesc = document.getElementById('problemdesc').value
-    var actionTaken = document.getElementById('actiontaken').value
-    var testing = document.getElementById('testingdone').value
-    var custcomment = document.getElementById('customercomment').value
+    var reportNo = document.getElementById('reportNo').value
+    // var custInfo = JSON.stringify(customerdetailjson)
+    customerdetailjson =  {
+        "customerbuilding": customerbuilding,
+        "customerarea": customerarea,
+        "customerlandmark": customerlandmark,
+        "customerPincode": customerPincode,
+        "customerCity": customerCity,
+        "customerState": customerState,
+        "customerCountry": customerCountry,
+        "customerGST": customerGST,
+        "customerStateCode": customerStateCode,
+        "shippingbuilding": shippingbuilding,
+        "shippingarea": shippingarea,
+        "shippinglandmark": shippinglandmark,
+        "shippingPincode": shippingPincode,
+        "shippingCity": shippingCity,
+        "shippingState": shippingState,
+        "shippingCountry": shippingCountry,
+        "companyName": companyName
+    }
+
+    var custInfo = JSON.stringify(customerdetailjson)
+    var deviceInfo = document.getElementById('deviceName').value
+    var serialNo = document.getElementById('serialNo').value
+    var imeiNo = document.getElementById('imeiNo').value
+    var probDesc = document.getElementById('problemDescription').value
+    var actionTaken = document.getElementById('actionTaken').value
+    var testing = document.getElementById('testing').value
+    var custcomment = document.getElementById('customerComment').value
     var accessories = document.getElementById('accessories').value
     var dueDateEntered = document.getElementById('datepicker_invoice').value.split("-")
+    
+
     doc = new jsPDF()
 
     if (reportNo == "") {
@@ -154,7 +181,7 @@ function createPDF() {
                                                 doc.text("Engineer name:", startingPoint[0], startingPoint[1] + 205, null, null, 'left')
                                                 doc.text("Signature", startingPoint[0], startingPoint[1] + 210, null, null, 'left')
                                                 var string = doc.output('datauristring');
-                                                document.getElementById('previewOfPdf').setAttribute('src', string)
+                                                document.getElementById('previewModalBody').setAttribute('src', string)
                                                 $('#exampleModalLong').modal('show');
                                             }
 
@@ -176,4 +203,124 @@ function createPDF() {
 //download the pdf
 function downloadPdf() {
     doc.save(reportNo + '_installationReport.pdf')
+}
+
+function getcustdetail() {
+    document.getElementById('customerName').innerHTML = companyName
+    document.getElementById('customerAdd').innerHTML = shippingbuilding + " , " + shippingarea + " , " + shippinglandmark
+    document.getElementById('customerCity').innerHTML = customerCity
+    document.getElementById('customerState').innerHTML = customerState
+    document.getElementById('customerCountry').innerHTML = customerCountry
+    $('#detailofcust').modal('show')
+}
+
+function getAllCustomerInfo() {
+    SelectedCustomerUsername = "SELECT billingbuilding,billingpincode,billingcity,billingstate,billingcountry,gst,stateid,building, pincode,  city,state,  country,customername,billingarea,billinglandmark,area,landmark FROM public.mainapp_customerprofile WHERE user_id=" + document.getElementById('selectedcustomer').value
+    $.get("/getdetailofselectedcustmor/", { sqlParam: SelectedCustomerUsername }, function (data) {
+        allCustomerData = data
+        customerName = document.getElementById('thisCust-' + document.getElementById('selectedcustomer').value).innerHTML
+        customerbuilding = data[0][0]
+        customerarea = data[0][13]
+        customerlandmark = data[0][14]
+        customerPincode = data[0][1]
+        customerCity = data[0][2]
+        customerState = data[0][3]
+        customerCountry = data[0][4]
+        customerGST = data[0][5]
+        customerStateCode = data[0][6]
+        shippingbuilding = data[0][7]
+        shippingarea = data[0][15]
+        shippinglandmark = data[0][16]
+        shippingPincode = data[0][8]
+        shippingCity = data[0][9]
+        shippingState = data[0][10]
+        shippingCountry = data[0][11]
+        companyName = data[0][12]
+    })
+
+}
+
+
+""
+
+""
+""
+""
+""
+""
+
+function savePdf() {
+    // $.get("increaseinvoicecounter/")
+    saveDatatodb()
+    // Nextcounter = parseInt(document.getElementById('currentnumber').value) + 1
+    
+    // SelectedCustomerUsername = "update mainapp_serialnumbercounter set counter = " + Nextcounter + " where id = 1"
+
+}
+
+function saveDatatodb() 
+{
+
+    document.getElementById('id_installationid').value = parseInt($('#currentnumber').val()) + 1;
+    //$('#id_invoiceid').val(Nextcounter)
+    // set customer id a1
+    $('#id_customerid').val(parseInt($('#selectedcustomer').val()))
+    //creator's name
+    currentUserName = document.getElementById('currentUser').innerHTML
+    $('#id_creatorname').val(currentUserName)
+    //set customer name
+    $('#id_customername').val(companyName)
+    // invoice date
+    $('#id_installationDate').val($('#datepicker_invoice').val())
+ 
+    $('#id_po').val($('#PONo').val())
+    //set creator id 
+    $('#id_creatorid').val($('#idofuser').val())
+    
+    $('#id_reportnumber').val($('#reportNo').val())
+
+    $('#id_serialnumber').val($('#serialNo').val())
+
+    $('#id_imeinumber').val($('#imeiNo').val())
+ 
+    //customerComment = document.getElementById('customerComment').innerHTML
+    $('#id_customerComment').val($('#customerComment').val())
+
+    //devicename = document.getElementById('deviceName').innerHTML
+    $('#id_devicename').val($('#customerComment').val())
+
+    //accessories = document.getElementById('accessories').innerHTML
+    $('#id_accessories').val($('#accessories').val())
+
+    //problemDescription = document.getElementById('problemDescription').innerHTML
+    $('#id_problemDescription').val($('#problemDescription').val())
+
+    //actionTaken = document.getElementById('actionTaken').innerHTML
+    $('#id_actionTaken').val($('#actionTaken').val())
+
+    //testing = document.getElementById('testing').innerHTML
+    $('#id_testing').val($('#testing').val())
+
+    var customerdetailjson = {
+        "customerbuilding": customerbuilding,
+        "customerarea": customerarea,
+        "customerlandmark": customerlandmark,
+        "customerPincode": customerPincode,
+        "customerCity": customerCity,
+        "customerState": customerState,
+        "customerCountry": customerCountry,
+        "customerGST": customerGST,
+        "customerStateCode": customerStateCode,
+        "shippingbuilding": shippingbuilding,
+        "shippingarea": shippingarea,
+        "shippinglandmark": shippinglandmark,
+        "shippingPincode": shippingPincode,
+        "shippingCity": shippingCity,
+        "shippingState": shippingState,
+        "shippingCountry": shippingCountry,
+        "companyName": companyName
+
+    }
+    $('#id_customerdetails').val(JSON.stringify(customerdetailjson))
+    $('#saveDataToForm').click()
 }

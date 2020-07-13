@@ -19,6 +19,9 @@ from .forms import (
     DealerRegisterForm,
     TaxInvoiceForm,
     quotationInvoiceForm,
+    ProformaInvoiceForm,
+    deliveryChallanForm,
+    installationReportForm,
 )
 from .models import (
     Profile,
@@ -29,6 +32,10 @@ from .models import (
     gsttable,
     quotationInvoice,
     AllCounters,
+    proformaInvoice,
+    deliveryChallan,
+    installationReport,
+
 )
 from django.contrib.auth.models import User
 import json
@@ -48,11 +55,13 @@ def home(request):
     customercount = CustomerProfile.objects.all().count()
     productcount = Product.objects.all().count()
     taxinvoice = taxInvoice.objects.all().count()
+    proformainvoice = proformaInvoice.objects.all().count()
     context = {
         "dealercount":dealercount,
         "customercount":customercount,
         "productcount":productcount,
-        "taxinvoice":taxinvoice
+        "taxinvoice":taxinvoice,
+        "proformainvoice":proformainvoice,
 
     }
     return render(request, "index.html", context)
@@ -114,6 +123,27 @@ def vieweinvoices(request):
     }
     return render(request, "Invoice/TaxInvoice/viewinvoice.html", context)
 
+@login_required
+def viewproinvoices(request):
+    allProformaInvoice = proformaInvoice.objects.all()
+    totalProformaInvoices = proformaInvoice.objects.all().count()
+    # invoiceid = id
+    # thatInvoice = proformaInvoice.objects.filter(invoiceid=request.invoiceid).first()
+    startdate = datetime.today()
+    enddate = startdate - timedelta(days=14)
+    totalthismonthsInvoices = proformaInvoice.objects.filter(
+        invoicedate__range=[startdate, enddate]
+    ).count()
+    context = {
+        "allProformaInvoice": allProformaInvoice,
+        "totalProformaInvoices": totalProformaInvoices,
+        "totalthismonthsInvoices": totalthismonthsInvoices,
+        "startdate": startdate,
+        "enddate": enddate,
+        # "creatorid": thatInvoice.creatorid,
+    }
+    return render(request, "Invoice/ProformaInvoice/viewproinvoice.html", context)
+
 
 # view all Quotation invoices
 @login_required
@@ -134,6 +164,41 @@ def viewequotations(request):
     }
     return render(request, "Invoice/Quotation/viewquotations.html", context)
 
+@login_required
+def viewdeliverychallan(request):
+    allchallaninvoice = deliveryChallan.objects.all()
+    totalInvoices = deliveryChallan.objects.all().count()
+    startdate = datetime.today()
+    enddate = startdate - timedelta(days=14)
+    totalthismonthsInvoices = deliveryChallan.objects.filter(
+        challandate__range=[startdate, enddate]
+    ).count()
+    context = {
+        "allchallaninvoice": allchallaninvoice,
+        "totalInvoices": totalInvoices,
+        "totalthismonthsInvoices": totalthismonthsInvoices,
+        "startdate": startdate,
+        "enddate": enddate,
+    }
+    return render(request, "Invoice/DeliveryChallan/viewdeliverychallan.html", context)
+
+def view_installation_report(request):
+    allinstallationreport = installationReport.objects.all()
+    totalInvoices = installationReport.objects.all().count()
+    startdate = datetime.today()
+    enddate = startdate - timedelta(days=14)
+    totalthismonthsInvoices = installationReport.objects.filter(
+        installationDate__range=[startdate, enddate]
+    ).count()
+    context = {
+        "allinstallationreport": allinstallationreport,
+        "totalInvoices": totalInvoices,
+        "totalthismonthsInvoices": totalthismonthsInvoices,
+        "startdate": startdate,
+        "enddate": enddate,
+    }
+    return render(request, "Invoice/InstallationReport/viewinstallationreport.html", context)
+  
 
 # Individual Profile
 @login_required
@@ -159,6 +224,7 @@ def dealerProfile(request):
 
 
 # New Registration of customer
+
 @login_required
 def CustomerRegister(request):
     Profiledata = {
@@ -200,7 +266,7 @@ def CustomerRegister(request):
 # View/Edit dealer
 @login_required
 def vieweditcustomer(request):
-    allcustomer = CustomerProfile.objects.filter(distributer=request.user.username)
+    allcustomer = CustomerProfile.objects.all()#filter(distributer=request.user.username)
     return render(request, "customer/viewcustomer.html", {"allcustomer": allcustomer})
 
 # View/Edit dealer
@@ -243,12 +309,14 @@ def invoice(request):
     currentUser = Profile.objects.all()#filter(user=request.user).first()
     currentUserName = currentUser.values_list('nameofcontact', flat=True)
     currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    allproducts = Product.objects.all()
     taxinfform = TaxInvoiceForm(request.POST or None)
     context = {
         "currentUserName": currentUserName,
         "allcustomers": allcustomers,
         "currentcounter": currentcounter.counter,
         "taxinfform": taxinfform,
+        "allproducts":allproducts,                                           
     }
     if request.method == "POST":
         if taxinfform.is_valid():
@@ -270,78 +338,218 @@ def invoice(request):
             taxinfform = TaxInvoiceForm(request.POST)
     return render(request, "Invoice/TaxInvoice/Invoice.html", context)
 
-
-# create invoice
-@login_required
-def createQuotation(request):
-    # alldealers = Profile.objects.all()
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
-    currentcounter = SerialNumbercounter.objects.filter(id=1).first()
-    taxinfform = quotationInvoiceForm()
-    if request.method == "POST":
-        requestedtaxinfform = quotationInvoiceForm(request.POST)
-        if requestedtaxinfform.is_valid():
-            requestedtaxinfform.save()
-            requestedtaxinfform = quotationInvoiceForm()
-            invoiceCounter = AllCounters.objects.filter(name="quotation").first()
-            invoiceCounter.counter = F("counter") + 1
-            invoiceCounter.save()
-            vieweinvoices(request)
-            allquotationInvoice = quotationInvoice.objects.all()
-            totalInvoices = quotationInvoice.objects.all().count()
-            startdate = datetime.today()
-            enddate = startdate - timedelta(days=14)
-            totalthismonthsInvoices = quotationInvoice.objects.filter(
-                quotationdate__range=[startdate, enddate]
-            ).count()
-            context = {
-                "allquotationInvoice": allquotationInvoice,
-                "totalInvoices": totalInvoices,
-                "totalthismonthsInvoices": totalthismonthsInvoices,
-                "startdate": startdate,
-                "enddate": enddate,
-            }
-            return render(request, "Invoice/Quotation/viewquotations.html", context)
-        else:
-            return render(request, "index.html")
-    else:
-        context = {
-            "allcustomers": allcustomers,
-            "currentcounter": currentcounter,
-            "taxinfform": taxinfform,
-        }
-        return render(request, "Invoice/Quotation/createquotation.html", context)
-
-
-# create Proforma invoice
 @login_required
 def proformainvoice(request):
     # alldealers = Profile.objects.all()
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
-    currentcounter = SerialNumbercounter.objects.filter(id=1).first()
-    context = {"allcustomers": allcustomers, "currentcounter": currentcounter}
-    return render(request, "Invoice/ProformaInvoice/ProInvoice.html", context)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentUserName = request.user
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # print(currentUserName)
+    currentcounter = AllCounters.objects.filter(name="proformainvoice").first()
+    allproducts = Product.objects.all()
+    proformainvoice = ProformaInvoiceForm(request.POST or None)
+    context = {
+        "currentUserName": currentUserName,
+        "allcustomers": allcustomers,
+        "currentcounter": currentcounter.counter,
+        "proformainvoice": proformainvoice,
+        "allproducts":allproducts,
+    }
+    if request.method == "POST":
+        if proformainvoice.is_valid():
+            try:
+                invoiceID = proformaInvoice.objects.get(
+                    invoiceid=proformainvoice.cleaned_data["invoiceid"]
+                )
+                messages.warning(request, "Please fill Invoice form!")
+                
+            except proformaInvoice.DoesNotExist:
+                proformainvoice.save()
+                proformainvoice = ProformaInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="proformainvoice").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                proformainvoice = ProformaInvoiceForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Invoice!")        
+            proformainvoice = ProformaInvoiceForm(request.POST)     
+
+    return render(request, "Invoice/ProformaInvoice/proformainvoice.html", context)
+
+# # create invoice
+# @login_required
+# def createQuotation(request):
+#     # alldealers = Profile.objects.all()
+#     allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+#     currentcounter = SerialNumbercounter.objects.filter(id=1).first()
+#     taxinfform = quotationInvoiceForm()
+#     if request.method == "POST":
+#         requestedtaxinfform = quotationInvoiceForm(request.POST)
+#         if requestedtaxinfform.is_valid():
+#             requestedtaxinfform.save()
+#             requestedtaxinfform = quotationInvoiceForm()
+#             invoiceCounter = AllCounters.objects.filter(name="quotation").first()
+#             invoiceCounter.counter = F("counter") + 1
+#             invoiceCounter.save()
+#             vieweinvoices(request)
+#             allquotationInvoice = quotationInvoice.objects.all()
+#             totalInvoices = quotationInvoice.objects.all().count()
+#             startdate = datetime.today()
+#             enddate = startdate - timedelta(days=14)
+#             totalthismonthsInvoices = quotationInvoice.objects.filter(
+#                 quotationdate__range=[startdate, enddate]
+#             ).count()
+#             context = {
+#                 "allquotationInvoice": allquotationInvoice,
+#                 "totalInvoices": totalInvoices,
+#                 "totalthismonthsInvoices": totalthismonthsInvoices,
+#                 "startdate": startdate,
+#                 "enddate": enddate,
+#             }
+#             return render(request, "Invoice/Quotation/viewquotations.html", context)
+#         else:
+#             return render(request, "index.html")
+#     else:
+#         context = {
+#             "allcustomers": allcustomers,
+#             "currentcounter": currentcounter,
+#             "taxinfform": taxinfform,
+#         }
+#         return render(request, "Invoice/Quotation/createquotation.html", context)
+
+
+@login_required
+def createQuotation(request):
+    # alldealers = Profile.objects.all()
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentUserName = request.user
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # print(currentUserName)
+    currentcounter = AllCounters.objects.filter(name="quotation").first()
+    allproducts = Product.objects.all()
+    #proformainvoice = ProformaInvoiceForm(request.POST or None)
+    quotationform = quotationInvoiceForm(request.POST or None)
+    #print(quotationform)
+    context = {
+        "currentUserName": currentUserName,
+        "allcustomers": allcustomers,
+        "currentcounter": currentcounter.counter,
+        "quotationform": quotationform,
+        "allproducts":allproducts,
+    }
+    if request.method == "POST":
+        if quotationform.is_valid():
+            try:
+                quotationID = quotationInvoice.objects.get(
+                    quotationid=quotationform.cleaned_data["quotationid"]
+                )
+                messages.warning(request, "Please fill quotation form!")
+                
+            except quotationInvoice.DoesNotExist:
+                quotationform.save()
+                quotationform = quotationInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="quotation").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                quotationform = quotationInvoiceForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Quotation!")        
+            quotationform = quotationInvoiceForm(request.POST)     
+
+    return render(request, "Invoice/Quotation/createquotation.html", context)
+
+
+            
+@login_required
+def installation_Report(request):
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentUserName = request.user
+    currentcounter = AllCounters.objects.filter(name="installationreport").first()
+    allproducts = Product.objects.all()
+    installationreportform = installationReportForm(request.POST or None)
+    print(installationreportform)
+    context = {
+        "currentUserName": currentUserName,
+        "allcustomers": allcustomers,
+        "currentcounter": currentcounter.counter,
+        "installationreportform": installationreportform,
+        "allproducts":allproducts,
+    }
+    if request.method == "POST":
+        if installationreportform.is_valid():
+            try:
+                installationId = installationReport.objects.get(
+                    installationid=installationreportform.cleaned_data["installationid"]
+                )
+                messages.warning(request, "Please fill quotation form!")
+                
+            except installationReport.DoesNotExist:
+                installationreportform.save()
+                installationreportform = installationReportForm()
+                invoiceCounter = AllCounters.objects.filter(name="installationreport").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                installationreportform = installationReportForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Quotation!")        
+            installationreportform = installationReportForm(request.POST)     
+
+    return render(request, "Invoice/InstallationReport/InstallationReport.html", context)
 
 
 # create Quotation
-@login_required
-def quotation(request):
-    # alldealers = Profile.objects.all()
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
-    currentcounter = SerialNumbercounter.objects.filter(id=1).first()
-    context = {"allcustomers": allcustomers, "currentcounter": currentcounter}
-    return render(request, "Invoice/Quotation/Quotation.html", context)
+# @login_required
+# def quotation(request):
+#     # alldealers = Profile.objects.all()
+#     allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+#     currentcounter = SerialNumbercounter.objects.filter(id=1).first()
+#     context = {"allcustomers": allcustomers, "currentcounter": currentcounter}
+#     return render(request, "Invoice/Quotation/Quotation.html", context)
 
 
 # create Delivery Challan
 @login_required
 def deliverychallan(request):
     # alldealers = Profile.objects.all()
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
-    currentcounter = SerialNumbercounter.objects.filter(id=1).first()
-    context = {"allcustomers": allcustomers, "currentcounter": currentcounter}
-    return render(request, "Invoice/DeliveryChallan/DeliveryChallan.html", context)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentUserName = request.user
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # print(currentUserName)
+    currentcounter = AllCounters.objects.filter(name="deliverychallan").first()
+    allproducts = Product.objects.all()
+    #proformainvoice = ProformaInvoiceForm(request.POST or None)
+    deliveryform = deliveryChallanForm(request.POST or None)
+    context = {
+        "currentUserName": currentUserName,
+        "allcustomers": allcustomers,
+        "currentcounter": currentcounter.counter,
+        "deliveryform": deliveryform,
+        "allproducts":allproducts,
+    }
+    if request.method == "POST":
+        if deliveryform.is_valid():
+            try:
+                challanId = deliveryChallan.objects.get(
+                    challanid=deliveryform.cleaned_data["challanid"]
+                )
+                messages.warning(request, "Please fill quotation form!")
+                
+            except deliveryChallan.DoesNotExist:
+                deliveryform.save()
+                deliveryform = deliveryChallanForm()
+                invoiceCounter = AllCounters.objects.filter(name="deliverychallan").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                deliveryform = deliveryChallanForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Quotation!")        
+            deliveryform = deliveryChallanForm(request.POST)     
 
+    return render(request, "Invoice/DeliveryChallan/DeliveryChallan.html", context)
 
 # create contractorbill
 @login_required
@@ -353,16 +561,9 @@ def contractorbill(request):
     return render(request, "Invoice/ContractorBill/ContractorBill.html", context)
 
 
-# create Installation report
-@login_required
-def InstallationReport(request):
-    return render(request, "Invoice/InstallationReport/InstallationReport.html")
-
-
 # raw query to get all product data
 @login_required
 def invoicegetallprod(request):
-
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM public.mainapp_product")
     rows = cursor.fetchall()
@@ -508,10 +709,15 @@ def editingproduct(request, hsn):
 # editing invoice
 @login_required
 def editinginvoice(request, id):
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # currentUser = Profile.objects.filter(user=request.user).first()
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    # taxinfform = TaxInvoiceForm(request.POST or None)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
     currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
-    currentUser = Profile.objects.filter(user=request.user).first()
-    currentUserName = currentUser.nameofcontact
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = request.user#currentUser.values_list('nameofcontact', flat=True)
     taxinfform = TaxInvoiceForm(request.POST or None)
     allproducts = Product.objects.all()
     gstvalues = gsttable.objects.all()
@@ -529,7 +735,6 @@ def editinginvoice(request, id):
         "creatorid": thatInvoice.creatorid,
         "customerid": thatInvoice.customerid,
         "invoicedate": thatInvoice.invoicedate,
-        "duedate": thatInvoice.duedate,
         "po": thatInvoice.po,
         "items": thatInvoice.items,
         "finalamount": thatInvoice.finalamount,
@@ -546,10 +751,172 @@ def editinginvoice(request, id):
             except taxInvoice.DoesNotExist:
                 taxinfform.save()
                 taxinfform = TaxInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="proformainvoice").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                taxinfform = TaxInvoiceForm()
                 messages.success(request, "Invoice Generated successfully")
         else:
             messages.warning(request, "Error Generating Invoice!")
     return render(request, "Invoice/TaxInvoice/editinginvoice.html", context)
+
+@login_required
+def editing_proforma_invoice(request, id):
+    # allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # currentUser = Profile.objects.filter(user=request.user).first()
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    # taxinfform = TaxInvoiceForm(request.POST or None)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentcounter = AllCounters.objects.filter(name="proformainvoice").first()
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = request.user#currentUser.values_list('nameofcontact', flat=True)
+    proformainvoiceform = ProformaInvoiceForm(request.POST or None)
+    allproducts = Product.objects.all()
+    gstvalues = gsttable.objects.all()
+    invoiceid = id
+    thatInvoice = proformaInvoice.objects.filter(invoiceid=invoiceid).first()
+    context = {
+        "currentUserName": currentUserName,
+        "thatInvoice": thatInvoice,
+        "invoiceid": invoiceid,
+        "allproducts": allproducts,
+        "allcustomers": allcustomers,
+        "gstvalues": gstvalues,
+        "currentcounter": currentcounter.counter,
+        "proformainvoiceform": proformainvoiceform,
+        "creatorid": thatInvoice.creatorid,
+        "customerid": thatInvoice.customerid,
+        "invoicedate": thatInvoice.invoicedate,
+        "po": thatInvoice.po,
+        "items": thatInvoice.items,
+        "finalamount": thatInvoice.finalamount,
+        "signature": thatInvoice.signature,
+    }
+    if request.method == "POST":
+        if proformainvoiceform.is_valid():
+            try:
+                invoiceID = proformaInvoice.objects.get(
+                    invoiceid=proformainvoiceform.cleaned_data["invoiceid"]
+                )
+                messages.warning(request, "Please fill Invoice form!")
+            except proformaInvoice.DoesNotExist:
+                proformainvoiceform.save()
+                proformainvoiceform = ProformaInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="proformainvoice").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                proformainvoiceform = ProformaInvoiceForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Invoice!")
+    return render(request, "Invoice/ProformaInvoice/editingproinvoice.html", context)
+
+@login_required
+def cloning_proforma_invoice(request, id):
+    # allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # currentUser = Profile.objects.filter(user=request.user).first()
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    # taxinfform = TaxInvoiceForm(request.POST or None)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentcounter = AllCounters.objects.filter(name="proformainvoice").first()
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = request.user#currentUser.values_list('nameofcontact', flat=True)
+    proformainvoiceform = ProformaInvoiceForm(request.POST or None)
+    allproducts = Product.objects.all()
+    gstvalues = gsttable.objects.all()
+    invoiceid = id
+    thatInvoice = proformaInvoice.objects.filter(invoiceid=invoiceid).first()
+    context = {
+        "currentUserName": currentUserName,
+        "thatInvoice": thatInvoice,
+        "invoiceid": invoiceid,
+        "allproducts": allproducts,
+        "allcustomers": allcustomers,
+        "gstvalues": gstvalues,
+        "currentcounter": currentcounter.counter,
+        "proformainvoiceform": proformainvoiceform,
+        "creatorid": thatInvoice.creatorid,
+        "customerid": thatInvoice.customerid,
+        "invoicedate": thatInvoice.invoicedate,
+        "po": thatInvoice.po,
+        "items": thatInvoice.items,
+        "finalamount": thatInvoice.finalamount,
+        "signature": thatInvoice.signature,
+    }
+    if request.method == "POST":
+        if proformainvoiceform.is_valid():
+            try:
+                invoiceID = proformaInvoice.objects.get(
+                    invoiceid=proformainvoiceform.cleaned_data["invoiceid"]
+                )
+                messages.warning(request, "Please fill Invoice form!")
+            except proformaInvoice.DoesNotExist:
+                proformainvoiceform.save()
+                proformainvoiceform = ProformaInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="proformainvoice").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                proformainvoiceform = ProformaInvoiceForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Invoice!")
+    return render(request, "Invoice/ProformaInvoice/cloningproinvoice.html", context)
+
+@login_required
+def proforma_to_invoice(request, id):
+    # allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # currentUser = Profile.objects.filter(user=request.user).first()
+    # currentUserName = currentUser.values_list('nameofcontact', flat=True)
+    # currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    # taxinfform = TaxInvoiceForm(request.POST or None)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
+    currentcounter = AllCounters.objects.filter(name="proformainvoice").first()
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = request.user#currentUser.values_list('nameofcontact', flat=True)
+    #proformainvoiceform = ProformaInvoiceForm(request.POST or None)
+    taxinfform = TaxInvoiceForm(request.POST or None)
+    allproducts = Product.objects.all()
+    gstvalues = gsttable.objects.all()
+    invoiceid = id
+    thatInvoice = proformaInvoice.objects.filter(invoiceid=invoiceid).first()
+    context = {
+        "currentUserName": currentUserName,
+        "thatInvoice": thatInvoice,
+        "invoiceid": invoiceid,
+        "allproducts": allproducts,
+        "allcustomers": allcustomers,
+        "gstvalues": gstvalues,
+        "currentcounter": currentcounter.counter,
+        #"proformainvoiceform": proformainvoiceform,
+        "taxinfform":taxinfform,
+        "creatorid": thatInvoice.creatorid,
+        "customerid": thatInvoice.customerid,
+        "invoicedate": thatInvoice.invoicedate,
+        "po": thatInvoice.po,
+        "items": thatInvoice.items,
+        "finalamount": thatInvoice.finalamount,
+        "signature": thatInvoice.signature,
+    }
+    if request.method == "POST":
+        if taxinfform.is_valid():
+            try:
+                invoiceID = taxInvoice.objects.get(
+                    invoiceid=taxinfform.cleaned_data["invoiceid"]
+                )
+                messages.warning(request, "Please fill Invoice form!")
+            except taxInvoice.DoesNotExist:
+                taxinfform.save()
+                taxinfform = TaxInvoiceForm()
+                invoiceCounter = AllCounters.objects.filter(name="proformainvoice").first()
+                invoiceCounter.counter = F("counter") + 1
+                invoiceCounter.save()
+                taxinfform = TaxInvoiceForm()
+                messages.success(request, "Invoice Generated successfully")
+        else:
+            messages.warning(request, "Error Generating Invoice!")
+    return render(request, "Invoice/ProformaInvoice/convertproformainvoice.html", context)
 
 
 # editing invoice
@@ -573,7 +940,7 @@ def editingcustomer(request, id):
             usercreationform = UserUpdateForm(instance=UserbasicData)
             profileform = CustomerProfileForm(instance=CustomerProfileData)
             messages.warning(request, "Error in Editing!")
-    
+
     context = {
         "form": UserbasicData,
         "profileform": CustomerProfileData,
@@ -587,10 +954,15 @@ def editingcustomer(request, id):
 # cloning invoice
 @login_required
 def cloninginvoice(request, id):
-    allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # allcustomers = CustomerProfile.objects.filter(distributer=request.user.username)
+    # currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
+    # currentUser = Profile.objects.filter(user=request.user).first()
+    # currentUserName = request.user#currentUser.nameofcontact
+    # taxinfform = TaxInvoiceForm(request.POST or None)
+    allcustomers = CustomerProfile.objects.all()#filter(distributer=request.user.username)
     currentcounter = AllCounters.objects.filter(name="taxinvoice").first()
-    currentUser = Profile.objects.filter(user=request.user).first()
-    currentUserName = currentUser.nameofcontact    
+    currentUser = Profile.objects.all()#filter(user=request.user).first()
+    currentUserName = request.user#currentUser.values_list('nameofcontact', flat=True)
     taxinfform = TaxInvoiceForm(request.POST or None)
     allproducts = Product.objects.all()
     gstvalues = gsttable.objects.all()
@@ -632,9 +1004,11 @@ def cloninginvoice(request, id):
                 messages.success(request, "Invoice Generated successfully")
         else:
             messages.warning(request, "Error Generating Invoice!")
-    return render(request, "Invoice/TaxInvoice/cloninginvoice.html", context)
+    return render(request, "Invoice/ProformaInvoice/convertproformainvoice.html", context)
 
 
+
+    
 # uodate individusal dealer
 @login_required
 def updatingdealer(request, id):

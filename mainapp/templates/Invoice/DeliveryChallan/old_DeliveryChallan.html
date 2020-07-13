@@ -1,9 +1,9 @@
-<!-- {% extends 'index.html' %}
+{% extends 'index.html' %}
 {% load static %}
 
 {% block header %}
 
-<script src="{% static 'custom/js/Invoice/Quotation/Quotation.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'custom/js/Invoice/DeliveryChallan/DeliveryChallan.js' %}" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
     integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
     crossorigin="anonymous"></script>
@@ -13,7 +13,7 @@
 
 {% endblock %}
 {% block content %}
-<h1>Create Quotation</h1>
+<h1>Create Delivery Challan</h1>
 <input type='hidden' id='idofuser' value="{{ user.id }}" />
 <input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
 <div class='row'>
@@ -30,6 +30,20 @@
     </div>
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
         <div class='form-group'>
+            <span>Challan date : </span> <input type="date" id='datepicker_invoice' name="invoice date">
+        </div>
+    </div>
+
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
+        <div class='form-group'>
+            Challan Number
+            <input id='PONo' type='text' />
+        </div>
+    </div>
+</div>
+<div class='row'>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
+        <div class='form-group'>
             Select Product
             <select onchange='priceOfProduct()' id='selectedProduct'>
                 <option value=''>Select Product</option>
@@ -41,51 +55,23 @@
     </div>
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
         <div class='form-group'>
-            Quotation Number
-            <input id='PONo' type='text' />
-        </div>
-    </div>
-</div>
-<div class='row'>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-        <div class='form-group'>
-            <span>Estimate date : </span> <input type="date" id='datepicker_invoice' name="invoice date">
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6  ">
-        <div class='form-group'>
-            <span>Expiry date : </span> <input type="date" id='datepicker_expiry' name="invoice date">
-        </div>
-    </div>
-</div>
-
-<div class='row'>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
-            Price of Product
-            <input id='selectedProductPrice' type='number' />
-        </div>
-    </div>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
-        <div class='form-group'>
             Select Quantity
-            <input id='selectedProductQuanity' type='number' value='1' />
+            <input id='selectedProductQuanity' type='number' onkeyup="addinputs()" value='1' />
         </div>
     </div>
+
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4  ">
         <div class='form-group'>
-            Alloted Discount
-            <select id='typeofdiscout'>
-                <option value='rs' selected>₹</option>
-                <option value='perc'>%</option>
-
-            </select>
-            <input id='selectedProductDiscount' type='number' placeholder='1' value='0' />
+            PO Number
+            <input id='POONo' type='text' />
         </div>
     </div>
 
 </div>
+<div class='row'>
 
+
+</div>
 <br>
 <img src="{% static 'custom/images/logo.png' %}" style='display: none' id='logoofcompany' />
 <div class='row' style='text-align: center;'>
@@ -100,38 +86,23 @@
         </div>
     </div>
 </div>
+<div id='typeserialnumbers' class='row' style="border: 1px solid black;padding:5px 5px">
+
+</div>
 <div class='form-group'>
     Preview
     <table id='Previewtable' class="table table-bordered">
         <thead>
             <tr>
                 <th>Product</th>
-                <th>HSN</th>
+                <th>Serial Number </th>
                 <th>Quanity</th>
-                <th>Rate</th>
-                <th id='discountColumn'>Discount</th>
-                <th>IGST</th>
-                <th>Amount</th>
             </tr>
         </thead>
         <tbody id='bodyOfProductPreview'>
         </tbody>
     </table>
 
-    <div class='row'>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <div class='form-group'>
-                Terms
-                <textarea rows="4" cols="70" id='termsNcondition'>
-                    Delivery within 35 days of receipt of purchase order.
-                    Kindly make the payment favoring "MEDPRIME TECHNOLOGIES PRIVATE LIMITED"
-                    Bank Name: STATE BANK OF INDIA; Branch Name: IIT POWAI
-                    Account No: 34668404741; IFSC Code: SBIN0001109
-                    </textarea>
-            </div>
-        </div>
-
-    </div>
 
     <div class='row'>
 
@@ -143,7 +114,7 @@
 </div>
 
 
-
+<!-- Modal of Preview -->
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
     aria-hidden="true">
     <div class="modal-dialog" role="document" style='height: 80%;'>
@@ -165,4 +136,4 @@
     </div>
 </div>
 
-{% endblock %} -->
+{% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, CustomerProfile, Product, taxInvoice, quotationInvoice
+from .models import Profile, CustomerProfile, Product, taxInvoice, quotationInvoice,proformaInvoice,deliveryChallan,installationReport
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -166,13 +166,44 @@ class TaxInvoiceForm(forms.ModelForm):
         input_formats=('%d-%m-%Y', )
         )
 
+class ProformaInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = proformaInvoice
+        fields = "__all__"
+    invoicedate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
 
 # Quotation Invoice Form
 class quotationInvoiceForm(forms.ModelForm):
     class Meta:
         model = quotationInvoice
         fields = "__all__"
+    quotationdate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
 
+# Delivery Invoice Form
+class deliveryChallanForm(forms.ModelForm):
+    class Meta:
+        model = deliveryChallan
+        fields = "__all__"
+    challandate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
+
+# Installation Report Form
+class installationReportForm(forms.ModelForm):
+    class Meta:
+        model = installationReport
+        fields = "__all__"
+    installationDate = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y'),
+        input_formats=('%d-%m-%Y', )
+        )
 
 # add new customer
 class CustomerProfileForm(forms.ModelForm):

@@ -1,5 +1,5 @@
-// add variables 
-var allProductsData, selectedStateCode, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
+// add variables
+var allProductsData, selectedStateCode, currentUserName, companyName, productTax, clickedTR, img, tableBodiesAllRows, allDiscCells, selectedStateIGST, selectedStateCGST, selectedStateSGST, logo, allCustomerData, customerusername, customerName, customerbuilding, customerarea, customerlandmark, shippingbuilding, shippingarea, shippinglandmark, customerPincode, shippingPincode, customerState, shippingState, customerGST, shippingCity, shippingCountry, customerCity, customerCountry, PONo, imgUrl, doc, allProductsDataColumns, allInfoOfSelectedCustomer, SelectedCustomerUsername, SelectedCustomerId
 var allProductJSONArray = []
 var TotalDisc = 0, totalAdjustment = 0, rowsCounter = 0, totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
 var flagForTax = false, stateIGSTflag = false, stateCGSTflag = false, stateSGSTflag = false
@@ -9,6 +9,7 @@ var taxBrackets = []
 
 // $("#Previewtable tbody tr").on("click", function (event) {
 //     alert(event)
+
 
 // });
 //price of selected product
@@ -25,7 +26,6 @@ function priceOfProduct() {
         }
     }
 }
-
 
 
 
@@ -57,14 +57,12 @@ function SavingNewQty(val) {
     } else {
         val.getElementsByClassName('productRate')[0].innerHTML = rate
     }
-    var disctype = document.getElementById('typeOfDesc').value
     var discount = parseFloat(document.getElementById('newdesc').value)
+    var disctype = document.getElementById('typeOfDesc').value
+
     if (disctype == 'perc') {
         discount = (rate * discount / 100) * quantity
     }
-    val.getElementsByClassName('discount')[0].innerText = discount
-
-    var finalVal = (quantity * rate) - discount
     if (flagForTax) {
         if (selectedStateIGST) {
             var IGSTval = ((quantity * rate) - discount) * selectedStateIGST / 100
@@ -80,6 +78,9 @@ function SavingNewQty(val) {
         }
     }
 
+    val.getElementsByClassName('discount')[0].innerText = discount
+
+    var finalVal = (quantity * rate) - discount
     val.getElementsByClassName('finalvalue')[0].innerText = finalVal
     getFinalAmountFromTable()
 }
@@ -184,22 +185,22 @@ function addProduct() {
 }
 
 //get final amount when product is added or removed
-function getFinalAmountFromTable() {
-    var totalGSTItems = document.getElementsByClassName('gstvalue')
-    var totalAmtItems = document.getElementsByClassName('finalvalue')
+// function getFinalAmountFromTable() {
+//     var totalGSTItems = document.getElementsByClassName('gstvalue')
+//     var totalAmtItems = document.getElementsByClassName('finalvalue')
 
-    totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
-    for (i = 0; i < totalGSTItems.length; i++) {
-        totalGSTAmt += parseFloat(totalGSTItems[i].innerHTML)
-    }
-    for (i = 0; i < totalAmtItems.length; i++) {
-        totalAmt += parseFloat(totalAmtItems[i].innerHTML)
-    }
+//     totalAmt = 0, totalGSTAmt = 0, finalAmout = 0
+//     for (i = 0; i < totalGSTItems.length; i++) {
+//         totalGSTAmt += parseFloat(totalGSTItems[i].innerHTML)
+//     }
+//     for (i = 0; i < totalAmtItems.length; i++) {
+//         totalAmt += parseFloat(totalAmtItems[i].innerHTML)
+//     }
 
 
-    finalAmout = totalGSTAmt + totalAmt
-    $('#FinalAmount').val(finalAmout)
-}
+//     finalAmout = totalGSTAmt + totalAmt
+//     $('#FinalAmount').val(finalAmout)
+// }
 
 
 
@@ -276,6 +277,7 @@ function getAllCustomerInfo() {
 
 
 
+
 // raw query to get all prouct data columns
 $.get("/invoicegetallprodcol/", function (data) {
     allProductsDataColumns = data
@@ -285,9 +287,10 @@ $.get("/invoicegetallprodcol/", function (data) {
         allProductsData = data
 
         var ProductSelectDropdown = document.getElementById('selectedProduct')
+        console.log(ProductSelectDropdown);
         ProductSelectDropdown.innerHTML = "<option value=''>Select Product</option>"
 
-        //create allProductJSONArray 
+        //create allProductJSONArray
         for (i = 0; i < allProductsData.length; i++) {
             var eachIndividualProduct = {}
             for (j = 0; j < allProductsDataColumns.length; j++) {
@@ -295,7 +298,7 @@ $.get("/invoicegetallprodcol/", function (data) {
             }
             allProductJSONArray.push(eachIndividualProduct)
         }
-        // find index of name column in db 
+        // find index of name column in db
         var indexOfName
         for (j = 0; j < allProductsDataColumns.length; j++) {
             if (allProductsDataColumns[j].col[0] == 'name') {
@@ -311,7 +314,8 @@ $.get("/invoicegetallprodcol/", function (data) {
     })
 })
 
-// Create invoice 
+
+// Create invoice
 function createPDF() {
 
     if (allCustomerData == undefined) {
@@ -338,7 +342,7 @@ function createPDF() {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'error',
-                    title: 'Please select Payment date',
+                    title: 'Please select Due date',
                     showConfirmButton: false,
                     timer: 2000
                 })
@@ -361,6 +365,7 @@ function createPDF() {
                 function getImgFromUrl(logo_url, callback) {
                     img = new Image();
                     img.src = logo_url;
+                    
                     img.onload = function () {
                         callback(img);
                     };
@@ -394,6 +399,7 @@ function createPDF() {
                     let finalY = doc.lastAutoTable.finalY;
 
 
+                    
 
                     addfinalAmout(doc, finalY)
                     // doc.save(PONo + '.pdf')
@@ -436,4 +442,3 @@ function createPDF() {
 //     });
 //     e.preventDefault();
 // });
-

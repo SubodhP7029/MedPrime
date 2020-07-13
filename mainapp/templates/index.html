@@ -86,10 +86,10 @@
               <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Invoice Components:</h6>
                 <a class="collapse-item" href="{% url 'vieweinvoices' %}">Billing</a>
-                <a class="collapse-item" href="cards.html">Proforma Invoice</a>
+                <a class="collapse-item" href="{% url 'viewproinvoices' %}">Proforma Invoice</a>
                 <a class="collapse-item" href="{% url 'viewequotations' %}">Quotation</a>
-                <a class="collapse-item" href="cards.html">Delivery Challan</a>
-                <a class="collapse-item" href="cards.html">Installation Report</a>
+                <a class="collapse-item" href="{% url 'viewdeliverychallan' %}">Delivery Challan</a>
+                <a class="collapse-item" href="{% url 'viewinstallationreport' %}">Installation Report</a>
               </div>
             </div>
           </li>
@@ -139,47 +139,7 @@
         </div>
       </li>
         <!-- Divider -->
-        <hr class="sidebar-divider">
-  
-        <!-- Heading -->
-        <div class="sidebar-heading">
-          Addons
-        </div>
-  
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Pages</span>
-          </a>
-          <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Login Screens:</h6>
-              <a class="collapse-item" href="login.html">Login</a>
-              <a class="collapse-item" href="register.html">Register</a>
-              <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-              <div class="collapse-divider"></div>
-              <h6 class="collapse-header">Other Pages:</h6>
-              <a class="collapse-item" href="404.html">404 Page</a>
-              <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-          </div>
-        </li>
-  
-        <!-- Nav Item - Charts -->
-        <li class="nav-item">
-          <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span></a>
-        </li>
-  
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-          <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span></a>
-        </li>
-  
+
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
   
@@ -350,7 +310,7 @@
               <!-- Nav Item - User Information -->
               <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
+                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{request.user}}</span>
                   <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
                 </a>
                 <!-- Dropdown - User Information -->
@@ -581,7 +541,9 @@
         </div>
       </div>
     </div>
+{% block scripts %}
 
+{% endblock %}
 
   
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
@@ -595,6 +557,7 @@
 
     <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
       
+    
     <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
       
@@ -613,7 +576,7 @@
           $('#quotation_datatable').DataTable();
           $('#view_customer_datatable').DataTable();
           $('#view_product_datatable').DataTable();
-          $('#view_distributer_datatable').DataTable(); //
+          $('#view_distributer_datatable').DataTable(); 
           $('#view_invoice_datatable').DataTable({"scrollX":true,"scrollY":300});
       } );
       </script>

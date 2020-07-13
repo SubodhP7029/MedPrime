@@ -2,26 +2,25 @@
 {% load static %}
 
 {% block header %}
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
-    integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
-    integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
-    
-<script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+        integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+        crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"
+        integrity="sha256-JvcgXx+RnoYKxoz5F+iHG1GTFTDHScw0LN8ZCIq64zo=" crossorigin="anonymous"></script>
 
 
-<!-- <script src="{% static 'custom/js/Invoice/Quotation/Quotation.js' %}" crossorigin="anonymous"></script>  -->
+        <script src="{% static 'assets/js/jspdf.plugin.autotable.js' %}"></script>
+        <!-- <script defer src="{% static 'custom/js/main.js' %}"></script> -->
+        <!-- <script src="{% static 'custom/js/Invoice/ProformaInvoice/ProformaInvoice.js' %}" crossorigin="anonymous"></script> -->
 
-<script src="{% static 'custom/js/Invoice/InstallationReport/InstallationReport.js' %}"></script>
+        <script src="{% static 'custom/js/Invoice/ProformaInvoice/Proforma_invoice.js' %}" crossorigin="anonymous"></script>    
 
 {% endblock %}
-{% block head %}
-<!-- <h1>Create Invoice</h1>
+<!-- {% block head %}
+<h1>Create Invoice</h1>
 <div> - Current User <div id='currentUser'> {{ currentUserName }}</div>
-</div> -->
-{% endblock %}
+</div>
+{% endblock %} -->
 
 {% block content %}
 <div class='row'>
@@ -40,12 +39,12 @@
             <div class="col-md-12">
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Create Installation Report</h6>
-                  <div style="display: none;"> Current User <div id='currentUser'> {{ currentUserName }}</div></div>
+                  <h6 class="m-0 font-weight-bold text-primary">Create Proforma Invoice</h6>
+                  <div style="display: none"> Current User <div id='currentUser'> {{ currentUserName }}</div></div>
                 </div>
                 <div class="card-body">
                     <input type='hidden' id='idofuser' value="{{ user.id }}" />
-                    <input type='hidden' id='currentnumber' value="{{ currentcounter }}" />
+                    <input type='hidden' id ='currentnumber' value="{{ currentcounter }}" />
                   <div class="form-row">
                      <div class="form-group col-md-3">
                        <label for="selectedcustomer"><b>Select Customer</b></label><br>
@@ -57,7 +56,7 @@
                         </option>
                         {% endfor %}
                     </select>
-                        
+
                           </div>
                           <!--  -->
                        <div class="form-group col-md-1">
@@ -65,99 +64,135 @@
                        <button type="button" class="btn btn-primary btn-rounded m-b-5 m-l-2" id="getcustdetail"
                        onclick="getcustdetail()">Details</button>
                        </div>
-      
+
                        <div class="form-group col-md-4">
-                         <label for="reportNo"><b>Service/Installation Report No</b></label><br>
-                         <input id='reportNo' class="form-control" type='number' />
+                         <label for="selectedProduct"><b>Select Product</b></label><br>
+                         <select onchange='priceOfProduct()' id='selectedProduct' class="form-control">
+                            <option value=''>Select Product</option>
+                            {% for eachproduct in allproducts.all %}
+                            <option value="{{ eachproduct }}">{{ eachproduct }}</option>
+                            {% endfor %}
+                        </select>
                        </div>
-      
+
                        <div class="form-group col-md-4">
                        <label for="datepicker_invoice"><b>Invoice Date</b></label>
                        <input type="text" class="form-control" id='datepicker_invoice' name="invoice date">
                        </div>
                    </div>
-      
+
       <!-- -->
       <br>
                 <div class="form-row">
-                   <div class="form-group col-md-3">
-                     <label for="deviceName"><b>Device Name</b></label><br>
-                     <input id='deviceName' class="form-control" type='text' />
+                   <div class="form-group col-md-4">
+                     <label for="selectedProductPrice"><b>Product Price</b></label><br>
+                     <input id='selectedProductPrice' class="form-control" type='number' />
                         </div>
-      
+
                      <div class="form-group col-md-3">
-                       <label for="serialNo"><b>Serial No</b></label>
-                       <input id='serialNo' type='number' value='1' class="form-control" />
+                       <label for="selectedProductQuanity"><b>Select Quantity</b></label>
+                       <input id='selectedProductQuanity' type='number' value='1' class="form-control" />
                      </div>
-      
-                     <div class="form-group col-md-3">
-                       <label for="imeiNo" ><b>Tablet/Mobile Imei No</b> </label>
-                       <input id='imeiNo' type='number' class="form-control" />
+
+                     <div class="form-group col-md-1">
+                       <label for="typeofdiscout" ><b>&#8377; or &#37;</b> </label>
+                        <select id='typeofdiscout' class="form-control" name="typeofdiscout">
+                           <option value='rs' selected>₹</option>
+                           <option value='perc'>%</option>
+                       </select>
                      </div>
-      
-                     <div class="form-group col-md-3">
-                       <label for="accessories"><b>Accessories</b> </label>
-                     <input id='accessories' type='text' class="form-control"  />
+
+                     <div class="form-group col-md-4">
+                       <label for="selectedProductDiscount"><b>Alloted Discount</b> </label>
+                     <input id='selectedProductDiscount' type='number' placeholder='1' value='0' class="form-control"  />
                      </div>
                 </div>
-      
-       
+
+
                 <img src="{% static 'custom/images/logo.png' %}"  id='logoofcompany' style="display: none;">
-      
+
       <br>
                  <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <label for="problemDescription" ><b>Problem Description</b> </label><br>
-                      <textarea class="form-control" id="problemDescription" rows="3" cols="70">
-                          </textarea>
+                    <div class="form-group col-md-2">
+                      <label for="addproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="addproductbtn" class="btn btn-success" onclick='addProduct()'>Add Product</button>
                          </div>
 
+                      <div class="form-group col-md-2">
+                        <label for="removeproductbtn" style="color: white;" ><b>&#8377; or &#37;</b> </label><br>
+                        <button type="button" id="removeproductbtn" class="btn btn-danger" onclick='removeProduct()'>Undo</button>
+                      </div>
+
+                      <!-- <div class="form-group col-md-4">
+                        <label for="datepicker" ><b>Due Date</b> </label>
+                        <input type="text" class="form-control" id='datepicker' name="due date">
+                      </div> -->
+
+                      <div class="form-group col-md-4">
+                        <label for="PONo"><b>PO Number</b> </label>
+                        <input type="text" class="form-control" id="PONo" placeholder="PO Number" >
+                      </div>
+                  </div>
+      <!-- -->
+      <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                        <label for="Previewtable" ><b>Preview</b> </label><br>
+                        <table id='Previewtable' class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>HSN</th>
+                                <th>Quanity</th>
+                                <th>Rate</th>
+                                <th id='discountColumn'>Discount</th>
+                                <th>IGST</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id='bodyOfProductPreview'>
+                        </tbody>
+                    </table>
+                        </div>
+                    </div>
+
+      <br>
+
+                  <div class='row'>
+                    <div class="form-group col-md-6">
+                      <label for="termsNcondition"><b>Terms</b> </label>
+                      <textarea class="form-control" id="termsNcondition" rows="5" cols="70">Delivery within 35 days of receipt of purchase order.&#13;Kindly make the payment favoring "MEDPRIME TECHNOLOGIES PRIVATE LIMITED"&#13;Bank Name: STATE BANK OF INDIA; Branch Name: IIT POWAI&#13;Account No: 34668404741; IFSC Code: SBIN0001109&#13;
+                      </textarea>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                      <label for="sign"><b>Add Signature</b> </label>&nbsp;
+                      <input id='sign' type='checkbox' checked />
+                    </div>
                   </div>
 
-    <br>
-                  <div class="form-row">
-                     <div class="form-group col-md-12">
-                       <label for="actionTaken" ><b>Action Taken</b> </label><br>
-                       <textarea class="form-control" id="actionTaken" rows="3" cols="70"></textarea>
-                           
-                          </div>
- 
-                   </div>
-    <br>
-                   <div class="form-row">
-                      <div class="form-group col-md-12">
-                        <label for="testing" ><b>Testing Done & Callibration </b> </label><br>
-                        <textarea class="form-control" id="testing" rows="3" cols="70">
-                            </textarea>
-                           </div>
-  
-                    </div>
-     <br>
-                    <div class="form-row">
-                       <div class="form-group col-md-12">
-                         <label for="customerComment" ><b>Customer Comment </b> </label><br>
-                         <textarea class="form-control" id="customerComment" rows="3" cols="70">
-                             </textarea>
-                            </div>
-   
-                     </div>
+                  <div class="form-group col-md-4" style="margin-left: 100px; display: none;">
+                    <label for="FinalAmount"><b>Final Amount:</b> </label>
+                  <input readonly id='FinalAmount' class="form-control" type='number' />
+                  </div>
+
       <br>
-      
+
                   <div class='row'>
                     <div class="form-group col-md-6">
                       <button class="btn btn-primary btn-flat btn-addon m-b-10 m-l-5" onclick="javascript:createPDF()"><i
-                                class="ti-plus"></i>Create Report</button>
+                                class="ti-plus"></i>Create Proforma Invoice</button>
                     </div>
-      
+
                   </div>
-                
+
                 </div>
-                
+
               </div>
           </div>
       </div>
       </div>
-      
+
 
 
     <!--end-Main Content-->
@@ -277,7 +312,7 @@
                         <tr>
                             <th>Customer Country</th>
                             <td style='text-align: left;' id='customerCountry'></td>
-                        
+
                         </tr>
                     </table>
 
@@ -291,15 +326,16 @@
 
 
     <div style='display:none'>
-        <form action="" method="post" id='invoice_to_db'>
+        <form action="" method="POST" id='invoice_to_db'>
             {% csrf_token %}
-            {{ installationreportform.as_p }}
+            {{ proformainvoice.as_p }}
             <input type="submit" value="Submit" id='saveDataToForm'>
-
         </form>
     </div>
     <script>
-        
+
     </script>
-    
+
     {% endblock %}
+
+

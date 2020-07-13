@@ -10,6 +10,7 @@ var taxBrackets = []
 // $("#Previewtable tbody tr").on("click", function (event) {
 //     alert(event)
 
+
 // });
 //price of selected product
 function priceOfProduct() {
