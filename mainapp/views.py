@@ -233,6 +233,7 @@ def CustomerRegister(request):
     form = UserRegisterForm(request.POST or None, request.FILES or None)
     profileform = CustomerProfileForm(request.POST or None, request.FILES or None)
     alldistributers = Profile.objects.all().order_by("user")
+    print(profileform)
     if request.method == "POST":
         if form.is_valid() and profileform.is_valid():
             try:

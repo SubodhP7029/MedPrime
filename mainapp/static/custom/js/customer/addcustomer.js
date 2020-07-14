@@ -202,44 +202,44 @@ function getStateid() {
 //     }
 //     checkforshipping()
 // }
-// function getStateid() {
-//     var state = document.getElementById('id_state').value
-//     var code = stateCode[state]
-//     if (!code) {
-//         code = 00
-//     }
-//     document.getElementById('id_stateid').value = code
-// }
-// function checkforshipping() {
-//     if (document.getElementById('flagForNeedOfShippingInfo').checked) {
-//         $('#id_country').val($('#id_billingcountry').val())
-//         if ($('#id_billingstate').val()) {
-//             $('#id_state').val($('#id_billingstate').val())
-//             $('#id_city').val($('#id_billingcity').val())
-//         } else {
-//             $('#id_state').val($('#id_billingstate').val())
-//             $('#id_city').val($('#id_billingcity').val())
-
-//         }
-//         $('#id_building').val($('#id_billingbuilding').val())
-//         $('#id_area').val($('#id_billingarea').val())
-//         $('#id_landmark').val($('#id_billinglandmark').val())
-//         document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
-//     }
-//     getStateid()
-//     // document.getElementById('dealerCreation').submit()
-// }
-
-function checkforshipping()
-{
-    var CopyFromList = new Array( "billing_country", "billing_state", "billing_city", "billing_building", "billing_area", "billing_landmark","billing_pincode" );
-    var CopyToList = new Array( "shipping_country", "shipping_state", "shipping_city", "shipping_building", "shipping_area", "shipping_landmark","shipping_pincode" );
-    for( var i=0; i<CopyFromList.length; i++ )
-    {
-        document.getElementById(CopyToList[i]).value = document.getElementById(CopyFromList[i]).value;
+function getStateid() {
+    var state = document.getElementById('id_state').value
+    var code = stateCode[state]
+    if (!code) {
+        code = 00
     }
-   
+    document.getElementById('id_stateid').value = code
 }
+function checkforshipping() {
+    if (document.getElementById('flagForNeedOfShippingInfo').checked) {
+        $('#id_country').val($('#id_billingcountry').val())
+        if ($('#id_billingstate').val()) {
+            $('#id_state').val($('#id_billingstate').val())
+            $('#id_city').val($('#id_billingcity').val())
+        } else {
+            $('#id_state').val($('#id_billingstate').val())
+            $('#id_city').val($('#id_billingcity').val())
+
+        }
+        $('#id_building').val($('#id_billingbuilding').val())
+        $('#id_area').val($('#id_billingarea').val())
+        $('#id_landmark').val($('#id_billinglandmark').val())
+        document.getElementById('id_pincode').value = document.getElementById('id_billingpincode').value
+    }
+    getStateid()
+    // document.getElementById('dealerCreation').submit()
+}
+
+// function checkforshipping()
+// {
+//     var CopyFromList = new Array( "billing_country", "billing_state", "billing_city", "billing_building", "billing_area", "billing_landmark","billing_pincode" );
+//     var CopyToList = new Array( "shipping_country", "shipping_state", "shipping_city", "shipping_building", "shipping_area", "shipping_landmark","shipping_pincode" );
+//     for( var i=0; i<CopyFromList.length; i++ )
+//     {
+//         document.getElementById(CopyToList[i]).value = document.getElementById(CopyFromList[i]).value;
+//     }
+   
+// }
 $("#id_username").on("keyup", function () {
     var input = $("#id_username").val()
     var string = "SELECT username FROM public.auth_user where username = '" + input + "'"
